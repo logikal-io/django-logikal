@@ -242,6 +242,9 @@ def test_email(live_app_url: LiveURL, client: Client, mailoutbox: List[AnymailMe
     assert email.attachments[2] == ('attachment.txt', 'Attachment\n', 'text/plain')
 
 
+# Looks like input box corners in the admin login page are rendered non-deterministically, which
+# causes flakiness – super weird
+@mark.flaky(max_runs=3)
 def test_admin(
     live_url: LiveURL, browser: Browser, user: User, staff_user: User, super_user: User,
 ) -> None:
