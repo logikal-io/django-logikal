@@ -1,0 +1,7 @@
+# Secrets
+stormware[amazon,google]~=1.2
+
+# Emails
+antimarkdown~=1.0
+django-anymail[amazon-ses]~=10.0
+premailer~=3.10

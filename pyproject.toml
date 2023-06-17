@@ -1,0 +1,113 @@
+[build-system]
+requires = ['setuptools>=45', 'setuptools-scm[toml]>=6.2']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'django-logikal'
+description = 'Django utilities used at Logikal'
+readme = 'README.rst'
+requires-python = '~= 3.8'
+license = {file = 'LICENSE.txt'}
+authors = [{name = 'Logikal GmbH', email = 'contact@logikal.io'}]
+keywords = ['python', 'django']
+classifiers = [
+  'Development Status :: 5 - Production/Stable',
+  'Intended Audience :: Developers',
+  'License :: OSI Approved :: MIT License',
+  'Operating System :: POSIX :: Linux',
+  'Programming Language :: Python :: 3',
+  'Programming Language :: Python :: 3.8',
+  'Framework :: Django',
+  'Framework :: Django :: 4',
+  'Topic :: Software Development',
+  'Topic :: Utilities',
+  'Typing :: Typed',
+]
+dynamic = ['version', 'dependencies', 'optional-dependencies']
+
+[project.scripts]
+run = 'django_logikal.run:main'
+manage = 'django_logikal.manage:main'
+
+[project.urls]
+'Documentation' = 'https://docs.logikal.io/django-logikal/'
+'Release notes' = 'https://github.com/logikal-io/django-logikal/releases'
+'Issue tracker' = 'https://github.com/logikal-io/django-logikal/issues'
+'Source code' = 'https://github.com/logikal-io/django-logikal'
+
+[tool.setuptools.dynamic]
+dependencies = {file = 'requirements/core.txt'}
+
+[tool.setuptools.dynamic.optional-dependencies]
+static = {file = 'requirements/extras/static.txt'}
+dynamic = {file = 'requirements/extras/dynamic.txt'}
+bibliography = {file = 'requirements/extras/bibliography.txt'}
+
+[tool.setuptools]
+packages = [
+  'django_logikal',
+  'django_logikal.babel',
+  'django_logikal.management',
+  'django_logikal.management.commands',
+  'django_logikal.settings',
+  'django_logikal.static.django_logikal',
+  'django_logikal.static.django_logikal.fonts',
+  'django_logikal.templates',
+  'django_logikal.templates.admin',
+  'django_logikal.templates.debug_toolbar',
+  'django_logikal.templates.django_logikal',
+  'django_logikal.templates.django_logikal.email',
+]
+
+[tool.setuptools_scm]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+  'error',
+  # See https://github.com/googleapis/python-crc32c/issues/168
+  'ignore:pkg_resources is deprecated as an API:DeprecationWarning',
+  # See https://github.com/googleapis/api-common-protos/issues/121
+  "ignore:Deprecated call to `pkg_resources.declare_namespace\\('google:DeprecationWarning",
+  "ignore:Deprecated call to `pkg_resources.declare_namespace\\('sphinxcontrib:DeprecationWarning",
+  # Can be removed with the next release of django-migration-linter
+  "ignore:unclosed file .* name='/dev/null':ResourceWarning",
+]
+DJANGO_SETTINGS_MODULE = 'tests.dynamic_site.settings.testing'
+
+[tool.django_logikal]
+DJANGO_SETTINGS_MODULE = 'tests.dynamic_site.settings.local'
+
+[tool.django_logikal.translate]
+apps = ['dynamic_site']
+contact = 'Gergely Kalmár <contact@logikal.io>'
+
+[tool.mypy]
+plugins = ['mypy_django_plugin.main']
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = [
+  'antimarkdown.*',
+  'anymail.message',
+  'debug_toolbar',
+  'django_distill',
+  'docker.*',
+  'factory.*',
+  'markdownify',
+  'premailer',
+  'pybtex.*',
+  'robots.*',
+]
+
+[tool.coverage.report]
+exclude_lines = [
+  'pragma: no cover',
+  '\.\.\.',  # exclude abstract methods
+]
+
+[tool.pylint.BASIC]
+good-names = ['rf', 'to', 'cc']
+
+[tool.stormware]
+organization = 'logikal.io'
+project = 'django'

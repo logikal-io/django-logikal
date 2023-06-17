@@ -1,0 +1,1 @@
+django-distill~=3.1

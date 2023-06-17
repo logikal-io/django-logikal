@@ -1,0 +1,40 @@
+body {
+  /* Layout */
+  box-sizing: border-box;
+  margin: 0;
+  padding: 1.5rem 2rem;
+
+  /* Typography */
+  font-family: 'lato', sans-serif;
+  font-weight: normal;
+  font-size: 1.25rem; /* 20px at medium font size (16px) */
+  font-variant-numeric: lining-nums;
+  font-feature-settings: 'liga', 'kern';
+  line-height: 1.5;
+
+  /* Colors */
+  background-color: #ffffff;
+  color: #000000;
+}
+
+pre, code {
+  font-family: 'roboto-mono', monospace;
+  font-size: 1rem;
+}
+
+h1, h2 {
+  font-weight: bold;
+  text-align: left;
+}
+
+h1 {
+  font-size: 2.25rem;
+  margin-top: 2rem;
+  margin-bottom: 1.75rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-top: 2.5rem;
+  margin-bottom: 0.5rem;
+}

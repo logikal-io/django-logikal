@@ -1,0 +1,6 @@
+@media (width <= 620px) {
+  body {
+    width: 100%;
+    min-width: 300px !important;  /* stylelint-disable-line declaration-no-important */
+  }
+}

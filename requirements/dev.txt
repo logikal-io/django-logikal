@@ -1,0 +1,9 @@
+-r core.txt
+-r build.txt
+-r docs.txt
+
+flaky==3.7.0
+pytest-logikal[browser,django]==1.10.3
+pytest-freezer==0.4.6
+psutil==5.9.4
+types-psutil==5.9.5.11

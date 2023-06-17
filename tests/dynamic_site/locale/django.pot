@@ -1,0 +1,82 @@
+# Translation template for project "dynamic-site"
+# Copyright 2023 Logikal GmbH
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: dynamic-site v0.1.dev1+g8fb9899.d20230531\n"
+"Report-Msgid-Bugs-To: Gergely Kalmár <contact@logikal.io>\n"
+"POT-Creation-Date: 2023-06-01 18:38+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.12.1\n"
+
+#: tests/dynamic_site/urls.py:41
+msgid "localization/"
+msgstr ""
+
+#. Translators: This is a view test comment for translators
+#: tests/dynamic_site/urls.py:49
+#, python-format
+msgid "localized %(word)s"
+msgstr ""
+
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:42
+#: tests/dynamic_site/urls.py:50
+msgid "marvelous"
+msgstr ""
+
+#: tests/dynamic_site/settings/local.py:12
+msgid "English (United States)"
+msgstr ""
+
+#: tests/dynamic_site/settings/local.py:13
+msgid "English (United Kingdom)"
+msgstr ""
+
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:3
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:5
+msgid "Localization"
+msgstr ""
+
+#. This is a template test comment for translators
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:7
+msgid "Language & Region"
+msgstr ""
+
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:21
+msgid "Translations"
+msgstr ""
+
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:24
+#, python-format
+msgctxt "course"
+msgid "There is %(count)s cake with amazing flavors."
+msgid_plural "There are %(count)s cakes with amazing flavors."
+msgstr[0] ""
+msgstr[1] ""
+
+#. This is an ngettext template test comment for translators
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:30
+#, python-format
+msgid "%(num)d color"
+msgid_plural "%(num)d colors"
+msgstr[0] ""
+msgstr[1] ""
+
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:35
+msgid ""
+"This is a long localized text containing multiple sentences that spans "
+"more than one line in the source file and also in the message file."
+msgstr ""
+
+#. This is a long gettext template test comment for translators that spans more
+#. than one line in the source file and also in the message file
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:42
+#, python-format
+msgid "The word &ldquo;%(word)s&rdquo; has been localized."
+msgstr ""
+
