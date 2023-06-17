@@ -2,13 +2,13 @@
 {% load static %}
 
 {% block extrastyle %}{{ block.super }}
-<link rel="stylesheet" href="{% static 'django_logikal/fonts.css' %}">
-<style>
-  html[data-theme='light'],
-  :root {
-    --font-family-primary: 'lato', sans-serif;
-    --font-family-monospace: 'roboto-mono', monospace;
-    font-size: 18px;
-  }
-</style>
+  <link rel="stylesheet" href="{% static 'django_logikal/fonts.css' %}">
+  <style>
+    html[data-theme='light'],
+    :root {
+      --font-family-primary: 'lato', sans-serif;
+      --font-family-monospace: 'roboto-mono', monospace;
+      font-size: 18px;
+    }
+  </style>
 {% endblock %}

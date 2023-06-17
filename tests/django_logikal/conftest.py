@@ -1,10 +1,10 @@
+import re
 from logging import getLogger
 from subprocess import PIPE
-from time import sleep
-from typing import Iterator
+from typing import Iterator, Optional
 
 from django.urls import reverse
-from psutil import CONN_LISTEN, Popen
+from psutil import Popen
 from pytest import fixture
 from pytest_logikal.django import LiveURL
 
@@ -25,23 +25,16 @@ def live_app_url(live_url: LiveURL) -> LiveURL:
 
 
 @fixture
-def live_server_subprocess() -> Iterator[str]:
+def live_server_subprocess() -> Iterator[Optional[str]]:
     logger.info('Creating development server subprocess')
     with Popen(['run', '--noreload', '-t', '127.0.0.1:0'], text=True, stdout=PIPE) as process:
+        url = None
+
         for line in process.stdout:
-            print(line.strip())
             if 'Quit the server' in line:
                 break
-
-        # Note: this can be removed once https://code.djangoproject.com/ticket/32813 is released
-        # (make sure to also remove psutil as a dependency)
-        sleep(1)
-        logger.info('Retrieving subprocess connections')
-        address = [
-            connection for connection in process.connections()
-            if connection.status == CONN_LISTEN
-        ][0].laddr
-        url = f'http://{address.ip}:{address.port}'
+            if match := re.search('development server at (?P<url>http://[^/]+)/', line):
+                url = match.group('url')
 
         logger.info(f'Using live server URL {url}')
         yield url

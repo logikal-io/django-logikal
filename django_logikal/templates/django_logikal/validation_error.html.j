@@ -4,9 +4,9 @@
 {% block title %}HTML Validation Error{% endblock %}
 {% block description %}HTML Validation Error{% endblock %}
 {% block head %}
+  <link rel="stylesheet" href="{{ static('django_logikal/fonts.css') }}">
+  <link rel="stylesheet" href="{{ static('django_logikal/validation_error.css') }}">
   <style>
-    body { font-size: 1.25rem; }
-    pre { font-size: 1rem; }
     {{ code_styles }}
   </style>
 {% endblock %}
