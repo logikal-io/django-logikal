@@ -46,10 +46,17 @@ bibliography = {file = 'requirements/extras/bibliography.txt'}
 [tool.setuptools]
 packages = [
   'django_logikal',
+  'django_logikal.babel',
   'django_logikal.management',
   'django_logikal.management.commands',
   'django_logikal.settings',
+  'django_logikal.static.django_logikal',
+  'django_logikal.static.django_logikal.fonts',
   'django_logikal.templates',
+  'django_logikal.templates.admin',
+  'django_logikal.templates.debug_toolbar',
+  'django_logikal.templates.django_logikal',
+  'django_logikal.templates.django_logikal.email',
 ]
 
 [tool.setuptools_scm]

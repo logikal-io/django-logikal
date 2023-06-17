@@ -4,6 +4,9 @@ locals {
   backend = "gcs"
 
   providers = {
+    random = {
+      version = "~> 3.5"
+    }
     google = {
       version = "~> 4.52"
       region = "europe-west6"
