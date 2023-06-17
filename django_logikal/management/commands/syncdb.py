@@ -31,7 +31,7 @@ from django_logikal.local_data import LocalData
 
 
 class Command(BaseCommand):
-    help = __doc__
+    help = ' '.join(__doc__.splitlines()[0:4])
 
     def add_arguments(self, parser: CommandParser) -> None:
         parser.add_argument('--no-input', action='store_true', help='Do not prompt for input.')

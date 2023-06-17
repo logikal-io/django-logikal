@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 
 
 def test_toolbar(live_server_subprocess: str, browser: Browser) -> None:
-    browser.get(live_server_subprocess + reverse('dynamic_site:index'))
+    browser.get(live_server_subprocess + reverse('dynamic_site:models'))
     browser.find_element(By.ID, 'djDebugToolbarHandle').click()
 
     # Freeze undeterministic values
@@ -18,7 +18,7 @@ def test_toolbar(live_server_subprocess: str, browser: Browser) -> None:
 
     sql_panel = browser.find_element(By.ID, 'djdt-SQLPanel')
     text = sql_panel.find_element(By.TAG_NAME, 'small')
-    browser.execute_script('arguments[0].innerHTML = "1 query in 0.00ms"', text)
+    browser.execute_script('arguments[0].innerHTML = "2 queries in 0.00ms"', text)
 
     # Check toolbar
     browser.check('menu')

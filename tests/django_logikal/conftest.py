@@ -1,6 +1,6 @@
 import re
 from logging import getLogger
-from subprocess import PIPE
+from subprocess import PIPE, run
 from typing import Iterator, Optional
 
 from django.urls import reverse
@@ -37,6 +37,7 @@ def live_server_subprocess() -> Iterator[Optional[str]]:
                 url = match.group('url')
 
         logger.info(f'Using live server URL {url}')
+        run(['manage', 'syncdb', '--no-input'], check=True)  # nosec: trusted input in testing
         yield url
         logger.info(f'Terminating process {process}')
         process.terminate()
