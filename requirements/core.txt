@@ -1,0 +1,24 @@
+Django~=4.2
+django-stubs-ext~=4.2
+
+# Django utilities
+django-debug-toolbar~=4.1
+django-debug-toolbar-template-profiler~=2.1
+django-mail-panel~=4.0
+django-robots~=5.0
+
+# Databases
+psycopg~=3.1
+
+# Other utilities
+Babel~=2.12
+black~=23.1  # used for migration formatting
+termcolor~=2.2
+google-cloud-logging~=3.5
+Jinja2~=3.1
+tomli~=2.0
+
+# Development utilities
+pytest-logikal~=1.10
+Pygments~=2.14
+types-Pygments~=2.14

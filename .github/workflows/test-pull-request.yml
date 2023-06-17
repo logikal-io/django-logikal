@@ -1,0 +1,15 @@
+name: Test pull request
+on: pull_request
+
+jobs:
+  run-python-tests:
+    name: Run Python tests
+    uses: logikal-io/github-workflows/.github/workflows/run-python-tests.yml@v4
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit
+
+  run-terraform-tests:
+    name: Run Terraform tests
+    uses: logikal-io/github-workflows/.github/workflows/run-terraform-tests.yml@v4

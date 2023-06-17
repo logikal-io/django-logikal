@@ -1,0 +1,41 @@
+# Translation template for project "static-site"
+# Copyright 2023 Logikal GmbH
+msgid ""
+msgstr ""
+"Project-Id-Version: static-site v0.1.dev1+g8fb9899.d20230531\n"
+"Report-Msgid-Bugs-To: Gergely Kalmár <contact@logikal.io>\n"
+"POT-Creation-Date: 2023-06-01 11:46+0200\n"
+"PO-Revision-Date: 2023-06-01 11:46+0200\n"
+"Last-Translator: Gergely Kalmár <contact@logikal.io>\n"
+"Language: en_GB\n"
+"Language-Team: en_GB <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.12.1\n"
+
+#: tests/static_site/urls.py:13
+msgid "localization/"
+msgstr "localisation/"
+
+#: tests/static_site/settings/local.py:14
+msgid "English (United States)"
+msgstr "English (United States)"
+
+#: tests/static_site/settings/local.py:15
+msgid "English (United Kingdom)"
+msgstr "English (United Kingdom)"
+
+#: tests/static_site/templates/localization.html.j:3
+msgid "Localized Page"
+msgstr "Localised Page"
+
+#: tests/static_site/templates/localization.html.j:5
+msgid "Localized"
+msgstr "Localised"
+
+#: tests/static_site/templates/localization.html.j:6
+msgid "This sentence is localized."
+msgstr "This sentence is localised."
+
