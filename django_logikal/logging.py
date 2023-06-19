@@ -5,7 +5,6 @@ from typing import Any, Callable, Mapping, Optional, Type
 
 from django.conf import settings
 from google.cloud import logging as cloud_logging
-from stormware.google.auth import GCPAuth
 from termcolor import colored
 
 
@@ -99,6 +98,8 @@ def logging_config(
         warnings.formatwarning = ConsoleLogFormatter.warning_formatter()
 
     if cloud:
+        from stormware.google.auth import GCPAuth  # pylint: disable=import-outside-toplevel
+
         auth = GCPAuth()
         client = cloud_logging.Client(  # type: ignore[no-untyped-call]
             project=auth.project_id(),

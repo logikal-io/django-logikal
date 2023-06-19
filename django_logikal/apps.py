@@ -6,7 +6,6 @@ from django.core.checks import Error, register
 from django.db.migrations import writer
 from django.template.loader import get_template
 
-from django_logikal.bibliography import Bibliography
 from django_logikal.migrations import FormattedMigrationWriter
 
 
@@ -17,6 +16,10 @@ class DjangoLogikalConfig(AppConfig):
     def ready(self) -> None:
         # Load bibliographies
         if bibliographies := getattr(settings, 'BIBLIOGRAPHIES', None):
+            from django_logikal.bibliography import (  # pylint: disable=import-outside-toplevel
+                Bibliography,
+            )
+
             Bibliography.add_bibliographies({
                 # Note: both Django and Jinja2 templates have an origin attribute, so this is fine
                 name: get_template(path).origin.name  # type: ignore[attr-defined]
