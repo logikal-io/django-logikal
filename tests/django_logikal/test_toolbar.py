@@ -23,4 +23,5 @@ def test_toolbar(live_server_subprocess: str, browser: Browser) -> None:
     # Check toolbar
     browser.check('menu')
     browser.find_element(By.ID, 'djdt-CachePanel').click()
+    browser.find_element(By.ID, 'CachePanel').find_element(By.TAG_NAME, 'h4')  # waits for loading
     browser.check('page')

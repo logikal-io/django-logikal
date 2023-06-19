@@ -62,6 +62,7 @@ packages = [
 [tool.setuptools_scm]
 
 [tool.pytest.ini_options]
+addopts = '--ignore=static'
 filterwarnings = [
   'error',
   # See https://github.com/googleapis/python-crc32c/issues/168

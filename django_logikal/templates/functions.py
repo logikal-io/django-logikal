@@ -16,7 +16,7 @@ from django.utils.translation import get_language
 from jinja2.runtime import Context
 from jinja2.utils import pass_context
 
-from django_logikal.bibliography import Bibliography
+import django_logikal  # for type checking
 
 
 @pass_context
@@ -156,7 +156,7 @@ def now() -> datetime:
     return timezone.now()
 
 
-def bibliography(name: str) -> Bibliography:
+def bibliography(name: str) -> 'django_logikal.bibliography.Bibliography':
     """
     Return a :class:`~django_logikal.bibliography.Bibliography` instance.
 
@@ -186,4 +186,6 @@ def bibliography(name: str) -> Bibliography:
         {{ bib.references() }}
 
     """
+    from django_logikal.bibliography import Bibliography  # pylint: disable=import-outside-toplevel
+
     return Bibliography(name=name)

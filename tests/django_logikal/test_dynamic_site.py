@@ -37,7 +37,7 @@ def site_factory() -> Site:  # Note that the site is cleared for each test by py
 
 
 def test_production_settings(mocker: MockerFixture) -> None:
-    mocker.patch('django_logikal.logging.GCPAuth')
+    mocker.patch('stormware.google.auth.GCPAuth')
     cloud_logging_client = mocker.patch('django_logikal.logging.cloud_logging.Client')
     database_secrets = {
         'hostname': 'test_hostname',
