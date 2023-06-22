@@ -1,5 +1,4 @@
-import black
-import isort
+# pylint: disable=import-outside-toplevel
 from django.db.migrations.writer import MigrationWriter
 
 
@@ -17,8 +16,10 @@ class FormattedMigrationWriter(MigrationWriter):
         """
         Return a string of the nicely formatted file contents.
         """
-        from pytest_logikal.isort import get_config  # pylint: disable=import-outside-toplevel
-        from pytest_logikal.utils import get_ini_option  # pylint: disable=import-outside-toplevel
+        import black
+        import isort
+        from pytest_logikal.isort import get_config
+        from pytest_logikal.utils import get_ini_option
 
         max_line_length = get_ini_option('max_line_length')
         code = super().as_string()
