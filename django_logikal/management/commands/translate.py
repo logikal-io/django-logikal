@@ -11,8 +11,7 @@ from typing import Any, Optional, Sequence, cast
 import django
 from babel.messages.frontend import CommandLineInterface
 from django.core.management.base import BaseCommand, CommandError, CommandParser
-
-from django_logikal.pyproject import DJANGO_LOGIKAL_CONFIG, PYPROJECT
+from logikal_utils.project import PYPROJECT, tool_config
 
 TEMPLATE_HEADER = """
 # Translation template for project "PROJECT"
@@ -53,7 +52,7 @@ class Command(BaseCommand):
         logging.getLogger().handlers = []  # to avoid double logging
         logging.getLogger('babel').addFilter(remove_config_info)
 
-        default_apps = DJANGO_LOGIKAL_CONFIG.get('translate', {}).get('apps', [])
+        default_apps = tool_config('django_logikal').get('translate', {}).get('apps', [])
         if not (apps := [App(app) for app in options.get('app') or default_apps]):
             raise CommandError('At least one app name must be provided')
 
@@ -84,7 +83,7 @@ class Command(BaseCommand):
                 # Metadata
                 '--project', app.name.replace('_', '-'),
                 '--version', f'v{metadata.version(PYPROJECT["project"]["name"])}',
-                '--msgid-bugs-address', DJANGO_LOGIKAL_CONFIG['translate']['contact'],
+                '--msgid-bugs-address', tool_config('django_logikal')['translate']['contact'],
                 '--copyright-holder', PYPROJECT['project']['authors'][0]['name'],
                 '--header-comment', TEMPLATE_HEADER,
                 # Input and output file

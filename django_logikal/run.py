@@ -7,9 +7,9 @@ from os import environ
 from typing import Sequence
 
 from django.core.management import execute_from_command_line
+from logikal_utils.project import tool_config
 
 from django_logikal.env import set_option
-from django_logikal.pyproject import DJANGO_LOGIKAL_CONFIG
 
 
 def main(args: Sequence[str] = tuple(sys.argv[1:])) -> int:
@@ -30,6 +30,9 @@ def main(args: Sequence[str] = tuple(sys.argv[1:])) -> int:
 
     sys.path.insert(0, '.')
     set_option('local_run')
-    environ.setdefault('DJANGO_SETTINGS_MODULE', DJANGO_LOGIKAL_CONFIG['DJANGO_SETTINGS_MODULE'])
+    environ.setdefault(
+        'DJANGO_SETTINGS_MODULE',
+        tool_config('django_logikal')['DJANGO_SETTINGS_MODULE'],
+    )
     execute_from_command_line(['manage', 'runserver'] + manage_args)
     return 0

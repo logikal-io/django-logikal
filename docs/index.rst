@@ -10,6 +10,7 @@
     views
     urls
     emails
+    migrations
     commands
     development
     license
@@ -31,8 +32,10 @@ mighty utilities:
 - A greatly extended :ref:`Jinja template backend <templates:Templates>`
 - :ref:`Paranoid mode <middleware:Paranoid Mode>` to ensure private pages don't become public
   accidentally
+- :ref:`HTML validation <middleware:HTML Validation>` during development and testing
 - :ref:`Views <views:Views>`, :ref:`URLs and paths <urls:URLs & Paths>` for common utilities
 - Simple :ref:`email sending <emails:Emails>`
+- An improved :ref:`migration writer <migrations:Migrations>` for nicely formatted migration files
 - :ref:`General commands <commands:General Commands>` for invoking management commands and starting
   a development server
 - :ref:`Management commands <commands:Management Commands>` for working with synthetic data for

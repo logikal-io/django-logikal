@@ -18,10 +18,12 @@ All settings modules include the following:
 - `PostgreSQL <https://www.postgresql.org/>`_ as the default database engine (including for local
   development and testing)
 - An :ref:`improved Jinja template backend <templates:Templates>`
-- HTML validation support (via `v.Nu <https://validator.github.io/validator/>`_)
+- :ref:`HTML validation <middleware:HTML Validation>` support (via `v.Nu
+  <https://validator.github.io/validator/>`_)
 - Authentication support (via :mod:`django.contrib.auth`)
 - Sitemap support (via :mod:`django.contrib.sitemaps`)
 - Robots exclusion support (via :doc:`django-robots <django-robots:index>`)
+- The improved :ref:`migration writer <migrations:Migrations>`
 - The `Django migration linter <https://github.com/3YOURMIND/django-migration-linter>`_
 - The `Django debug toolbar <https://django-debug-toolbar.readthedocs.io/en/latest/>`_
 

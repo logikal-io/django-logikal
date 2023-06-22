@@ -22,7 +22,6 @@ class LoginRequiredByDefaultMiddleware(Middleware):
 
     .. note:: All :ref:`standard settings modules <settings:Settings>` include this middleware by
         default.
-
     """
     @staticmethod
     def process_view(

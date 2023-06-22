@@ -10,3 +10,7 @@ therefore we provide a middleware that makes all pages require login except when
 explicitly marked as public.
 
 .. autoclass:: django_logikal.security.LoginRequiredByDefaultMiddleware()
+
+HTML Validation
+---------------
+.. autoclass:: django_logikal.validation.ValidationMiddleware()

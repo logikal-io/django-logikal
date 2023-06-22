@@ -8,7 +8,6 @@ from django.utils.safestring import mark_safe
 from pygments import highlight
 from pygments.formatters.html import HtmlFormatter
 from pygments.lexers.html import HtmlLexer
-from pytest_logikal.validator import Validator
 
 from django_logikal.middleware import Middleware
 
@@ -16,7 +15,14 @@ logger = getLogger(__name__)
 
 
 class ValidationMiddleware(Middleware):
+    """
+    Validate HTML responses for all requests.
+
+    .. note:: Requires :ref:`pytest-logikal <pytest-logikal:index:Installation>` to be installed.
+    """
     def __init__(self, *args: Any, **kwargs: Any):
+        from pytest_logikal.validator import Validator  # pylint: disable=import-outside-toplevel
+
         super().__init__(*args, **kwargs)
         self._validator = Validator()
 
