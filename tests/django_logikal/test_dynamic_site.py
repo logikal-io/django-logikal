@@ -121,7 +121,7 @@ def test_translate(tmp_path: Path) -> None:
 
 
 def test_translate_missing_app(mocker: MockerFixture) -> None:
-    mocker.patch('django_logikal.management.commands.translate.DJANGO_LOGIKAL_CONFIG', {})
+    mocker.patch('django_logikal.management.commands.translate.tool_config', return_value={})
     with raises(CommandError, match='app name must be provided'):
         translate.Command().handle()
 

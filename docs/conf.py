@@ -2,13 +2,12 @@ import os
 import sys
 from importlib.metadata import version as pkg_version
 
+from logikal_utils.project import tool_config
 from sphinx.addnodes import desc_signature, document
 from sphinx.application import Sphinx
 
-from django_logikal.pyproject import DJANGO_LOGIKAL_CONFIG
-
 sys.path.insert(0, '.')
-os.environ['DJANGO_SETTINGS_MODULE'] = DJANGO_LOGIKAL_CONFIG['DJANGO_SETTINGS_MODULE']
+os.environ['DJANGO_SETTINGS_MODULE'] = tool_config('django_logikal')['DJANGO_SETTINGS_MODULE']
 
 
 def strip_patch(package: str) -> str:
@@ -34,6 +33,9 @@ intersphinx_mapping = {
     'django-anymail': (f'https://anymail.dev/en/v{pkg_version("django-anymail")}/', None),
     'factory-boy': (f'https://factoryboy.readthedocs.io/en/{pkg_version("factory-boy")}/', None),
     'stormware': (f'https://docs.logikal.io/stormware/{pkg_version("stormware")}/', None),
+    'pytest-logikal': (
+        f'https://docs.logikal.io/pytest-logikal/{pkg_version("pytest-logikal")}/', None,
+    ),
 }
 
 nitpick_ignore = [

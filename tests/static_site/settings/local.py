@@ -1,6 +1,6 @@
 # pylint: disable=wildcard-import, unused-wildcard-import
 from django.utils.translation import gettext_lazy as _
-from pytest_logikal.docker import Service
+from logikal_utils.docker import Service
 
 from django_logikal.settings.static_site import *
 

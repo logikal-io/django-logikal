@@ -4,7 +4,7 @@ from importlib.util import find_spec
 from pathlib import Path
 
 from django.utils.translation import gettext_lazy
-from pytest_logikal.docker import Service
+from logikal_utils.docker import Service
 
 from django_logikal.env import get_option, option_is_set
 from django_logikal.logging import logging_config

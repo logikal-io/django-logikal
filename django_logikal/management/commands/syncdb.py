@@ -3,6 +3,7 @@ Synchronize the local database.
 
 Clear the public schema, apply migrations and insert local application data.
 
+.. note:: Requires :ref:`pytest-logikal[django] <pytest-logikal:index:django>` to be installed.
 .. note:: Local data must be specified in the ``local_data.py`` submodule of a given application in
     classes inheriting from :class:`~django_logikal.local_data.LocalData`.
 
@@ -25,7 +26,6 @@ from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError, CommandParser
 from django.db import connections
 from factory import random as factory_random
-from pytest_logikal.django import DEFAULT_RANDOM_SEED
 
 from django_logikal.local_data import LocalData
 
@@ -66,7 +66,9 @@ class Command(BaseCommand):
         call_command('migrate', **options)
 
         # Insert local data
-        factory_random.reseed_random(DEFAULT_RANDOM_SEED)  # for deterministic data
+        from pytest_logikal import django  # pylint: disable=import-outside-toplevel
+
+        factory_random.reseed_random(django.DEFAULT_RANDOM_SEED)  # for deterministic data
         for app in apps.get_app_configs():
             with suppress(ImportError):
                 if (module := getattr(app, 'module', None)):
