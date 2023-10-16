@@ -3,7 +3,7 @@
 -r docs.txt
 
 flaky==3.7.0
-pytest-logikal[browser,django]==1.10.4
-pytest-freezer==0.4.6
+pytest-logikal[browser,django]==1.10.5
+pytest-freezer==0.4.8
 psutil==5.9.5
-types-psutil==5.9.5.15
+types-psutil==5.9.5.16

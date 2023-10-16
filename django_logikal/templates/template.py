@@ -48,7 +48,7 @@ class Template:
     ) -> URLPattern:
         self._add_path_priority(name, priority)
         view = self._view(name, extra_context=extra_context, public=public)
-        return path(route=route, view=view, name=name, **kwargs)  # type: ignore[arg-type]
+        return path(route=route, view=view, name=name, **kwargs)
 
     def static_path(
         self,

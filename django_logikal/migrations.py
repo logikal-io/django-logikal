@@ -23,7 +23,7 @@ class FormattedMigrationWriter(MigrationWriter):
 
         max_line_length = get_ini_option('max_line_length')
         code = super().as_string()
-        code = black.format_str(code, mode=black.Mode(  # type: ignore[attr-defined]
+        code = black.format_str(code, mode=black.Mode(
             line_length=max_line_length,
             string_normalization=False,
             preview=True,  # breaks up long strings, can be removed with next major release

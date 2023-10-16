@@ -43,6 +43,7 @@ class RobotsRuleFactory(DjangoModelFactory):  # type: ignore[misc]
 
     class Meta:
         model = robots.models.Rule
+        skip_postgeneration_save = True
 
     @post_generation  # type: ignore[misc]
     def disallowed(

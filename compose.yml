@@ -8,16 +8,16 @@ services:
   postgres: &postgres
     image: postgres:14.4
     environment:
-      POSTGRES_DB: local
-      POSTGRES_USER: local
-      POSTGRES_PASSWORD: local
+      POSTGRES_DB: dev
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
     ports: [{target: 5432}]
     volumes:
       - type: volume
         source: postgres_data
         target: /var/lib/postgresql/data
     healthcheck:
-      test: pg_isready --username local --host 127.0.0.1
+      test: pg_isready --username dev --host 127.0.0.1
       interval: 3s
       timeout: 3s
       retries: 5

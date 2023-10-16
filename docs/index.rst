@@ -117,7 +117,10 @@ Once installed, you can simply import the appropriate :ref:`standard settings mo
 
 .. code-block:: python
 
-    from django_logikal.settings.dynamic_site import *
+    from django_logikal.settings import Settings
+    from django_logikal.settings.dynamic_site.dev import DevSettings
+
+    Settings(globals()).update(DevSettings)
 
 That's it! The included settings modules automatically activate all relevant features, so once your
 project-specific settings and URL patterns are defined, you can start developing right away:
