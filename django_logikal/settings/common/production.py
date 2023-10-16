@@ -7,9 +7,6 @@ from django_logikal.settings import Settings, SettingsUpdate
 
 
 class CommonProductionSettings(SettingsUpdate):
-    # Logging
-    LOGGING = logging_config(console=False, cloud=True)
-
     # Core settings
     DEBUG = False
     CONN_MAX_AGE = 1 * 60 * 60  # 1 hour
@@ -29,6 +26,8 @@ class CommonProductionSettings(SettingsUpdate):
 
     @staticmethod
     def apply(settings: Settings) -> None:
+        settings['LOGGING'] = logging_config(console=False, cloud=True)
+
         with SecretManager() as secrets:
             settings['SECRET_KEY'] = secrets[settings['SECRET_KEY_PATH']]
             database_secrets = json.loads(secrets[settings['DATABASE_SECRETS_PATH']])
