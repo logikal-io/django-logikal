@@ -6,7 +6,7 @@ from django.contrib.sitemaps import Sitemap
 from django.contrib.sitemaps.views import sitemap
 from django.urls import URLPattern, URLResolver, include, path
 
-from django_logikal.env import is_local, option_is_set
+from django_logikal.env import is_dev, option_is_set
 from django_logikal.views import ERROR_HANDLERS, public
 
 URLType = Union[URLResolver, URLPattern]
@@ -66,7 +66,7 @@ def utility_paths(
         universal_path = distill_path
     else:
         paths.append(path('admin/', admin_urls()))
-    if is_local():
+    if is_dev():
         paths.append(path('error/', error_urls()))
     if option_is_set('toolbar'):  # pragma: no cover, tested in subprocess
         paths.append(universal_path('__debug__/', debug_toolbar_urls()))

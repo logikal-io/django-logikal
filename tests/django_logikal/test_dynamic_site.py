@@ -36,6 +36,15 @@ def site_factory() -> Site:  # Note that the site is cleared for each test by py
     return Site.objects.update_or_create(id=1, defaults=SITE)[0]
 
 
+def test_dev_settings() -> None:
+    secret_key = 'dev'  # nosec: only used for this test
+    dev = import_module('tests.dynamic_site.settings.dev')
+    assert dev.SECRET_KEY == secret_key
+    assert dev.DATABASES['default']['HOST'] == '127.0.0.1'
+    assert 'django_logikal.validation.ValidationMiddleware' in dev.MIDDLEWARE
+    assert 'console.EmailBackend' in dev.EMAIL_BACKEND
+
+
 def test_production_settings(mocker: MockerFixture) -> None:
     mocker.patch('stormware.google.auth.GCPAuth')
     cloud_logging_client = mocker.patch('django_logikal.logging.cloud_logging.Client')

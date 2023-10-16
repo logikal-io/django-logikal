@@ -29,7 +29,7 @@ def main(args: Sequence[str] = tuple(sys.argv[1:])) -> int:
         set_option('send_emails')
 
     sys.path.insert(0, '.')
-    set_option('local_run')
+    set_option('dev_run')
     environ.setdefault(
         'DJANGO_SETTINGS_MODULE',
         tool_config('django_logikal')['DJANGO_SETTINGS_MODULE'],

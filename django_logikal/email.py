@@ -21,8 +21,8 @@ class Email:
     .. note:: Requires the :ref:`dynamic extra <index:Dynamic Sites>` and a valid :doc:`Anymail
         <django-anymail:index>` configuration.
 
-    .. tip:: We recommend using the standard :data:`~django_logikal.settings.dynamic_site`
-        settings module, which configures the :doc:`Amazon SES Anymail ESP
+    .. tip:: We recommend using the standard :ref:`dynamic site settings <settings:Dynamic Site
+        Settings>` module, which configures the :doc:`Amazon SES Anymail ESP
         <django-anymail:esps/amazon_ses>` with the standard :ref:`Stormware AWS authentication
         <stormware:auth:Amazon Web Services>` process.
 

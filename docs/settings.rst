@@ -8,7 +8,10 @@ a highly improved Django experience:
 
 .. code-block:: python
 
-    from django_logikal.settings.dynamic_site import *
+    from django_logikal.settings import Settings
+    from django_logikal.settings.dynamic_site.dev import DevSettings
+
+    Settings(globals()).update(DevSettings)
 
 Common Features
 ---------------
@@ -27,54 +30,66 @@ All settings modules include the following:
 - The `Django migration linter <https://github.com/3YOURMIND/django-migration-linter>`_
 - The `Django debug toolbar <https://django-debug-toolbar.readthedocs.io/en/latest/>`_
 
-Local Development
------------------
-.. py:data:: django_logikal.settings.dynamic_site
-    :noindexentry:
+Settings Updates
+----------------
+Standard settings modules are provided as settings updates, which need to be applied to a
+:class:`~django_logikal.settings.Settings` instance:
 
-    Standard local settings for dynamic sites.
+.. autoclass:: django_logikal.settings.Settings
 
-    .. note:: Requires the :ref:`dynamic extra <index:Dynamic Sites>`.
+You can specify your own settings updates by inheriting from the
+:class:`~django_logikal.settings.SettingsUpdate` class:
 
-    Includes the following:
+.. autoclass:: django_logikal.settings.SettingsUpdate
 
-    - :ref:`Email sending <emails:Emails>` support (via :doc:`Anymail <django-anymail:index>` and
-      `Amazon Simple Email Service <https://aws.amazon.com/ses/>`_)
-    - The :ref:`paranoid middleware <middleware:Paranoid Mode>`
+.. tip:: Static configuration options can be simply specified as class attributes, but it is also
+    possible to dynamically modify the settings by overriding the
+    :meth:`~django_logikal.settings.SettingsUpdate.apply` class method as follows:
 
-.. py:data:: django_logikal.settings.static_site
-    :noindexentry:
+    .. code-block:: python
 
-    Standard local settings for static sites.
+        from django_logikal.settings import Settings, SettingsUpdate
 
-    .. note:: Requires the :ref:`static extra <index:Static Sites>`.
+        class AppSettings(SettingsUpdate):
+            ROOT_URLCONF = 'app.website.urls'
 
-    Includes the following:
+            @staticmethod
+            def apply(settings: Settings) -> None:
+                settings['INSTALLED_APPS'] += ['app.website']
 
-    - Static site generation support (via `django-distill <https://django-distill.com/>`_)
+.. tip:: Note that settings updates can be chained, which makes combining the standard settings
+    updates with your own custom settings updates simple and straightforward:
 
-Testing
--------
-.. py:data:: django_logikal.settings.testing
-    :noindexentry:
+    .. code-block:: python
 
-    Standard settings for testing dynamic or static sites.
+        from django_logikal.settings import Settings
+        from django_logikal.settings.dynamic_site.dev import DevSettings
+        from app.settings.app import AppSettings
 
-    .. note:: You must import the appropriate local settings file before importing this module:
+        Settings(globals()).update(DevSettings).update(AppSettings)
 
-        .. code-block:: python
+Dynamic Site Settings
+---------------------
+Provides :ref:`email sending <emails:Emails>` support (via :doc:`Anymail <django-anymail:index>`
+and `Amazon Simple Email Service <https://aws.amazon.com/ses/>`_) and the :ref:`paranoid middleware
+<middleware:Paranoid Mode>`.
 
-            from project.settings.local import *
-            from django_logikal.settings.testing import *
+.. note:: Requires the :ref:`dynamic extra <index:Dynamic Sites>`.
 
-Production
-----------
-.. py:data:: django_logikal.settings.production
-    :noindexentry:
+.. automodule:: django_logikal.settings.dynamic_site.dev
+    :exclude-members: apply
+.. automodule:: django_logikal.settings.dynamic_site.testing
+    :exclude-members: apply
+.. automodule:: django_logikal.settings.dynamic_site.production
+    :exclude-members: apply
 
-    Standard production settings for dynamic sites.
+Static Site Settings
+--------------------
+Provides static site generation support (via `django-distill <https://django-distill.com/>`_).
 
-    .. note:: Secrets will be loaded from Google Secret Manager during import time. In particular,
-        the secret key is loaded from ``django-secret-key``, and the database configuration is
-        loaded from ``django-database-secrets`` (which must be a JSON string with keys
-        ``hostname``, ``port``, ``database``, ``username`` and ``password``).
+.. note:: Requires the :ref:`static extra <index:Static Sites>`.
+
+.. automodule:: django_logikal.settings.static_site.dev
+    :exclude-members: apply
+.. automodule:: django_logikal.settings.static_site.testing
+    :exclude-members: apply

@@ -15,5 +15,5 @@ def option_is_set(option: str) -> bool:
     return get_option(option) == '1'
 
 
-def is_local() -> bool:
-    return option_is_set('local_run') or option_is_set('testing')
+def is_dev() -> bool:
+    return option_is_set('dev_run') or option_is_set('testing')

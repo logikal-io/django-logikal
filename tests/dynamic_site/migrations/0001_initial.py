@@ -7,6 +7,7 @@ import django.contrib.auth.validators
 import django.db.models.functions.text
 import django.utils.timezone
 from django.db import migrations, models
+from django_migration_linter import IgnoreMigration
 
 
 class Migration(migrations.Migration):
@@ -17,6 +18,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        IgnoreMigration(),
         migrations.CreateModel(
             name="Project",
             fields=[

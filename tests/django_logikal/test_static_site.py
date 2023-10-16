@@ -6,14 +6,14 @@ from subprocess import run
 from pytest import mark
 from pytest_logikal.browser import Browser
 
-from django_logikal.settings.static_site import DISTILL_DIR
+from django_logikal.settings.static_site.testing import TestingSettings
 
 
 @mark.django_db
 def test_generate(tmp_path: Path, browser: Browser) -> None:
-    output_path = tmp_path / DISTILL_DIR.name
+    output_path = tmp_path / TestingSettings.DISTILL_DIR.name
     static_path = output_path / 'static'
-    settings = 'tests.static_site.settings.local'
+    settings = 'tests.static_site.settings.dev'
     command = ['manage', 'migrate', '--settings', settings]
     run(command, check=True)  # nosec: trusted input in testing
     command = ['manage', 'generate', '--no-input', '--settings', settings, str(output_path)]

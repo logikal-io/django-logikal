@@ -50,6 +50,9 @@ packages = [
   'django_logikal.management',
   'django_logikal.management.commands',
   'django_logikal.settings',
+  'django_logikal.settings.common',
+  'django_logikal.settings.dynamic_site',
+  'django_logikal.settings.static_site',
   'django_logikal.static.django_logikal',
   'django_logikal.static.django_logikal.fonts',
   'django_logikal.templates',
@@ -76,7 +79,7 @@ filterwarnings = [
 DJANGO_SETTINGS_MODULE = 'tests.dynamic_site.settings.testing'
 
 [tool.django_logikal]
-DJANGO_SETTINGS_MODULE = 'tests.dynamic_site.settings.local'
+DJANGO_SETTINGS_MODULE = 'tests.dynamic_site.settings.dev'
 
 [tool.django_logikal.translate]
 apps = ['dynamic_site']
@@ -92,6 +95,7 @@ module = [
   'anymail.message',
   'debug_toolbar',
   'django_distill',
+  'django_migration_linter',
   'docker.*',
   'factory.*',
   'markdownify',
