@@ -27,7 +27,10 @@ def live_app_url(live_url: LiveURL) -> LiveURL:
 @fixture
 def live_server_subprocess() -> Iterator[Optional[str]]:
     logger.info('Creating development server subprocess')
-    with Popen(['run', '--noreload', '-t', '127.0.0.1:0'], text=True, stdout=PIPE) as process:
+    command = [
+        'run', '--noreload', '--settings', 'tests.dynamic_site.settings.dev', '-t', '127.0.0.1:0',
+    ]
+    with Popen(command, text=True, stdout=PIPE) as process:
         url = None
 
         for line in process.stdout:

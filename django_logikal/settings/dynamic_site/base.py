@@ -9,6 +9,7 @@ from django_logikal.settings.common.base import CommonBaseSettings
 class BaseSettings(CommonBaseSettings):
     MIDDLEWARE = [
         'django.middleware.security.SecurityMiddleware',  # required for HTTPS redirection & others
+        'whitenoise.middleware.WhiteNoiseMiddleware',  # static file serving
         'django.contrib.sessions.middleware.SessionMiddleware',  # required by Django admin
         'django.middleware.locale.LocaleMiddleware',  # required for localization
         'django.middleware.common.CommonMiddleware',  # performs URL rewriting and sets headers
@@ -46,6 +47,12 @@ class BaseSettings(CommonBaseSettings):
         'REQUESTS_TIMEOUT': 10,  # default: 30s
         'AMAZON_SES_SESSION_PARAMS': {'profile_name': AWSAuth().profile()},
     }
+
+    # Static files
+    STORAGES = {**CommonBaseSettings.STORAGES, **{
+        'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage'},
+    }}
+    WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
     @staticmethod
     def apply(settings: Settings) -> None:
