@@ -58,8 +58,8 @@ def test_production_settings(mocker: MockerFixture) -> None:
     secret_key = 'production'  # nosec: only used for this test
     secret_manager = mocker.patch('stormware.google.secrets.SecretManager')
     secret_manager.return_value.__enter__.return_value = {
-        'django-secret-key': secret_key,
-        'django-database-secrets': json.dumps(database_secrets),
+        'django-logikal-website-secret-key': secret_key,
+        'django-logikal-website-database-secrets': json.dumps(database_secrets),
     }
     production = import_module('tests.dynamic_site.settings.production')
     assert production.SECRET_KEY == secret_key
