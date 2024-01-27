@@ -2,11 +2,11 @@
 {% load static %}
 
 {% block css %}{{ block.super }}
-<link rel="stylesheet" href="{% static 'django_logikal/fonts.css' %}">
-<style>
-  :root {
-    --djdt-font-family-primary: 'lato', sans-serif;
-    --djdt-font-family-monospace: 'roboto-mono', monospace;
-  }
-</style>
+  <link rel="stylesheet" href="{% static 'django_logikal/fonts.css' %}">
+  <style nonce="debug-toolbar">
+    :root {
+      --djdt-font-family-primary: 'lato', sans-serif;
+      --djdt-font-family-monospace: 'roboto-mono', monospace;
+    }
+  </style>
 {% endblock %}

@@ -26,4 +26,10 @@
       {%- endfor +%}
     </li>
   </ul>
+
+  {% script %}
+    <script>
+      let test = 42;
+    </script>
+  {% endscript %}
 {% endblock %}

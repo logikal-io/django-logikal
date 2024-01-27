@@ -27,6 +27,7 @@ class JinjaTemplates(Jinja2):
         # params['OPTIONS'].setdefault('indent_blocks', True)
         params['OPTIONS'].setdefault('extensions', [
             'jinja2.ext.i18n',
+            'csp.extensions.NoncedScript',
             'django_logikal.templates.extensions.LanguageExtension',
             'django_logikal.templates.extensions.TimeZoneExtension',
         ])

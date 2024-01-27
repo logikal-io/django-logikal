@@ -15,7 +15,7 @@ resource "random_password" "website_secret_key" {
 resource "google_secret_manager_secret" "website_secret_key" {
   secret_id = "django-logikal-website-secret-key"
   replication {
-    automatic = true
+    auto {}
   }
 
   depends_on = [google_project_service.secret_manager]

@@ -176,6 +176,10 @@ def test_index_head(live_server: LiveServer, client: Client) -> None:
     assert f'<meta name="description" content="{description}">' in source
     assert '<title>Index Page | Logikal</title>' in source
 
+    # Content security policy
+    assert "default-src 'self' 'nonce-" in response.headers['Content-Security-Policy']
+    assert re.search('<script nonce="[^"]+">let test = 42;</script>', source)
+
 
 def test_index(live_server: LiveServer, browser: Browser) -> None:
     browser.get(live_server.url)

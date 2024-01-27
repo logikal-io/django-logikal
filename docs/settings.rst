@@ -71,8 +71,9 @@ You can specify your own settings updates by inheriting from the
 Dynamic Site Settings
 ---------------------
 Provides :ref:`email sending <emails:Emails>` support (via :doc:`Anymail <django-anymail:index>`
-and `Amazon Simple Email Service <https://aws.amazon.com/ses/>`_) and the :ref:`paranoid middleware
-<middleware:Paranoid Mode>`.
+and `Amazon Simple Email Service <https://aws.amazon.com/ses/>`_), the :ref:`paranoid middleware
+<middleware:Paranoid Mode>` and a sensible content security policy (via :doc:`django-csp
+<django-csp:index>`).
 
 .. note:: Requires the :ref:`dynamic extra <index:Dynamic Sites>`.
 

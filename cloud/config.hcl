@@ -5,18 +5,18 @@ locals {
 
   providers = {
     random = {
-      version = "~> 3.5"
+      version = "~> 3.6"
     }
     google = {
-      version = "~> 4.52"
+      version = "~> 5.9"
       region = "europe-west6"
     }
     aws = {
-      version = "~> 4.41"
+      version = "~> 5.31"
       region = "eu-central-2"
     }
     dnsimple = {
-      version = "~> 0.14"
+      version = "~> 1.3"
     }
   }
 }
