@@ -19,11 +19,15 @@ class BaseSettings(CommonBaseSettings):
         'django.contrib.messages.middleware.MessageMiddleware',  # required by Django admin
         'django.contrib.sites.middleware.CurrentSiteMiddleware',  # adds site attribute to requests
         'django.middleware.clickjacking.XFrameOptionsMiddleware',  # defense against clickjacking
+        'csp.middleware.CSPMiddleware',  # adds the Content-Security-Policy header
     ]
 
     # Security
     SECURE_REFERRER_POLICY = ['same-origin', 'origin-when-cross-origin']
     SESSION_COOKIE_AGE = 7 * 24 * 60 * 60  # 7 days (default: 14 days)
+    CSP_DEFAULT_SRC = "'self'"  # the single quotes are important
+    CSP_BLOCK_ALL_MIXED_CONTENT = True
+    CSP_INCLUDE_NONCE_IN = ['default-src']
 
     # Internationalization
     LANGUAGE_COOKIE_NAME = 'language'

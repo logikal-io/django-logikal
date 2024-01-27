@@ -18,14 +18,11 @@ class FormattedMigrationWriter(MigrationWriter):
         """
         import black
         import isort
-        from pytest_logikal.isort import get_config
+        from pytest_logikal.black import get_mode as black_mode
+        from pytest_logikal.isort import get_config as isort_config
         from pytest_logikal.utils import get_ini_option
 
         max_line_length = get_ini_option('max_line_length')
         code = super().as_string()
-        code = black.format_str(code, mode=black.Mode(
-            line_length=max_line_length,
-            string_normalization=False,
-            preview=True,  # breaks up long strings, can be removed with next major release
-        ))
-        return isort.api.sort_code_string(code, **get_config(max_line_length=max_line_length))
+        code = black.format_str(code, mode=black_mode(max_line_length))
+        return isort.api.sort_code_string(code, **isort_config(max_line_length=max_line_length))

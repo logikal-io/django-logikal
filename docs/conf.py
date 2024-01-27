@@ -31,6 +31,7 @@ intersphinx_mapping = {
     'jinja2': (f'https://jinja.palletsprojects.com/en/{strip_patch("jinja2")}.x/', None),
     'django-robots': ('https://django-robots.readthedocs.io/en/latest/', None),
     'django-anymail': (f'https://anymail.dev/en/v{pkg_version("django-anymail")}/', None),
+    'django-csp': ('https://django-csp.readthedocs.io/en/latest/', None),
     'factory-boy': (f'https://factoryboy.readthedocs.io/en/{pkg_version("factory-boy")}/', None),
     'stormware': (f'https://docs.logikal.io/stormware/{pkg_version("stormware")}/', None),
     'pytest-logikal': (

@@ -3,7 +3,7 @@
 
 {% block extrastyle %}{{ block.super }}
   <link rel="stylesheet" href="{% static 'django_logikal/fonts.css' %}">
-  <style>
+  <style nonce="{{ request.csp_nonce }}">
     html[data-theme='light'],
     :root {
       --font-family-primary: 'lato', sans-serif;
