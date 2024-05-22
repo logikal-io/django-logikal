@@ -4,7 +4,7 @@ from pathlib import Path
 from django.test import RequestFactory
 from django.urls import ResolverMatch
 from django.urls.exceptions import NoReverseMatch
-from freezegun.api import FakeDatetime, FrozenDateTimeFactory  # type: ignore[attr-defined]
+from freezegun.api import FakeDatetime, FrozenDateTimeFactory
 from pytest import raises
 from pytest_mock import MockerFixture
 

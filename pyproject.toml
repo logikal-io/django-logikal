@@ -85,6 +85,9 @@ DJANGO_SETTINGS_MODULE = 'tests.dynamic_site.settings.dev'
 apps = ['dynamic_site']
 contact = 'Gergely Kalmár <contact@logikal.io>'
 
+[tool.browser.versions]
+chrome = '124.0.6367.207'
+
 [tool.mypy]
 plugins = ['mypy_django_plugin.main']
 
