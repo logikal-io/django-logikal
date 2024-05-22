@@ -24,9 +24,9 @@ class CommonDevSettings(SettingsUpdate):
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'HOST': os.getenv('DJANGO_DATABASE_HOST', '127.0.0.1'),
-            'PORT': os.getenv(
-                'DJANGO_DATABASE_PORT',
-                Service('postgres').container_port('5432/tcp'),
+            'PORT': (
+                os.getenv('DJANGO_DATABASE_PORT')
+                or Service('postgres').container_port('5432/tcp')
             ),
             'NAME': os.getenv('DJANGO_DATABASE_NAME', 'dev'),
             'USER': os.getenv('DJANGO_DATABASE_USER', 'dev'),
