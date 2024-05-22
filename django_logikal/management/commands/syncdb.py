@@ -39,7 +39,7 @@ class Command(BaseCommand):
     def handle(self, *_args: Any, **options: Any) -> None:
         connection = connections['default']
         database = connection.settings_dict
-        if database['HOST'] != '127.0.0.1':
+        if database['HOST'] not in ('127.0.0.1', 'postgres'):
             raise CommandError('Only the local database can be synchronized')
 
         database_url = f'{database["HOST"]}:{database["PORT"]}/{database["NAME"]}'
