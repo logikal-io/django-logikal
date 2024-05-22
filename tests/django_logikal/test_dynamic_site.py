@@ -14,7 +14,7 @@ from django.urls import reverse
 from pytest import mark, raises
 from pytest_django.live_server_helper import LiveServer
 from pytest_factoryboy import register
-from pytest_logikal.browser import Browser
+from pytest_logikal.browser import Browser, scenarios, set_browser
 from pytest_logikal.django import LiveURL, all_languages
 from pytest_mock import MockerFixture
 
@@ -181,17 +181,20 @@ def test_index_head(live_server: LiveServer, client: Client) -> None:
     assert re.search('<script nonce="[^"]+">let test = 42;</script>', source)
 
 
+@set_browser(scenarios.desktop)
 def test_index(live_server: LiveServer, browser: Browser) -> None:
     browser.get(live_server.url)
     browser.check()
 
 
 @all_languages()
+@set_browser(scenarios.desktop)
 def test_localization(language: str, live_url: LiveURL, browser: Browser) -> None:
     browser.get(live_url('dynamic_site_localized:localization'))
     browser.check(language)
 
 
+@set_browser(scenarios.desktop)
 def test_jinja(live_app_url: LiveURL, browser: Browser) -> None:
     browser.get(live_app_url('jinja') + '?next=/internal/')
     browser.check()
@@ -203,6 +206,7 @@ def test_internal(live_app_url: LiveURL, client: Client) -> None:
     assert response.url == f'{reverse("admin:login")}?next={app_url("internal")}'  # type: ignore
 
 
+@set_browser(scenarios.desktop)
 def test_invalid_html(live_app_url: LiveURL, browser: Browser, client: Client) -> None:
     response = client.get(live_app_url('invalid-html'))
     source = response.content.decode()
@@ -214,6 +218,7 @@ def test_invalid_html(live_app_url: LiveURL, browser: Browser, client: Client) -
     browser.check()
 
 
+@set_browser(scenarios.desktop)
 def test_models(live_app_url: LiveURL, browser: Browser) -> None:
     local_data.ProjectData.insert()
     browser.get(live_app_url('models'))
@@ -258,6 +263,7 @@ def test_email(live_app_url: LiveURL, client: Client, mailoutbox: List[AnymailMe
 # Looks like input box corners in the admin login page are rendered non-deterministically, which
 # causes flakiness – super weird
 @mark.flaky(max_runs=3)
+@set_browser(scenarios.desktop)
 def test_admin(
     live_url: LiveURL, browser: Browser, user: User, staff_user: User, super_user: User,
 ) -> None:
@@ -314,6 +320,7 @@ def test_robots(
     assert '\nSitemap: http://logikal.io/sitemap.xml\n' in source
 
 
+@set_browser(scenarios.desktop)
 def test_error_pages(live_url: LiveURL, client: Client, browser: Browser) -> None:
     response_error_codes = {400: 500, 403: 404, 404: 404, 500: 500}
     for code in ERROR_HANDLERS:

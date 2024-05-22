@@ -6,5 +6,5 @@ stormware[amazon,google]~=1.2
 
 # Emails
 antimarkdown~=1.0
-django-anymail[amazon-ses]~=10.2
+django-anymail[amazon-ses]~=10.3
 premailer~=3.10

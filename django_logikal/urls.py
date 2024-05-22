@@ -47,7 +47,7 @@ def debug_toolbar_urls() -> IncludeType:  # pragma: no cover, tested in subproce
 
 
 def utility_paths(
-    sitemaps: Optional[Mapping[str, Union[Sitemap[Any], Type[Sitemap[Any]]]]],
+    sitemaps: Optional[Mapping[str, Union[Sitemap[Any], Type[Sitemap[Any]]]]] = None,
     static: bool = False,
 ) -> List[URLType]:
     """

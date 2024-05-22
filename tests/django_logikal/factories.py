@@ -53,7 +53,7 @@ class RobotsRuleFactory(DjangoModelFactory):  # type: ignore[misc]
         **_kwargs: Any,
     ) -> None:
         for url in extracted:
-            self.disallowed.add(url)  # pylint: disable=no-member
+            self.disallowed.add(url)
 
     @post_generation  # type: ignore[misc]
     def sites(
@@ -63,7 +63,7 @@ class RobotsRuleFactory(DjangoModelFactory):  # type: ignore[misc]
         **_kwargs: Any,
     ) -> None:
         for site in extracted:
-            self.sites.add(site)  # pylint: disable=no-member
+            self.sites.add(site)
 
 
 class ProjectFactory(DjangoModelFactory):  # type: ignore[misc]

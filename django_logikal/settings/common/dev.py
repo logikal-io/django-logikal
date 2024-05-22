@@ -1,3 +1,5 @@
+import os
+
 from logikal_utils.docker import Service
 
 from django_logikal.env import get_option, option_is_set
@@ -21,11 +23,14 @@ class CommonDevSettings(SettingsUpdate):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'HOST': '127.0.0.1',
-            'PORT': Service('postgres').container_port('5432/tcp'),
-            'NAME': 'dev',
-            'USER': 'dev',
-            'PASSWORD': 'dev',
+            'HOST': os.getenv('DJANGO_DATABASE_HOST', '127.0.0.1'),
+            'PORT': os.getenv(
+                'DJANGO_DATABASE_PORT',
+                Service('postgres').container_port('5432/tcp'),
+            ),
+            'NAME': os.getenv('DJANGO_DATABASE_NAME', 'dev'),
+            'USER': os.getenv('DJANGO_DATABASE_USER', 'dev'),
+            'PASSWORD': os.getenv('DJANGO_DATABASE_USER', 'dev'),
         },
     }
 

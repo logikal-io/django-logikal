@@ -4,12 +4,13 @@ from pathlib import Path
 from subprocess import run
 
 from pytest import mark
-from pytest_logikal.browser import Browser
+from pytest_logikal.browser import Browser, scenarios, set_browser
 
 from django_logikal.settings.static_site.testing import TestingSettings
 
 
 @mark.django_db
+@set_browser(scenarios.desktop)
 def test_generate(tmp_path: Path, browser: Browser) -> None:
     output_path = tmp_path / TestingSettings.DISTILL_DIR.name
     static_path = output_path / 'static'
