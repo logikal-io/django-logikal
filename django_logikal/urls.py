@@ -1,7 +1,7 @@
 from typing import Any, List, Mapping, Optional, Sequence, Tuple, Type, Union
 
 import debug_toolbar
-from django.contrib import admin
+import django
 from django.contrib.sitemaps import Sitemap
 from django.contrib.sitemaps.views import sitemap
 from django.urls import URLPattern, URLResolver, include, path
@@ -17,7 +17,7 @@ def admin_urls() -> IncludeType:
     """
     Return URLs for the :mod:`django.contrib.auth` app.
     """
-    urls = admin.site.urls
+    urls = django.contrib.admin.site.urls
     for url in urls[0]:
         if getattr(url, 'name', None) == 'login' and url.callback:
             url.callback = public(url.callback)
@@ -48,6 +48,7 @@ def debug_toolbar_urls() -> IncludeType:  # pragma: no cover, tested in subproce
 
 def utility_paths(
     sitemaps: Optional[Mapping[str, Union[Sitemap[Any], Type[Sitemap[Any]]]]] = None,
+    admin: bool = True,
     static: bool = False,
 ) -> List[URLType]:
     """
@@ -64,7 +65,7 @@ def utility_paths(
     if static:
         from django_distill import distill_path  # pylint: disable=import-outside-toplevel
         universal_path = distill_path
-    else:
+    elif admin:
         paths.append(path('admin/', admin_urls()))
     if is_dev():
         paths.append(path('error/', error_urls()))
