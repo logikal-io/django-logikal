@@ -5,6 +5,9 @@ jobs:
   run-python-tests:
     name: Run Python tests
     uses: logikal-io/github-workflows/.github/workflows/run-python-tests.yml@v7
+    permissions:
+      contents: read
+      id-token: write
 
   run-terraform-tests:
     name: Run Terraform tests
