@@ -1,7 +1,7 @@
 from typing import Any, List, Mapping, Optional, Sequence, Tuple, Type, Union
 
 import debug_toolbar
-from django.contrib import admin
+import django
 from django.contrib.sitemaps import Sitemap
 from django.contrib.sitemaps.views import sitemap
 from django.urls import URLPattern, URLResolver, include, path
@@ -17,7 +17,7 @@ def admin_urls() -> IncludeType:
     """
     Return URLs for the :mod:`django.contrib.auth` app.
     """
-    urls = admin.site.urls
+    urls = django.contrib.admin.site.urls
     for url in urls[0]:
         if getattr(url, 'name', None) == 'login' and url.callback:
             url.callback = public(url.callback)
