@@ -48,6 +48,7 @@ def debug_toolbar_urls() -> IncludeType:  # pragma: no cover, tested in subproce
 
 def utility_paths(
     sitemaps: Optional[Mapping[str, Union[Sitemap[Any], Type[Sitemap[Any]]]]] = None,
+    admin: bool = True,
     static: bool = False,
 ) -> List[URLType]:
     """
@@ -64,7 +65,7 @@ def utility_paths(
     if static:
         from django_distill import distill_path  # pylint: disable=import-outside-toplevel
         universal_path = distill_path
-    else:
+    elif admin:
         paths.append(path('admin/', admin_urls()))
     if is_dev():
         paths.append(path('error/', error_urls()))
