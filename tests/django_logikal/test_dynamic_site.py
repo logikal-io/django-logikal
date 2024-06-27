@@ -98,10 +98,10 @@ def test_syncdb_cancelled(mocker: MockerFixture) -> None:
         syncdb.Command().handle()
 
 
-def test_syncdb_non_local_error(mocker: MockerFixture) -> None:
+def test_syncdb_unallowed_error(mocker: MockerFixture) -> None:
     connections = mocker.patch('django_logikal.management.commands.syncdb.connections')
-    connections.__getitem__.return_value.settings_dict = {'HOST': 'non-local'}
-    with raises(CommandError, match='local database'):
+    connections.__getitem__.return_value.settings_dict = {'HOST': 'unallowed'}
+    with raises(CommandError, match='Unallowed database'):
         syncdb.Command().handle()
 
 
