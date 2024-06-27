@@ -31,10 +31,8 @@ def test_generate(tmp_path: Path, browser: Browser) -> None:
     browser.check('test')
     browser.get(f'file://{output_path}/en-us/localization/index.html')
     browser.check('localization-en-us')
-    # Note: other languages aren't generated currently
-    # (see https://github.com/meeb/django-distill/issues/80)
-    # browser.get(f'file://{output_path}/en-gb/localisation/index.html')
-    # browser.check('localization-en-gb')
+    browser.get(f'file://{output_path}/en-gb/localisation/index.html')
+    browser.check('localization-en-gb')
     robots = (output_path / 'robots.txt').read_text()
     assert 'User-agent: *\n' in robots
     assert '\nDisallow:\n' in robots

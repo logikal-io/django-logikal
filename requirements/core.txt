@@ -2,7 +2,7 @@ Django~=4.2
 django-stubs-ext~=4.2
 
 # Django utilities
-django-debug-toolbar~=4.3
+django-debug-toolbar~=4.4
 django-debug-toolbar-template-profiler~=2.1
 django-mail-panel~=4.0
 django-csp~=3.8
@@ -10,6 +10,7 @@ django-robots~=6.1
 
 # Databases
 psycopg~=3.1
+factory-boy~=3.3
 
 # Other utilities
 Babel~=2.15
@@ -19,6 +20,6 @@ google-cloud-logging~=3.10
 Jinja2~=3.1
 
 # Development utilities
-logikal-utils[docker]~=1.1
+logikal-utils[docker]~=1.2
 Pygments~=2.18
 types-Pygments~=2.18
