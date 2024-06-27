@@ -26,9 +26,12 @@ from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError, CommandParser
 from django.db import connections
 from factory import random as factory_random
+from logikal_utils.project import tool_config
 from logikal_utils.random import DEFAULT_RANDOM_SEED
 
 from django_logikal.local_data import LocalData
+
+DEFAULT_ALLOWED_HOSTS = ('127.0.0.1', 'localhost', 'postgres')
 
 
 class Command(BaseCommand):
@@ -40,8 +43,9 @@ class Command(BaseCommand):
     def handle(self, *_args: Any, **options: Any) -> None:
         connection = connections['default']
         database = connection.settings_dict
-        if database['HOST'] not in ('127.0.0.1', 'postgres'):
-            raise CommandError('Only the local database can be synchronized')
+        config = tool_config('django_logikal')
+        if database['HOST'] not in config.get('allowed_syncdb_hosts', DEFAULT_ALLOWED_HOSTS):
+            raise CommandError(f'Unallowed database host "{database["HOST"]}"')
 
         database_url = f'{database["HOST"]}:{database["PORT"]}/{database["NAME"]}'
         self.stdout.write(f'Synchronizing database {self.style.ERROR(database_url)}')
