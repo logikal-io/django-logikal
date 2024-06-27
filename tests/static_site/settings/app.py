@@ -13,7 +13,7 @@ class AppSettings(SettingsUpdate):
         ('en-us', _('English (United States)')),
         ('en-gb', _('English (United Kingdom)')),
     ]
-    DISTILL_LANGUAGES = ['en-us', 'en-gb']
+    DISTILL_LANGUAGES = ['en-us', 'en-gb']  # see https://github.com/meeb/django-distill/issues/80
 
     # Authentication
     AUTH_USER_MODEL = 'static_site.User'
