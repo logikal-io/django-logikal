@@ -49,12 +49,13 @@ class Command(BaseCommand):
 
         database_url = f'{database["HOST"]}:{database["PORT"]}/{database["NAME"]}'
         self.stdout.write(f'Synchronizing database {self.style.ERROR(database_url)}')
-        warning = '\nThis will DELETE ALL CURRENT DATA in the public schema!'
-        self.stdout.write(self.style.WARNING(warning))
-        self.stdout.write('\nAre you sure you want to do this?')
-        prompt = 'Type \'yes\' to continue, or \'no\' to cancel: '
-        if not options.get('no_input') and input(prompt) != 'yes':
-            raise CommandError('Cancelled')
+        if not options.get('no_input'):
+            warning = '\nThis will DELETE ALL CURRENT DATA in the public schema!'
+            self.stdout.write(self.style.WARNING(warning))
+            self.stdout.write('\nAre you sure you want to do this?')
+            prompt = 'Type \'yes\' to continue, or \'no\' to cancel: '
+            if input(prompt) != 'yes':
+                raise CommandError('Cancelled')
 
         # Clear schema
         self.stdout.write(self.style.MIGRATE_HEADING('\nClearing public schema:'))
