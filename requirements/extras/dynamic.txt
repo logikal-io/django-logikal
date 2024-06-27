@@ -1,10 +1,10 @@
 # Static files
-whitenoise[brotli]~=6.6
+whitenoise[brotli]~=6.7
 
 # Secrets
 stormware[amazon,google]~=1.2
 
 # Emails
 antimarkdown~=1.0
-django-anymail[amazon-ses]~=10.3
+django-anymail[amazon-ses]~=11.0
 premailer~=3.10
