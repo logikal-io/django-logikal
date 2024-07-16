@@ -6,7 +6,7 @@ from django.core.checks import Error, register
 from django.db.migrations import writer
 from django.template.loader import get_template
 
-from django_logikal.migrations import FormattedMigrationWriter
+from django_logikal.migration.writer import FormattedMigrationWriter
 
 
 class DjangoLogikalConfig(AppConfig):

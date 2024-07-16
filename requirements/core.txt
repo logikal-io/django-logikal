@@ -9,7 +9,7 @@ django-csp~=3.8
 django-robots~=6.1
 
 # Databases
-psycopg~=3.1
+psycopg~=3.2
 factory-boy~=3.3
 
 # Other utilities

@@ -49,6 +49,8 @@ packages = [
   'django_logikal.babel',
   'django_logikal.management',
   'django_logikal.management.commands',
+  'django_logikal.migration',
+  'django_logikal.migration.operations',
   'django_logikal.settings',
   'django_logikal.settings.common',
   'django_logikal.settings.dynamic_site',
