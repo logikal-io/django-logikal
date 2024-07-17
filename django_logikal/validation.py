@@ -1,10 +1,13 @@
+import re
 from itertools import chain
 from logging import getLogger
 from typing import Any
 
+import debug_toolbar
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
+from logikal_utils.project import tool_config
 from pygments import highlight
 from pygments.formatters.html import HtmlFormatter
 from pygments.lexers.html import HtmlLexer
@@ -20,20 +23,32 @@ class ValidationMiddleware(Middleware):
 
     .. note:: Requires :ref:`pytest-logikal <pytest-logikal:index:Installation>` to be installed.
     """
+    DEFAULT_SKIPPED_APPS = {'admin', debug_toolbar.APP_NAME, 'rest_framework'}
+
     def __init__(self, *args: Any, **kwargs: Any):
         from pytest_logikal.validator import Validator  # pylint: disable=import-outside-toplevel
 
         super().__init__(*args, **kwargs)
+        config = tool_config('django_logikal').get('validate', {})
+        self._skipped_apps = config.get('skipped_apps', self.DEFAULT_SKIPPED_APPS)
+        self._skipped_routes = config.get('skipped_routes', {})
         self._validator = Validator()
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         response = super().__call__(request)
         resolver_match = getattr(request, 'resolver_match', None)
         app_name = getattr(resolver_match, 'app_name', None)
+        route = getattr(resolver_match, 'route', None)
+
+        skipped_route = (
+            route
+            and any(re.search(skipped_route, route) for skipped_route in self._skipped_routes)
+        )
         if (
             not response.headers['Content-Type'].startswith('text/html')
             or (response.status_code != 200 and app_name != 'error')
-            or app_name in {'admin', 'djdt'}  # admin and Django debug toolbar responses
+            or app_name in self._skipped_apps
+            or skipped_route
         ):
             return response
 
