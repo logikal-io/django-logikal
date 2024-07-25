@@ -84,6 +84,7 @@ class Command(BaseCommand):
                 module = local_data.__module__
                 name = local_data.__name__
                 self.stdout.write(f'  Inserting {module}.{name}...', ending='')
+                self.stdout.flush()
                 local_data.insert()
                 self.stdout.write(self.style.SUCCESS(' OK'))
 
