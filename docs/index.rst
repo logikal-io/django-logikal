@@ -59,6 +59,15 @@ You may install the library with support for dynamic sites via the ``dynamic`` e
 
     pip install django-logikal[dynamic]
 
+REST API
+~~~~~~~~
+You can install the library with support for `Django REST framework
+<https://www.django-rest-framework.org/>`_ APIs:
+
+.. code-block:: shell
+
+    pip install django-logikal[dynamic,rest]
+
 Static Sites
 ~~~~~~~~~~~~
 If you intend to generate static pages you should install the library with the ``static`` extra:
@@ -93,9 +102,9 @@ services to your project's ``compose.yml`` file:
       postgres:
         image: postgres:14.4
         environment:
-          POSTGRES_DB: local
-          POSTGRES_USER: local
-          POSTGRES_PASSWORD: local
+          POSTGRES_DB: dev
+          POSTGRES_USER: dev
+          POSTGRES_PASSWORD: dev
         ports: [{target: 5432}]
         volumes:
           - type: volume

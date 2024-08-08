@@ -77,6 +77,9 @@ and `Amazon Simple Email Service <https://aws.amazon.com/ses/>`_), the :ref:`par
 
 .. note:: Requires the :ref:`dynamic extra <index:Dynamic Sites>`.
 
+.. note:: When using the optional :ref:`rest extra <index:REST API>`, the REST API endpoints are
+    configured to be only accessible for session-authenticated users by default.
+
 .. automodule:: django_logikal.settings.dynamic_site.dev
     :exclude-members: apply
 .. automodule:: django_logikal.settings.dynamic_site.testing

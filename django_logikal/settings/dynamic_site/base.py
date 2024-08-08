@@ -44,6 +44,12 @@ class BaseSettings(CommonBaseSettings):
     }]
     PASSWORD_RESET_TIMEOUT = 1 * 24 * 60 * 60  # 1 day (default: 3 days)
 
+    # API
+    REST_FRAMEWORK = {
+        'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.SessionAuthentication'],
+        'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
+    }
+
     # Email
     EMAIL_BACKEND = 'anymail.backends.amazon_ses.EmailBackend'
     EMAIL_TIMEOUT = 10  # default: infinite
@@ -65,4 +71,5 @@ class BaseSettings(CommonBaseSettings):
             'django.contrib.messages',  # required by Django admin
             'django.contrib.sessions',  # required by Django admin
             'anymail',
+            'rest_framework',
         ]

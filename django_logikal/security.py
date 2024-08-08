@@ -3,6 +3,11 @@ from typing import Any, Callable, Dict, List
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest
 
+try:
+    from rest_framework.views import APIView
+except ModuleNotFoundError:
+    APIView = None  # pragma: no cover # pylint: disable=invalid-name
+
 from django_logikal.middleware import Middleware
 from django_logikal.views import PublicViewMixin
 
@@ -30,6 +35,10 @@ class LoginRequiredByDefaultMiddleware(Middleware):
         view_args: List[Any],
         view_kwargs: Dict[str, Any],
     ) -> Any:
+        # The Django REST framework has its own separate authentication configuration
+        # (see https://www.django-rest-framework.org/api-guide/authentication/)
+        if APIView and issubclass(getattr(view_func, 'cls', type(None)), APIView):
+            return None
         if getattr(view_func, 'public_view', False):
             return None
         if issubclass(getattr(view_func, 'view_class', type(None)), PublicViewMixin):

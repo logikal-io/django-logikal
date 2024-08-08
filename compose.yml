@@ -11,7 +11,7 @@ services:
       POSTGRES_DB: dev
       POSTGRES_USER: dev
       POSTGRES_PASSWORD: dev
-    ports: [{target: 5432}]
+    ports: [{target: 5432, published: 42001}]
     volumes:
       - type: volume
         source: postgres_data
@@ -24,6 +24,7 @@ services:
 
   postgres-static:
     <<: *postgres
+    ports: [{target: 5432}]
     volumes:
       - type: volume
         source: postgres_static_data

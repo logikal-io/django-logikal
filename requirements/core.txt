@@ -14,9 +14,9 @@ factory-boy~=3.3
 
 # Other utilities
 Babel~=2.15
-black~=24.4  # used for migration formatting
+black~=24.8  # used for migration formatting
 termcolor~=2.4
-google-cloud-logging~=3.10
+google-cloud-logging~=3.11
 Jinja2~=3.1
 
 # Development utilities

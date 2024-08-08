@@ -2,6 +2,7 @@
 -r core.txt
 -r extras/static.txt
 -r extras/dynamic.txt
+-r extras/rest.txt
 -r extras/bibliography.txt
 
 logikal-docs==1.1.4
