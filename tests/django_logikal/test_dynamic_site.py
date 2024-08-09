@@ -17,6 +17,7 @@ from pytest_factoryboy import register
 from pytest_logikal.browser import Browser, scenarios, set_browser
 from pytest_logikal.django import LiveURL, all_languages
 from pytest_mock import MockerFixture
+from selenium.webdriver.common.by import By
 
 from django_logikal.management.commands import syncdb, translate
 from django_logikal.views import ERROR_HANDLERS
@@ -260,9 +261,43 @@ def test_email(live_app_url: LiveURL, client: Client, mailoutbox: List[AnymailMe
     assert email.attachments[2] == ('attachment.txt', 'Attachment\n', 'text/plain')
 
 
-# Looks like input box corners in the admin login page are rendered non-deterministically, which
-# causes flakiness – super weird
-@mark.flaky(max_runs=3)
+@set_browser(scenarios.desktop)
+def test_browsable_api(live_url: LiveURL, browser: Browser, user: User) -> None:
+    browser.get(live_url('api-root'))
+    browser.check('before_login')
+
+    browser.login(user)
+    browser.get(live_url('api-root'))
+
+    url = browser.find_element(By.CSS_SELECTOR, 'div.response-info a span.str')
+    url_text = re.sub(':[0-9]+/', '/', url.text)  # remove the non-deterministic port number
+    browser.execute_script(f'arguments[0].innerHTML = "{url_text}"', url)  # type: ignore
+
+    browser.check('after_login')
+
+
+def test_json_api(live_url: LiveURL, client: Client, user: User) -> None:
+    response = client.get(live_url('api-root'))
+    assert response.status_code == 403
+
+    client.force_login(user)
+    root_response = client.get(live_url('api-root')).json()
+    assert root_response == {'projects': 'http://testserver/api/projects/'}
+
+    response = client.get(root_response['projects'])
+    assert response.json() == []
+
+    local_data.ProjectData.insert()
+    response = client.get(root_response['projects'])
+    assert response.json()[0] == {
+        'end_date': '2023-02-10',
+        'name': 'Benchmark Cutting-Edge Paradigms',
+        'start_date': '2023-02-01',
+        'status': 'planning',
+        'url': 'http://testserver/api/projects/16419f82-8b9d-4434-a465-e150bd9c66b3/',
+    }
+
+
 @set_browser(scenarios.desktop)
 def test_admin(
     live_url: LiveURL, browser: Browser, user: User, staff_user: User, super_user: User,

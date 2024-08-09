@@ -12,6 +12,11 @@ from pygments import highlight
 from pygments.formatters.html import HtmlFormatter
 from pygments.lexers.html import HtmlLexer
 
+try:
+    from rest_framework.views import APIView
+except ModuleNotFoundError:
+    APIView = None  # pragma: no cover # pylint: disable=invalid-name
+
 from django_logikal.middleware import Middleware
 
 logger = getLogger(__name__)
@@ -38,16 +43,19 @@ class ValidationMiddleware(Middleware):
         response = super().__call__(request)
         resolver_match = getattr(request, 'resolver_match', None)
         app_name = getattr(resolver_match, 'app_name', None)
+        view_class = getattr(getattr(resolver_match, 'func', None), 'cls', type(None))
         route = getattr(resolver_match, 'route', None)
 
+        skipped_view_class = (APIView and issubclass(view_class, APIView))
         skipped_route = (
             route
             and any(re.search(skipped_route, route) for skipped_route in self._skipped_routes)
         )
-        if (
+        if (  # pylint: disable=too-many-boolean-expressions
             not response.headers['Content-Type'].startswith('text/html')
             or (response.status_code != 200 and app_name != 'error')
             or app_name in self._skipped_apps
+            or skipped_view_class
             or skipped_route
         ):
             return response

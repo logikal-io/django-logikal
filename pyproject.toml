@@ -41,6 +41,7 @@ dependencies = {file = 'requirements/core.txt'}
 [tool.setuptools.dynamic.optional-dependencies]
 static = {file = 'requirements/extras/static.txt'}
 dynamic = {file = 'requirements/extras/dynamic.txt'}
+rest = {file = 'requirements/extras/rest.txt'}
 bibliography = {file = 'requirements/extras/bibliography.txt'}
 
 [tool.setuptools]
@@ -62,6 +63,7 @@ packages = [
   'django_logikal.templates.debug_toolbar',
   'django_logikal.templates.django_logikal',
   'django_logikal.templates.django_logikal.email',
+  'django_logikal.templates.rest_framework',
 ]
 
 [tool.setuptools_scm]
@@ -88,7 +90,7 @@ apps = ['dynamic_site']
 contact = 'Gergely Kalmár <contact@logikal.io>'
 
 [tool.browser.versions]
-chrome = '124.0.6367.207'
+chrome = '127.0.6533.99'
 
 [tool.mypy]
 plugins = ['mypy_django_plugin.main']
@@ -107,12 +109,15 @@ module = [
   'premailer',
   'pybtex.*',
   'robots.*',
+  'rest_framework.*',
 ]
 
 [tool.coverage.report]
 exclude_lines = [
   'pragma: no cover',
   '\.\.\.',  # exclude abstract methods
+  'except ImportError:',  # exclude import guard
+  'except ModuleNotFoundError:',  # exclude import guard
 ]
 
 [tool.pylint.BASIC]

@@ -2,8 +2,7 @@
 -r build.txt
 -r docs.txt
 
-flaky==3.8.1
-pytest-logikal[browser,django]==3.2.4
+pytest-logikal[browser,django]==3.2.5
 pytest-freezer==0.4.8
-psutil==5.9.8
-types-psutil==5.9.5.20240516
+psutil==6.0.0
+types-psutil==6.0.0.20240621

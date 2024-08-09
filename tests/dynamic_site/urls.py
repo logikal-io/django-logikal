@@ -2,14 +2,16 @@ from datetime import date, datetime, timezone
 from decimal import Decimal
 
 from django.conf.urls.i18n import i18n_patterns
-from django.urls import path
+from django.urls import include, path
 from django.utils.translation import gettext_lazy as _
+from rest_framework import urls as rest_framework_auth_urls
+from rest_framework.routers import DefaultRouter as APIRouter
 
 from django_logikal.sitemap import StaticSitemap
 from django_logikal.templates import Template
 from django_logikal.urls import utility_paths
 from django_logikal.views import ERROR_HANDLERS, public, redirect_to
-from tests.dynamic_site import views
+from tests.dynamic_site import models, views
 
 app_name = 'dynamic_site'
 template = Template(app=app_name, extra_context={'extra_template_data': 'template'})
@@ -19,6 +21,9 @@ handler400 = ERROR_HANDLERS[400]
 handler403 = ERROR_HANDLERS[403]
 handler404 = ERROR_HANDLERS[404]
 handler500 = ERROR_HANDLERS[500]
+
+api_router = APIRouter()
+api_router.register('projects', models.ProjectViewSet)
 
 urlpatterns = [
     # Non-localized URLs
@@ -53,6 +58,9 @@ urlpatterns = [
             ),
         ])),
     ),
+    # API
+    path('api/', include(api_router.urls)),
+    path('api/auth/', include(rest_framework_auth_urls)),
     # Utilities
     *utility_paths(sitemaps={
         'template': template.sitemap(),

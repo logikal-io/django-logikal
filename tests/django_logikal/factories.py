@@ -67,6 +67,7 @@ class RobotsRuleFactory(DjangoModelFactory):  # type: ignore[misc]
 
 
 class ProjectFactory(DjangoModelFactory):  # type: ignore[misc]
+    id = Faker('uuid4')
     name = LazyFunction(lambda: faker.bs().title())
 
     class Meta:

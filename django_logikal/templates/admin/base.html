@@ -1,7 +1,9 @@
 {% extends 'admin/base.html' %}
 {% load static %}
 
-{% block extrastyle %}{{ block.super }}
+{% block extrastyle %}
+  {{ block.super }}
+
   <link rel="stylesheet" href="{% static 'django_logikal/fonts.css' %}">
   <style nonce="{{ request.csp_nonce }}">
     html[data-theme='light'],

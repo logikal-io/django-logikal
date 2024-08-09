@@ -12,6 +12,7 @@
     <li><a href="{{ url('dynamic_site:invalid-html') }}">Invalid HTML</a></li>
     <li><a href="{{ url('dynamic_site:redirect') }}">Redirection</a></li>
     <li><a href="{{ url('dynamic_site:email') }}">Email Sending</a></li>
+    <li><a href="{{ url('api-root') }}">API</a></li>
   </ul>
 
   <h2>Utilities</h2>
