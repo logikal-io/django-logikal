@@ -63,6 +63,7 @@ packages = [
   'django_logikal.templates.debug_toolbar',
   'django_logikal.templates.django_logikal',
   'django_logikal.templates.django_logikal.email',
+  'django_logikal.templates.rest_framework',
 ]
 
 [tool.setuptools_scm]
