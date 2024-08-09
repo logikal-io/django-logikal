@@ -25,5 +25,5 @@ class AppSettings(SettingsUpdate):
 
     @staticmethod
     def apply(settings: Settings) -> None:
-        settings['INSTALLED_APPS'] += ['tests.dynamic_site']
+        settings['INSTALLED_APPS'] += ['rest_framework', 'tests.dynamic_site']
         settings['ANYMAIL']['AMAZON_SES_SESSION_PARAMS']['region_name'] = 'eu-central-1'
