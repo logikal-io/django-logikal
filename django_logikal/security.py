@@ -2,11 +2,7 @@ from typing import Any, Callable, Dict, List
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest
-
-try:
-    from rest_framework.views import APIView
-except ModuleNotFoundError:
-    APIView = None  # pragma: no cover # pylint: disable=invalid-name
+from logikal_utils.imports import try_import
 
 from django_logikal.middleware import Middleware
 from django_logikal.views import PublicViewMixin
@@ -28,8 +24,12 @@ class LoginRequiredByDefaultMiddleware(Middleware):
     .. note:: All :ref:`standard settings modules <settings:Settings>` include this middleware by
         default.
     """
-    @staticmethod
+    def __init__(self, *args: Any, **kwargs: Any):
+        super().__init__(*args, **kwargs)
+        self._api_view = getattr(try_import('rest_framework.views'), 'APIView', None)
+
     def process_view(
+        self,
         request: HttpRequest,
         view_func: Callable[..., Any],
         view_args: List[Any],
@@ -37,7 +37,7 @@ class LoginRequiredByDefaultMiddleware(Middleware):
     ) -> Any:
         # The Django REST framework has its own separate authentication configuration
         # (see https://www.django-rest-framework.org/api-guide/authentication/)
-        if APIView and issubclass(getattr(view_func, 'cls', type(None)), APIView):
+        if self._api_view and issubclass(getattr(view_func, 'cls', type(None)), self._api_view):
             return None
         if getattr(view_func, 'public_view', False):
             return None

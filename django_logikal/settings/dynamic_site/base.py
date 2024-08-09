@@ -71,5 +71,4 @@ class BaseSettings(CommonBaseSettings):
             'django.contrib.messages',  # required by Django admin
             'django.contrib.sessions',  # required by Django admin
             'anymail',
-            'rest_framework',
         ]

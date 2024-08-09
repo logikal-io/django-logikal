@@ -7,15 +7,11 @@ import debug_toolbar
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
+from logikal_utils.imports import try_import
 from logikal_utils.project import tool_config
 from pygments import highlight
 from pygments.formatters.html import HtmlFormatter
 from pygments.lexers.html import HtmlLexer
-
-try:
-    from rest_framework.views import APIView
-except ModuleNotFoundError:
-    APIView = None  # pragma: no cover # pylint: disable=invalid-name
 
 from django_logikal.middleware import Middleware
 
@@ -37,6 +33,7 @@ class ValidationMiddleware(Middleware):
         config = tool_config('django_logikal').get('validate', {})
         self._skipped_apps = config.get('skipped_apps', self.DEFAULT_SKIPPED_APPS)
         self._skipped_routes = config.get('skipped_routes', {})
+        self._api_view = getattr(try_import('rest_framework.views'), 'APIView', None)
         self._validator = Validator()
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
@@ -46,7 +43,7 @@ class ValidationMiddleware(Middleware):
         view_class = getattr(getattr(resolver_match, 'func', None), 'cls', type(None))
         route = getattr(resolver_match, 'route', None)
 
-        skipped_view_class = (APIView and issubclass(view_class, APIView))
+        skipped_view_class = self._api_view and issubclass(view_class, self._api_view)
         skipped_route = (
             route
             and any(re.search(skipped_route, route) for skipped_route in self._skipped_routes)

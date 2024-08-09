@@ -77,7 +77,7 @@ class Command(BaseCommand):
             CommandLineInterface().run([  # type: ignore[no-untyped-call]
                 sys.argv[0], 'extract',
                 # Configuration
-                '--mapping-file', Path(__file__).parents[2] / f'babel/{domain}.ini',
+                '--mapping-file', str(Path(__file__).parents[2] / f'babel/{domain}.ini'),
                 '--width', DEFAULT_WIDTH,
                 '--add-comments', 'Translators:',
                 # Metadata
