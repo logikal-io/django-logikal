@@ -19,6 +19,7 @@ from pytest_logikal.django import LiveURL, all_languages
 from pytest_mock import MockerFixture
 from selenium.webdriver.common.by import By
 
+from django_logikal.local_data import LocalData
 from django_logikal.management.commands import syncdb, translate
 from django_logikal.views import ERROR_HANDLERS
 from tests.django_logikal import factories
@@ -69,28 +70,30 @@ def test_production_settings(mocker: MockerFixture) -> None:
 
 
 def test_syncdb(mocker: MockerFixture) -> None:
-    # Not very nice, but we don't want to modify our actual database
-    database_settings = {'HOST': '127.0.0.1', 'PORT': '5432', 'NAME': 'test'}
-    connections = mocker.patch('django_logikal.management.commands.syncdb.connections')
-    connections.__getitem__.return_value.settings_dict = database_settings
+    class TestLocalData(LocalData):
+        @staticmethod
+        def insert() -> None:
+            pass
+
+    connection = mocker.Mock(settings_dict={'HOST': '127.0.0.1', 'PORT': '5432', 'NAME': 'test'})
     cursor = mocker.Mock()
-    connections.__getitem__.return_value.cursor.return_value.__enter__ = cursor
+    connection.cursor.return_value.__enter__ = cursor
+    connection.cursor.return_value.__exit__ = mocker.Mock()
     call_command = mocker.patch('django_logikal.management.commands.syncdb.call_command')
 
-    local_data_class = mocker.Mock
-    local_data_class.insert = mocker.Mock()
+    insert = mocker.spy(TestLocalData, 'insert')
     mocker.patch(
-        'django_logikal.management.commands.syncdb.LocalData.__subclasses__',
-        return_value=[local_data_class],
+        'django_logikal.management.commands.syncdb.inspect.getmembers',
+        return_value=[('test', TestLocalData)],
     )
 
-    command = syncdb.Command()
+    command = syncdb.Command(connection=connection)
     command.add_arguments(parser=mocker.Mock())
     command.handle(no_input=True)
 
     assert cursor.called
     assert call_command.called
-    assert local_data_class.insert.called
+    assert insert.called
 
 
 def test_syncdb_cancelled(mocker: MockerFixture) -> None:

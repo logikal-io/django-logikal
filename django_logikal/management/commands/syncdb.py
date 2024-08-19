@@ -17,8 +17,9 @@ Clear the public schema, apply migrations and insert local application data.
     for local development and testing.
 
 """
-from contextlib import suppress
+import inspect
 from importlib import import_module
+from importlib.util import find_spec
 from typing import Any
 
 from django.apps import apps
@@ -37,29 +38,23 @@ DEFAULT_ALLOWED_HOSTS = ('127.0.0.1', 'localhost', 'postgres')
 class Command(BaseCommand):
     help = ' '.join(__doc__.splitlines()[0:4])
 
+    def __init__(self, *args: Any, **kwargs: Any):
+        self._connection = kwargs.pop('connection', connections['default'])
+        super().__init__(*args, **kwargs)
+
     def add_arguments(self, parser: CommandParser) -> None:
         parser.add_argument('--no-input', action='store_true', help='Do not prompt for input.')
 
-    def handle(self, *_args: Any, **options: Any) -> None:
-        connection = connections['default']
-        database = connection.settings_dict
-        config = tool_config('django_logikal')
-        if database['HOST'] not in config.get('allowed_syncdb_hosts', DEFAULT_ALLOWED_HOSTS):
-            raise CommandError(f'Unallowed database host "{database["HOST"]}"')
-
-        database_url = f'{database["HOST"]}:{database["PORT"]}/{database["NAME"]}'
-        self.stdout.write(f'Synchronizing database {self.style.ERROR(database_url)}')
-        if not options.get('no_input'):
+    def _clear_public_schema(self, no_input: bool) -> None:
+        if not no_input:
             warning = '\nThis will DELETE ALL CURRENT DATA in the public schema!'
             self.stdout.write(self.style.WARNING(warning))
             self.stdout.write('\nAre you sure you want to do this?')
-            prompt = 'Type \'yes\' to continue, or \'no\' to cancel: '
-            if input(prompt) != 'yes':
+            if input('Type \'yes\' to continue, or \'no\' to cancel: ') != 'yes':
                 raise CommandError('Cancelled')
 
-        # Clear schema
         self.stdout.write(self.style.MIGRATE_HEADING('\nClearing public schema:'))
-        with connection.cursor() as cursor:
+        with self._connection.cursor() as cursor:
             self.stdout.write('  Dropping schema...', ending='')
             cursor.execute('DROP SCHEMA public CASCADE')
             self.stdout.write(self.style.SUCCESS(' OK'))
@@ -67,25 +62,53 @@ class Command(BaseCommand):
             cursor.execute('CREATE SCHEMA public')
             self.stdout.write(self.style.SUCCESS(' OK'))
 
-        # Run migrations
+    def _run_migrations(self, options: Any) -> None:
         self.stdout.write('')
         call_command('migrate', **options)
 
-        # Insert local data
+    def _insert_local_data(self) -> None:
         factory_random.reseed_random(DEFAULT_RANDOM_SEED)  # for deterministic data
+        info_message_shown = False
         for app in apps.get_app_configs():
-            with suppress(ImportError):
-                if (module := getattr(app, 'module', None)):
-                    import_module(f'{module.__name__}.local_data')  # register LocalData subclasses
-        if LocalData.__subclasses__():
-            self.stdout.write(self.style.MIGRATE_HEADING('\nInserting local data:'))
-        for local_data in LocalData.__subclasses__():
-            if issubclass(local_data, LocalData):
-                module = local_data.__module__
-                name = local_data.__name__
-                self.stdout.write(f'  Inserting {module}.{name}... ', ending='')
-                self.stdout.flush()
-                local_data.insert()
-                self.stdout.write(self.style.SUCCESS('OK'))
+            if not (module := getattr(app, 'module', None)):
+                continue  # pragma: no cover, defensive line
+
+            local_data_module_path = f'{module.__name__}.local_data'
+            if not find_spec(local_data_module_path):
+                continue
+
+            if not info_message_shown:
+                self.stdout.write(self.style.MIGRATE_HEADING('\nInserting local data:'))
+                info_message_shown = True
+
+            self.stdout.write(f'  Importing {local_data_module_path}... ', ending='')
+            self.stdout.flush()
+            local_data_module = import_module(local_data_module_path)
+            self.stdout.write(self.style.SUCCESS('OK'))
+
+            for _, local_data in inspect.getmembers(local_data_module):
+                if (
+                    inspect.isclass(local_data)
+                    and not inspect.isabstract(local_data)
+                    and issubclass(local_data, LocalData)
+                ):
+                    class_path = f'{local_data.__module__}.{local_data.__qualname__}'
+                    self.stdout.write(f'    Inserting {class_path}... ', ending='')
+                    self.stdout.flush()
+                    local_data.insert()
+                    self.stdout.write(self.style.SUCCESS('OK'))
+
+    def handle(self, *_args: Any, **options: Any) -> None:
+        database = self._connection.settings_dict
+        config = tool_config('django_logikal')
+        if database['HOST'] not in config.get('allowed_syncdb_hosts', DEFAULT_ALLOWED_HOSTS):
+            raise CommandError(f'Unallowed database host "{database["HOST"]}"')
+
+        database_url = f'{database["HOST"]}:{database["PORT"]}/{database["NAME"]}'
+        self.stdout.write(f'Synchronizing database {self.style.ERROR(database_url)}')
+
+        self._clear_public_schema(no_input=bool(options.get('no_input')))
+        self._run_migrations(options)
+        self._insert_local_data()
 
         self.stdout.write(self.style.SUCCESS('\nDatabase successfully synchronized'))
