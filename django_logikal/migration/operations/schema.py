@@ -30,7 +30,7 @@ class SchemaAccessOperation(ABC, Operation):
 
 class GrantSchemaAccess(SchemaAccessOperation):
     """
-    Grant access to a given schema.
+    Grant access to a given set of schemas.
     """
     def database_forwards(
         self, app_label: str, schema_editor: SchemaEditor,
@@ -50,7 +50,7 @@ class GrantSchemaAccess(SchemaAccessOperation):
 
 class RevokeSchemaAccess(SchemaAccessOperation):
     """
-    Revoke access from a given schema.
+    Revoke access from a given set of schemas.
     """
     def database_forwards(
         self, app_label: str, schema_editor: SchemaEditor,
