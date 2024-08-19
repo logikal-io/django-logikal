@@ -1,22 +1,8 @@
-from typing import cast
-
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor as SchemaEditor
 from pytest import mark
 
 from django_logikal.migration import operations
-
-
-def has_schema_privilege(
-    schema_editor: SchemaEditor,
-    user_name: str,
-    schema: str,
-) -> bool:
-    with schema_editor.connection.cursor() as cursor:
-        cursor.execute(
-            sql="SELECT has_schema_privilege(%(user_name)s, %(schema)s, 'usage')",
-            params={'user_name': user_name, 'schema': schema},
-        )
-        return cast(bool, cursor.fetchone()[0])
+from tests.django_logikal.migration.operations.utils import has_schema_privilege
 
 
 def create_schema_and_user(
