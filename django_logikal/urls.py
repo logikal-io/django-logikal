@@ -1,7 +1,9 @@
+from importlib import import_module
 from typing import Any, List, Mapping, Optional, Sequence, Tuple, Type, Union
 
 import debug_toolbar
 import django
+from django.conf import settings
 from django.contrib.sitemaps import Sitemap
 from django.contrib.sitemaps.views import sitemap
 from django.urls import URLPattern, URLResolver, include, path
@@ -29,9 +31,10 @@ def error_urls() -> IncludeType:
     """
     Return URLs for the standard error handler pages.
     """
+    urlconf = import_module(settings.ROOT_URLCONF)  # type: ignore[misc]
     return include(([
-        path(f'{code}/', view, name=str(code))
-        for code, view in ERROR_HANDLERS.items()
+        path(f'{code}/', getattr(urlconf, f'handler{code}', error_view), name=str(code))
+        for code, error_view in ERROR_HANDLERS.items()
     ], 'error'))
 
 
