@@ -66,6 +66,7 @@ def environment(**options: Dict[str, Any]) -> Environment:
         # Built-in types
         'str': str,
         # Other utilities
+        'upper_first': filters.upper_first,
         'join_lines': filters.join_lines,
         'slugify': filters.slugify,
         'unslugify': filters.unslugify,

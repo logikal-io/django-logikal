@@ -11,6 +11,13 @@ SLUGIFY_TRANSLATION = str.maketrans({
 })
 
 
+def upper_first(text: str) -> str:
+    """
+    Change the first letter of a string to uppercase.
+    """
+    return text[:1].upper() + text[1:]
+
+
 def join_lines(text: str, spacer: bool = False) -> str:
     """
     Replace new lines with spaces.

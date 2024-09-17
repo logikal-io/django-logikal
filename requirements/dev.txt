@@ -2,7 +2,7 @@
 -r build.txt
 -r docs.txt
 
-pytest-logikal[browser,django]==3.2.5
+pytest-logikal[browser,django]==3.3.1
 pytest-freezer==0.4.8
 psutil==6.0.0
-types-psutil==6.0.0.20240621
+types-psutil==6.0.0.20240901

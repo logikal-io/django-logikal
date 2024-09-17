@@ -1,7 +1,7 @@
 import re
 from logging import getLogger
 from subprocess import PIPE, run
-from typing import Iterator, Optional
+from typing import Callable, Iterator, Optional
 
 from django.urls import reverse
 from psutil import Popen
@@ -18,9 +18,9 @@ def app_url(name: str) -> str:
 
 
 @fixture
-def live_app_url(live_url: LiveURL) -> LiveURL:
+def live_app_url(live_url: LiveURL) -> Callable[[str], str]:
     def live_app_url_path(name: str) -> str:
-        return live_url(f'{app_name}:{name}')
+        return live_url(name=f'{app_name}:{name}')
     return live_app_url_path
 
 

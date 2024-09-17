@@ -1,6 +1,15 @@
 from django_logikal.templates import filters as f
 
 
+def test_upper_first() -> None:
+    assert not f.upper_first('')
+    assert f.upper_first('h') == 'H'
+    assert f.upper_first('he') == 'He'
+    assert f.upper_first('hello') == 'Hello'
+    assert f.upper_first('Hello') == 'Hello'
+    assert f.upper_first('hello world') == 'Hello world'
+
+
 def test_join_lines() -> None:
     assert f.join_lines('hello') == 'hello'
     assert f.join_lines('hello\nworld') == 'hello world'
