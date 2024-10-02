@@ -1,6 +1,6 @@
 from datetime import date
 
-from django_logikal.local_data import LocalData
+from django_logikal.local_data import LocalData, SkipInsert
 from tests.django_logikal import factories
 from tests.dynamic_site.models import Status
 
@@ -32,3 +32,9 @@ class ProjectData(LocalData):
             name=project_2.name, start_date=project_2.start_date,
             status=Status.COMPLETED,
         )
+
+
+class SkippedData(LocalData):
+    @staticmethod
+    def insert() -> None:
+        raise SkipInsert('Intentionally skipped')

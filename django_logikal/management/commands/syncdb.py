@@ -4,11 +4,14 @@ Synchronize the local database.
 Clear the public schema, apply migrations and insert local application data.
 
 .. note:: Requires :ref:`pytest-logikal[django] <pytest-logikal:index:django>` to be installed.
-.. note:: Local data must be specified in the ``local_data.py`` submodule of a given application in
+.. note:: Local data must be specified in the ``local_data`` submodule of a given application in
     classes inheriting from :class:`~django_logikal.local_data.LocalData`.
 
 .. autoclass:: django_logikal.local_data.LocalData
     :undoc-members:
+
+.. autoclass:: django_logikal.local_data.SkipInsert
+    :no-inherited-members:
 
 .. tip:: We recommend using :doc:`factory_boy <factory-boy:index>`'s
     :class:`~factory.django.DjangoModelFactory` for generating synthetic data. By registering the
@@ -30,7 +33,7 @@ from factory import random as factory_random
 from logikal_utils.project import tool_config
 from logikal_utils.random import DEFAULT_RANDOM_SEED
 
-from django_logikal.local_data import LocalData
+from django_logikal.local_data import LocalData, SkipInsert
 
 DEFAULT_ALLOWED_HOSTS = ('127.0.0.1', 'localhost', 'postgres')
 
@@ -95,8 +98,13 @@ class Command(BaseCommand):
                     class_path = f'{local_data.__module__}.{local_data.__qualname__}'
                     self.stdout.write(f'    Inserting {class_path}... ', ending='')
                     self.stdout.flush()
-                    local_data.insert()
-                    self.stdout.write(self.style.SUCCESS('OK'))
+                    try:
+                        local_data.insert()
+                        self.stdout.write(self.style.SUCCESS('OK'))
+                    except SkipInsert as skip:
+                        reason = str(skip)
+                        reason = f' ({reason})' if reason else ''
+                        self.stdout.write(self.style.WARNING('SKIPPED') + reason)
 
     def handle(self, *_args: Any, **options: Any) -> None:
         database = self._connection.settings_dict

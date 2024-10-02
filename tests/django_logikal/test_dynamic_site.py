@@ -19,7 +19,7 @@ from pytest_logikal.django import LiveURL, all_languages
 from pytest_mock import MockerFixture
 from selenium.webdriver.common.by import By
 
-from django_logikal.local_data import LocalData
+from django_logikal.local_data import LocalData, SkipInsert
 from django_logikal.management.commands import syncdb, translate
 from django_logikal.views import ERROR_HANDLERS
 from tests.django_logikal import factories
@@ -75,6 +75,11 @@ def test_syncdb(mocker: MockerFixture) -> None:
         def insert() -> None:
             pass
 
+    class TestSkippedLocalData(LocalData):
+        @staticmethod
+        def insert() -> None:
+            raise SkipInsert('Test')
+
     connection = mocker.Mock(settings_dict={'HOST': '127.0.0.1', 'PORT': '5432', 'NAME': 'test'})
     cursor = mocker.Mock()
     connection.cursor.return_value.__enter__ = cursor
@@ -82,9 +87,10 @@ def test_syncdb(mocker: MockerFixture) -> None:
     call_command = mocker.patch('django_logikal.management.commands.syncdb.call_command')
 
     insert = mocker.spy(TestLocalData, 'insert')
+    skipped_insert = mocker.spy(TestSkippedLocalData, 'insert')
     mocker.patch(
         'django_logikal.management.commands.syncdb.inspect.getmembers',
-        return_value=[('test', TestLocalData)],
+        return_value=[('test', TestLocalData), ('test_skipped', TestSkippedLocalData)],
     )
 
     command = syncdb.Command(connection=connection)
@@ -94,6 +100,7 @@ def test_syncdb(mocker: MockerFixture) -> None:
     assert cursor.called
     assert call_command.called
     assert insert.called
+    assert skipped_insert.called
 
 
 def test_syncdb_cancelled(mocker: MockerFixture) -> None:
