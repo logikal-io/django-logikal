@@ -5,5 +5,5 @@
 -r extras/rest.txt
 -r extras/bibliography.txt
 
-logikal-docs==1.1.4
+logikal-docs==1.2.0
 pytest-logikal[django]~=3.3

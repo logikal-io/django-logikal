@@ -10,11 +10,11 @@ def create_schema_and_user(
     schema: str,
     user_name: str,
 ) -> None:
-    with schema_editor.connection.cursor() as cursor:
-        cursor.execute(f'CREATE SCHEMA {schema}')
+    schema_migration = operations.CreateSchema(name=schema)
+    schema_migration.database_forwards(app_label='test', schema_editor=schema_editor)
 
-    migration = operations.CreateUser(name=user_name, exists_ok=True)
-    migration.database_forwards(app_label='test', schema_editor=schema_editor)
+    user_migration = operations.CreateUser(name=user_name, exists_ok=True)
+    user_migration.database_forwards(app_label='test', schema_editor=schema_editor)
 
 
 @mark.django_db
@@ -55,3 +55,39 @@ def test_revoke_schema_access(schema_editor: SchemaEditor) -> None:
     # Revoke access (backwards)
     revoke.database_backwards(app_label='test', schema_editor=schema_editor)
     assert has_schema_privilege(schema_editor, user_name=user_name, schema=schema)
+
+
+def schema_exists(name: str, schema_editor: SchemaEditor) -> bool:
+    with schema_editor.connection.cursor() as cursor:
+        sql = 'SELECT 1 FROM information_schema.schemata WHERE schema_name=%(name)s'
+        cursor.execute(sql=sql, params={'name': name})
+        return bool(cursor.fetchone() == (1, ))
+
+
+@mark.django_db
+def test_create_schema(schema_editor: SchemaEditor) -> None:
+    name = 'test_create_schema'
+
+    # Create schema (forwards)
+    migration = operations.CreateSchema(name=name)
+    migration.database_forwards(app_label='test', schema_editor=schema_editor)
+    assert schema_exists(name=name, schema_editor=schema_editor)
+
+    # Create schema (backwards)
+    migration.database_backwards(app_label='test', schema_editor=schema_editor)
+    assert not schema_exists(name=name, schema_editor=schema_editor)
+
+
+@mark.django_db
+def test_drop_schema(schema_editor: SchemaEditor) -> None:
+    name = 'test_drop_schema'
+
+    # Create schema
+    create = operations.CreateSchema(name=name)
+    create.database_forwards(app_label='test', schema_editor=schema_editor)
+    assert schema_exists(name=name, schema_editor=schema_editor)
+
+    # Drop schema
+    drop = operations.DropSchema(name=name)
+    drop.database_forwards(app_label='test', schema_editor=schema_editor)
+    assert not schema_exists(name=name, schema_editor=schema_editor)
