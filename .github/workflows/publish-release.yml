@@ -15,7 +15,6 @@ jobs:
       docs-target-bucket: website-docs-logikal-io
       docs-website-service-url-map: website-docs-logikal-io-service
       docs-https-redirect-url-map: website-docs-logikal-io-https-redirect
-      docs-build-parallel: false
     permissions:
       contents: read
       id-token: write

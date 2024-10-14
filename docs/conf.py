@@ -1,6 +1,6 @@
+import importlib
 import os
 import sys
-from importlib.metadata import version as pkg_version
 
 from logikal_utils.project import tool_config
 from sphinx.addnodes import desc_signature, document
@@ -12,6 +12,13 @@ os.environ['DJANGO_SETTINGS_MODULE'] = tool_config('django_logikal')['DJANGO_SET
 
 def strip_patch(package: str) -> str:
     return '.'.join(pkg_version(package).split('.')[0:2])  # major.minor (excluding patch)
+
+
+def pkg_version(package_name: str) -> str:
+    if package_name == 'factory-boy':
+        # See https://github.com/FactoryBoy/factory_boy/issues/1095
+        return '3.3.0'
+    return importlib.metadata.version(package_name)
 
 
 extensions = [

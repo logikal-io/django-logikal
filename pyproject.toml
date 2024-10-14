@@ -89,6 +89,9 @@ DJANGO_SETTINGS_MODULE = 'tests.dynamic_site.settings.dev'
 apps = ['dynamic_site']
 contact = 'Gergely Kalmár <contact@logikal.io>'
 
+[tool.docs]
+parallel = false  # parallel builds do not work with automatic docker compose service starting
+
 [tool.browser.versions]
 chrome = '127.0.6533.99'
 
