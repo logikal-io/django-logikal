@@ -66,3 +66,52 @@ class RevokeSchemaAccess(SchemaAccessOperation):
 
     def describe(self) -> str:
         return f'Revoke access on {self.schemas} from {self.roles}'
+
+
+class SchemaOperation(ABC, Operation):
+    def __init__(self, name: str):  # noqa: D205, D400, D415
+        """
+        Args:
+            name: The schema name to use.
+
+        """
+        self.name = name
+
+    def state_forwards(self, app_label: str, state: ProjectState) -> None:
+        pass
+
+
+class CreateSchema(SchemaOperation):
+    """
+    Create a schema.
+    """
+    def database_forwards(
+        self, app_label: str, schema_editor: SchemaEditor,
+        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+    ) -> None:
+        schema_editor.execute(sql=f'CREATE SCHEMA IF NOT EXISTS "{self.name}"')
+
+    def database_backwards(
+        self, app_label: str, schema_editor: SchemaEditor,
+        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+    ) -> None:
+        schema_editor.execute(f'DROP SCHEMA "{self.name}"')
+
+    def describe(self) -> str:
+        return f'Create schema {self.name}'
+
+
+class DropSchema(SchemaOperation):
+    """
+    Drop a schema.
+    """
+    reversible = False
+
+    def database_forwards(
+        self, app_label: str, schema_editor: SchemaEditor,
+        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+    ) -> None:
+        schema_editor.execute(f'DROP SCHEMA IF EXISTS "{self.name}"')
+
+    def describe(self) -> str:
+        return f'Drop schema {self.name}'
