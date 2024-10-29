@@ -37,4 +37,4 @@ class ProjectData(LocalData):
 class SkippedData(LocalData):
     @staticmethod
     def insert() -> None:
-        raise SkipInsert('Intentionally skipped')
+        raise SkipInsert('Intentionally skipped')  # pragma: no cover

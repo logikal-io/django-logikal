@@ -22,7 +22,7 @@ class Status(OrderedTextChoices):
     PLANNING = 'planning', 'planning'
     ACTIVE = 'active', 'active'
     COMPLETED = 'completed', 'completed'
-    CANCELLED = 'cancelled', 'cancelled'
+    CANCELED = 'canceled', 'canceled'
 
 
 class Project(models.Model):

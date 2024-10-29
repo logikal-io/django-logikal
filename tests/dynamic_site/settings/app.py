@@ -23,7 +23,7 @@ class AppSettings(SettingsUpdate):
     # Bibliography
     BIBLIOGRAPHIES = {'references': 'dynamic_site/references.bib'}
 
-    @staticmethod
-    def apply(settings: Settings) -> None:
-        settings['INSTALLED_APPS'] += ['rest_framework', 'tests.dynamic_site']
+    @classmethod
+    def apply(cls, settings: Settings) -> None:
+        cls.extend(settings['INSTALLED_APPS'], ['rest_framework', 'tests.dynamic_site'])
         settings['ANYMAIL']['AMAZON_SES_SESSION_PARAMS']['region_name'] = 'eu-central-1'

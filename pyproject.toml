@@ -1,12 +1,12 @@
 [build-system]
-requires = ['setuptools>=45', 'setuptools-scm[toml]>=6.2']
+requires = ['setuptools>=64', 'setuptools-scm>=8']
 build-backend = 'setuptools.build_meta'
 
 [project]
 name = 'django-logikal'
 description = 'Django utilities used at Logikal'
 readme = 'README.rst'
-requires-python = '~= 3.8'
+requires-python = '~= 3.12'
 license = {file = 'LICENSE.txt'}
 authors = [{name = 'Logikal GmbH', email = 'contact@logikal.io'}]
 keywords = ['python', 'django']
@@ -16,9 +16,9 @@ classifiers = [
   'License :: OSI Approved :: MIT License',
   'Operating System :: POSIX :: Linux',
   'Programming Language :: Python :: 3',
-  'Programming Language :: Python :: 3.8',
+  'Programming Language :: Python :: 3.12',
   'Framework :: Django',
-  'Framework :: Django :: 4',
+  'Framework :: Django :: 5',
   'Topic :: Software Development',
   'Topic :: Utilities',
   'Typing :: Typed',
@@ -79,6 +79,8 @@ filterwarnings = [
   "ignore:Deprecated call to `pkg_resources.declare_namespace\\('sphinxcontrib:DeprecationWarning",
   # Can be removed with the next release of django-migration-linter
   "ignore:unclosed file .* name='/dev/null':ResourceWarning",
+  # Caused by pybtex
+  'ignore:open_text is deprecated:DeprecationWarning',
 ]
 DJANGO_SETTINGS_MODULE = 'tests.dynamic_site.settings.testing'
 
@@ -93,7 +95,7 @@ contact = 'Gergely Kalmár <contact@logikal.io>'
 parallel = false  # parallel builds do not work with automatic docker compose service starting
 
 [tool.browser.versions]
-chrome = '127.0.6533.99'
+chrome = '130.0.6723.69'
 
 [tool.mypy]
 plugins = ['mypy_django_plugin.main']

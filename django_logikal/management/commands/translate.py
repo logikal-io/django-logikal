@@ -4,9 +4,10 @@ Manage translation message catalogs.
 import logging
 import os
 import sys
+from collections.abc import Sequence
 from importlib import metadata
 from pathlib import Path
-from typing import Any, Optional, Sequence, cast
+from typing import Any, cast
 
 import django
 from babel.messages.frontend import CommandLineInterface
@@ -56,10 +57,10 @@ class Command(BaseCommand):
         if not (apps := [App(app) for app in options.get('app') or default_apps]):
             raise CommandError('At least one app name must be provided')
 
-        output = cast(Optional[Path], options.get('output'))  # wrong typing
+        output = cast(Path | None, options.get('output'))  # wrong typing
 
         if options.get('init'):
-            if not (locale := cast(Optional[str], options.get('locale'))):
+            if not (locale := cast(str | None, options.get('locale'))):
                 raise CommandError('The locale must be provided')
             return self.action_init(apps=apps, locale=locale, output=output)
         if options.get('update'):
@@ -69,7 +70,7 @@ class Command(BaseCommand):
 
         raise CommandError('An action must be provided')
 
-    def _extract(self, app: App, output: Optional[Path]) -> None:
+    def _extract(self, app: App, output: Path | None) -> None:
         self.stdout.write()
         locale_path = (output or app.path) / 'locale'
         locale_path.mkdir(parents=True, exist_ok=True)
@@ -82,7 +83,7 @@ class Command(BaseCommand):
                 '--add-comments', 'Translators:',
                 # Metadata
                 '--project', app.name.replace('_', '-'),
-                '--version', f'v{metadata.version(PYPROJECT["project"]["name"])}',
+                '--version', f'v{metadata.version(PYPROJECT['project']['name'])}',
                 '--msgid-bugs-address', tool_config('django_logikal')['translate']['contact'],
                 '--copyright-holder', PYPROJECT['project']['authors'][0]['name'],
                 '--header-comment', TEMPLATE_HEADER,
@@ -92,7 +93,7 @@ class Command(BaseCommand):
             ])
         self.stdout.write()
 
-    def action_init(self, apps: Sequence[App], locale: str, output: Optional[Path]) -> None:
+    def action_init(self, apps: Sequence[App], locale: str, output: Path | None) -> None:
         app_names = ', '.join(self.style.ERROR(app.name) for app in apps)
         self.stdout.write(f'Creating message catalogs for {app_names}\n')
 
@@ -140,7 +141,7 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS('\nMessage catalog successfully created'))
 
-    def action_update(self, apps: Sequence[App], output: Optional[Path]) -> None:
+    def action_update(self, apps: Sequence[App], output: Path | None) -> None:
         for app in apps:
             self.stdout.write(f'Updating catalogs for {self.style.ERROR(app.name)}\n')
             self._extract(app=app, output=output)
@@ -155,7 +156,7 @@ class Command(BaseCommand):
             self.stdout.write()
         self.stdout.write(self.style.SUCCESS('Message catalogs successfully updated'))
 
-    def action_compile(self, apps: Sequence[App], output: Optional[Path]) -> None:
+    def action_compile(self, apps: Sequence[App], output: Path | None) -> None:
         for app in apps:
             self.stdout.write(f'Compiling message catalogs for {self.style.ERROR(app.name)}\n\n')
             CommandLineInterface().run([  # type: ignore[no-untyped-call]

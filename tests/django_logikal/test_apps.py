@@ -1,5 +1,3 @@
-from typing import List
-
 from django.conf import global_settings
 from django.core.checks import Error
 from pytest_django.fixtures import SettingsWrapper
@@ -7,7 +5,7 @@ from pytest_django.fixtures import SettingsWrapper
 from django_logikal.apps import check_settings
 
 
-def message_in_errors(message: str, errors: List[Error]) -> bool:
+def message_in_errors(message: str, errors: list[Error]) -> bool:
     return any(message in error.msg for error in errors)
 
 

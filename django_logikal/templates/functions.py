@@ -2,7 +2,7 @@ import os
 import re
 from datetime import datetime, tzinfo as tzinfo_class
 from pathlib import Path
-from typing import Any, Mapping, Optional
+from typing import Any
 
 from babel import Locale
 from babel.support import Format
@@ -67,8 +67,8 @@ def include_static(path: str) -> SafeString:
 
 def url(
     *args: Any,
-    request: Optional[HttpRequest] = None,
-    request_get_update: Optional[Mapping[str, Any]] = None,
+    request: HttpRequest | None = None,
+    request_get_update: dict[str, Any] | None = None,
     **kwargs: Any,
 ) -> str:
     """
@@ -91,7 +91,7 @@ def url_name(request: HttpRequest) -> str:
     """
     if not (url_match := request.resolver_match):
         raise RuntimeError('URL resolving has not taken place yet')
-    return f'{url_match.app_name or ""}:{url_match.url_name or ""}'
+    return f'{url_match.app_name or ''}:{url_match.url_name or ''}'
 
 
 def language() -> str:
@@ -102,9 +102,9 @@ def language() -> str:
 
 
 def format(  # pylint: disable=redefined-builtin
-    locale: Optional[Locale] = None,
-    language_code: Optional[str] = None,
-    tzinfo: Optional[tzinfo_class] = None,
+    locale: Locale | None = None,
+    language_code: str | None = None,
+    tzinfo: tzinfo_class | None = None,
 ) -> Format:
     """
     Return a locale-aware and time zone-aware formatter.

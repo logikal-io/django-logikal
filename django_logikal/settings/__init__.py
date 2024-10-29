@@ -1,5 +1,5 @@
 import inspect
-from typing import Any, Dict, Type
+from typing import Any
 
 from django_logikal.env import get_option
 
@@ -10,19 +10,45 @@ class SettingsUpdateMeta(type):
 
 
 class SettingsUpdate(metaclass=SettingsUpdateMeta):
-    @staticmethod
-    def apply(settings: 'Settings') -> None:
+    @classmethod
+    def apply(cls, settings: 'Settings') -> None:
         """
         Apply the current settings update to the provided settings.
         """
 
+    @staticmethod
+    def prepend(setting: list[Any], value: Any) -> None:
+        if value not in setting:
+            setting.insert(0, value)
+
+    @staticmethod
+    def append(setting: list[Any], value: Any) -> None:
+        if value not in setting:
+            setting.append(value)
+
+    @staticmethod
+    def extend(setting: list[Any], values: list[Any]) -> None:
+        for value in values:
+            if value not in setting:
+                setting.append(value)
+
+    @staticmethod
+    def insert_before(setting: list[Any], value: Any, before: str) -> None:
+        if value not in setting:
+            setting.insert(setting.index(before), value)
+
+    @staticmethod
+    def add(setting: Any, value: Any) -> None:
+        if value not in setting:
+            setting += value
+
 
 class Settings:
-    def __init__(self, settings: Dict[str, Any]):
+    def __init__(self, settings: dict[str, Any] | None = None):
         """
         Store and update the provided settings.
         """
-        self._settings = settings
+        self._settings = settings or {}
 
     def __setitem__(self, key: str, value: Any) -> None:
         self._settings[key] = value
@@ -33,7 +59,7 @@ class Settings:
     def __contains__(self, item: str) -> bool:
         return item in self._settings
 
-    def update(self, settings_update: Type[SettingsUpdate]) -> 'Settings':
+    def update(self, settings_update: type[SettingsUpdate]) -> 'Settings':
         """
         Apply the given settings update to the stored settings.
         """

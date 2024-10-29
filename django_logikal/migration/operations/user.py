@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Any, Optional
+from typing import Any
 
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor as SchemaEditor
 from django.db.migrations.operations.base import Operation
@@ -23,7 +23,7 @@ class CreateUser(UserOperation):
     def __init__(
         self,
         name: str,
-        password: Optional[str] = None,
+        password: str | None = None,
         exists_ok: bool = False,
     ):
         """
@@ -41,7 +41,7 @@ class CreateUser(UserOperation):
 
     def database_forwards(
         self, app_label: str, schema_editor: SchemaEditor,
-        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+        from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
         with schema_editor.connection.cursor() as cursor:
             cursor.execute(
@@ -61,7 +61,7 @@ class CreateUser(UserOperation):
 
     def database_backwards(
         self, app_label: str, schema_editor: SchemaEditor,
-        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+        from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
         schema_editor.execute(f'DROP USER "{self.name}"')
 
@@ -77,7 +77,7 @@ class DropUser(UserOperation):
 
     def database_forwards(
         self, app_label: str, schema_editor: SchemaEditor,
-        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+        from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
         schema_editor.execute(f'DROP USER IF EXISTS "{self.name}"')
 

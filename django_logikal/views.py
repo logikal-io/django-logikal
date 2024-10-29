@@ -1,5 +1,6 @@
+from collections.abc import Callable
 from functools import wraps
-from typing import Any, Callable
+from typing import Any
 
 from django.http import HttpResponseBase
 from django.http.response import HttpResponseNotFound, HttpResponseServerError

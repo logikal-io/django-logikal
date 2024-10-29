@@ -2,7 +2,6 @@ import json
 import re
 from importlib import import_module
 from pathlib import Path
-from typing import List
 
 import robots
 from anymail.message import AnymailMessage
@@ -109,10 +108,10 @@ def test_syncdb_cancelled(mocker: MockerFixture) -> None:
         syncdb.Command().handle()
 
 
-def test_syncdb_unallowed_error(mocker: MockerFixture) -> None:
+def test_syncdb_disallowed_error(mocker: MockerFixture) -> None:
     connections = mocker.patch('django_logikal.management.commands.syncdb.connections')
-    connections.__getitem__.return_value.settings_dict = {'HOST': 'unallowed'}
-    with raises(CommandError, match='Unallowed database'):
+    connections.__getitem__.return_value.settings_dict = {'HOST': 'disallowed'}
+    with raises(CommandError, match='Disallowed database'):
         syncdb.Command().handle()
 
 
@@ -244,7 +243,7 @@ def test_redirect(live_app_url: LiveURL, client: Client) -> None:
 
 
 @mark.django_db  # to ensure migrations are applied properly
-def test_email(live_app_url: LiveURL, client: Client, mailoutbox: List[AnymailMessage]) -> None:
+def test_email(live_app_url: LiveURL, client: Client, mailoutbox: list[AnymailMessage]) -> None:
     response = client.get(live_app_url('email'))
     source = response.content.decode()
     assert 'Email successfully sent' in source

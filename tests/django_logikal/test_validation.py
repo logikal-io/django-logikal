@@ -20,7 +20,8 @@ def test_skipping(mocker: MockerFixture) -> None:
         middleware(request=request)
 
     # Skip API view
-    request.resolver_match.func = mocker.Mock(cls=APIView)
+    request.resolver_match.func = mocker.Mock()
+    request.resolver_match.func.cls = APIView
     middleware = ValidationMiddleware(get_response=lambda arg: arg)
     middleware(request=request)  # does not raise an error
     request.resolver_match.func = None

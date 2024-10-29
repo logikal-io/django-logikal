@@ -1,7 +1,8 @@
 import logging
 import warnings
+from collections.abc import Callable
 from time import localtime, strftime
-from typing import Any, Callable, Mapping, Optional, Type
+from typing import Any
 
 from django.conf import settings
 from google.cloud import logging as cloud_logging
@@ -9,7 +10,7 @@ from termcolor import colored
 
 
 class ConsoleLogFormatter(logging.Formatter):
-    _STYLES: Mapping[str, Any] = {
+    _STYLES: dict[str, Any] = {
         'timestamp': {'color': 'magenta'},
         'level': {
             'DEBUG': {'color': 'blue'},
@@ -29,7 +30,7 @@ class ConsoleLogFormatter(logging.Formatter):
         }
     }
 
-    def colored_message(self, message: str, status_code: Optional[int]) -> str:
+    def colored_message(self, message: str, status_code: int | None) -> str:
         if not status_code or (200 <= status_code < 300):
             return message
         if 100 <= status_code < 200:
@@ -66,7 +67,7 @@ class ConsoleLogFormatter(logging.Formatter):
     @staticmethod
     def warning_formatter() -> Callable[..., str]:
         def formatwarning(
-            message: Warning, category: Type[Warning], filename: str, lineno: int,
+            message: Warning, category: type[Warning], filename: str, lineno: int,
             *_args: Any, **_kwargs: Any,
         ) -> str:
             cleaned_message = str(message).replace('\n', ' ').replace('  ', ' ').strip()
@@ -78,8 +79,8 @@ def logging_config(
     log_level: str = 'INFO',
     console: bool = True,
     cloud: bool = False,
-) -> Mapping[str, Any]:
-    config: Mapping[str, Any] = {
+) -> dict[str, Any]:
+    config: dict[str, Any] = {
         'version': 1,
         'disable_existing_loggers': False,
         'formatters': {'console': {'()': ConsoleLogFormatter}},
@@ -108,7 +109,7 @@ def logging_config(
         config['handlers']['cloud'] = {
             'class': 'google.cloud.logging.handlers.CloudLoggingHandler',
             'client': client,
-            'name': f'django-{settings.SETTINGS_MODULE.rsplit(".", 1)[-1].replace("_", "-")}',
+            'name': f'django-{settings.SETTINGS_MODULE.rsplit('.', 1)[-1].replace('_', '-')}',
         }
         config['root']['handlers'].append('cloud')
 

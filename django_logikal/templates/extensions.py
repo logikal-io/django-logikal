@@ -1,7 +1,5 @@
-try:
-    import zoneinfo  # type: ignore[import-not-found]
-except ImportError:
-    from backports import zoneinfo  # note: this is built-in after Python 3.9+
+import zoneinfo
+
 from django.utils import timezone, translation
 from jinja2 import nodes
 from jinja2.ext import Extension

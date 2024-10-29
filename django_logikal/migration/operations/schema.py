@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Iterable, Optional
+from collections.abc import Iterable
 
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor as SchemaEditor
 from django.db.migrations.operations.base import Operation
@@ -34,13 +34,13 @@ class GrantSchemaAccess(SchemaAccessOperation):
     """
     def database_forwards(
         self, app_label: str, schema_editor: SchemaEditor,
-        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+        from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
         schema_editor.execute(f'GRANT {self.accesses} ON SCHEMA {self.schemas} TO {self.roles}')
 
     def database_backwards(
         self, app_label: str, schema_editor: SchemaEditor,
-        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+        from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
         schema_editor.execute(f'REVOKE {self.accesses} ON SCHEMA {self.schemas} FROM {self.roles}')
 
@@ -54,13 +54,13 @@ class RevokeSchemaAccess(SchemaAccessOperation):
     """
     def database_forwards(
         self, app_label: str, schema_editor: SchemaEditor,
-        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+        from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
         schema_editor.execute(f'REVOKE {self.accesses} ON SCHEMA {self.schemas} FROM {self.roles}')
 
     def database_backwards(
         self, app_label: str, schema_editor: SchemaEditor,
-        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+        from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
         schema_editor.execute(f'GRANT {self.accesses} ON SCHEMA {self.schemas} TO {self.roles}')
 
@@ -87,13 +87,13 @@ class CreateSchema(SchemaOperation):
     """
     def database_forwards(
         self, app_label: str, schema_editor: SchemaEditor,
-        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+        from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
         schema_editor.execute(sql=f'CREATE SCHEMA IF NOT EXISTS "{self.name}"')
 
     def database_backwards(
         self, app_label: str, schema_editor: SchemaEditor,
-        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+        from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
         schema_editor.execute(f'DROP SCHEMA "{self.name}"')
 
@@ -109,7 +109,7 @@ class DropSchema(SchemaOperation):
 
     def database_forwards(
         self, app_label: str, schema_editor: SchemaEditor,
-        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+        from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
         schema_editor.execute(f'DROP SCHEMA IF EXISTS "{self.name}"')
 

@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any
 
 from django.apps import AppConfig
 from django.conf import global_settings, settings
@@ -31,7 +31,7 @@ class DjangoLogikalConfig(AppConfig):
 
 
 @register
-def check_settings(*_args: Any, **_kwargs: Any) -> List[Error]:
+def check_settings(*_args: Any, **_kwargs: Any) -> list[Error]:
     errors = []
 
     # Check ROOT_URLCONF

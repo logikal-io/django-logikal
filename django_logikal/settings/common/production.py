@@ -14,8 +14,8 @@ class CommonProductionSettings(SettingsUpdate):
     CONN_HEALTH_CHECKS = True
 
     # Security
-    SECRET_KEY_PATH = f'{PYPROJECT["project"]["name"]}-website-secret-key'  # nosec: this is a path
-    DATABASE_SECRETS_PATH = f'{PYPROJECT["project"]["name"]}-website-database-secrets'
+    SECRET_KEY_PATH = f'{PYPROJECT['project']['name']}-website-secret-key'  # nosec: this is a path
+    DATABASE_SECRETS_PATH = f'{PYPROJECT['project']['name']}-website-database-secrets'
 
     CSRF_COOKIE_SECURE = True
     LANGUAGE_COOKIE_SECURE = True

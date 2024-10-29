@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Iterable, Optional
+from collections.abc import Iterable
 
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor as SchemaEditor
 from django.db.migrations.operations.base import Operation
@@ -37,13 +37,13 @@ class GrantTableAccess(TableAccessOperation):
     """
     def database_forwards(
         self, app_label: str, schema_editor: SchemaEditor,
-        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+        from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
         schema_editor.execute(f'GRANT {self.accesses} ON {self.tables} TO {self.roles}')
 
     def database_backwards(
         self, app_label: str, schema_editor: SchemaEditor,
-        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+        from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
         schema_editor.execute(f'REVOKE {self.accesses} ON {self.tables} FROM {self.roles}')
 
@@ -57,13 +57,13 @@ class RevokeTableAccess(TableAccessOperation):
     """
     def database_forwards(
         self, app_label: str, schema_editor: SchemaEditor,
-        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+        from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
         schema_editor.execute(f'REVOKE {self.accesses} ON {self.tables} FROM {self.roles}')
 
     def database_backwards(
         self, app_label: str, schema_editor: SchemaEditor,
-        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+        from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
         schema_editor.execute(f'GRANT {self.accesses} ON {self.tables} TO {self.roles}')
 

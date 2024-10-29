@@ -2,8 +2,8 @@
 Execute a Django management command.
 """
 import sys
+from collections.abc import Sequence
 from os import environ
-from typing import Sequence
 
 from django.core.management import execute_from_command_line
 from logikal_utils.project import tool_config

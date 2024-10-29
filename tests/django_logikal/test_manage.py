@@ -8,4 +8,4 @@ def test_main(mocker: MockerFixture) -> None:
     execute = mocker.patch('django_logikal.manage.execute_from_command_line')
     args = ['makemigrations']
     assert not main(args=args)
-    assert execute.called_with(['manage'] + args)
+    execute.assert_called_with(['manage'] + args)
