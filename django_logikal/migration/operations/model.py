@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Iterable, Optional, Type
+from collections.abc import Iterable
 
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor as SchemaEditor
 from django.db.migrations.operations.base import Operation
@@ -10,7 +10,7 @@ from django.db.models import Model
 class ModelAccessOperation(ABC, Operation):
     def __init__(
         self,
-        models: Iterable[Type[Model]],
+        models: Iterable[type[Model]],
         roles: Iterable[str],
         accesses: Iterable[str] = ('SELECT', ),
     ):  # noqa: D205, D400, D415
@@ -35,13 +35,13 @@ class GrantModelAccess(ModelAccessOperation):
     """
     def database_forwards(
         self, app_label: str, schema_editor: SchemaEditor,
-        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+        from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
         schema_editor.execute(f'GRANT {self.accesses} ON {self.tables} TO {self.roles}')
 
     def database_backwards(
         self, app_label: str, schema_editor: SchemaEditor,
-        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+        from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
         schema_editor.execute(f'REVOKE {self.accesses} ON {self.tables} FROM {self.roles}')
 
@@ -55,13 +55,13 @@ class RevokeModelAccess(ModelAccessOperation):
     """
     def database_forwards(
         self, app_label: str, schema_editor: SchemaEditor,
-        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+        from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
         schema_editor.execute(f'REVOKE {self.accesses} ON {self.tables} FROM {self.roles}')
 
     def database_backwards(
         self, app_label: str, schema_editor: SchemaEditor,
-        from_state: Optional[ProjectState] = None, to_state: Optional[ProjectState] = None,
+        from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
         schema_editor.execute(f'GRANT {self.accesses} ON {self.tables} TO {self.roles}')
 

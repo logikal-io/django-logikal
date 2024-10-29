@@ -49,10 +49,8 @@ class CommonBaseSettings(SettingsUpdate):
     STATIC_URL = '/static/'
 
     # Internationalization
-    USE_I18N = True
     LANGUAGES = [('en-us', gettext_lazy('English (United States)'))]
     LANGUAGE_CODE = 'en-us'
-    USE_TZ = True
     TIME_ZONE = 'Europe/Zurich'
 
     @staticmethod

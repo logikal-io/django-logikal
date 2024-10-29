@@ -103,16 +103,16 @@ class Command(BaseCommand):
                         self.stdout.write(self.style.SUCCESS('OK'))
                     except SkipInsert as skip:
                         reason = str(skip)
-                        reason = f' ({reason})' if reason else ''
+                        reason = f' – {reason}' if reason else ''
                         self.stdout.write(self.style.WARNING('SKIPPED') + reason)
 
     def handle(self, *_args: Any, **options: Any) -> None:
         database = self._connection.settings_dict
         config = tool_config('django_logikal')
         if database['HOST'] not in config.get('allowed_syncdb_hosts', DEFAULT_ALLOWED_HOSTS):
-            raise CommandError(f'Unallowed database host "{database["HOST"]}"')
+            raise CommandError(f'Disallowed database host "{database['HOST']}"')
 
-        database_url = f'{database["HOST"]}:{database["PORT"]}/{database["NAME"]}'
+        database_url = f'{database['HOST']}:{database['PORT']}/{database['NAME']}'
         self.stdout.write(f'Synchronizing database {self.style.ERROR(database_url)}')
 
         self._clear_public_schema(no_input=bool(options.get('no_input')))

@@ -1,10 +1,14 @@
-from pytest_mock import MockerFixture
+from pytest import CaptureFixture, MonkeyPatch
 
 from django_logikal.settings import Settings, SettingsUpdate
 
 
-def test_debug_messages(mocker: MockerFixture) -> None:
-    mocker.patch('django_logikal.settings.get_option', return_value='DEBUG')
+def test_debug_messages(monkeypatch: MonkeyPatch, capsys: CaptureFixture[str]) -> None:
+    monkeypatch.setenv('DJANGO_LOGIKAL_LOG_LEVEL', 'DEBUG')
     settings = Settings({'DATABASES': []})
     settings.update(SettingsUpdate)
     assert 'DATABASES' in settings
+
+    stdout = capsys.readouterr().out
+    assert 'Settings update' in stdout
+    assert 'Applying django_logikal.settings.SettingsUpdate' in stdout

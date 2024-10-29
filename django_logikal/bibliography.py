@@ -1,8 +1,9 @@
 # pylint: disable=no-value-for-parameter
 from calendar import month_name
+from collections.abc import Sequence
 from datetime import datetime
 from logging import getLogger
-from typing import Any, Dict, Mapping, Sequence
+from typing import Any
 
 from django.utils.html import escape
 from django.utils.safestring import SafeString, mark_safe
@@ -114,7 +115,7 @@ class WebStyle(BaseStyle):  # type: ignore[misc]
 
 
 class Bibliography:
-    data: Dict[str, BibliographyData] = {}
+    data: dict[str, BibliographyData] = {}
 
     def __init__(self, name: str):
         """
@@ -127,10 +128,10 @@ class Bibliography:
         self._name = name
         self._data = Bibliography.data[name]
         self._index = 0
-        self._references: Dict[str, BibliographyData] = {}
+        self._references: dict[str, BibliographyData] = {}
 
     @classmethod
-    def add_bibliographies(cls, bibliographies: Mapping[str, str]) -> None:
+    def add_bibliographies(cls, bibliographies: dict[str, str]) -> None:
         """
         Parse and store the provided bibliographies.
 
@@ -186,5 +187,5 @@ class Bibliography:
             for name, entry in self._references.items()
         )
         return mark_safe(  # nosec: name and entries are escaped
-            f'<ol class="{" ".join(classes)}">\n{items}\n</ol>'
+            f'<ol class="{' '.join(classes)}">\n{items}\n</ol>'
         )

@@ -18,8 +18,8 @@ class AppSettings(SettingsUpdate):
     # Authentication
     AUTH_USER_MODEL = 'static_site.User'
 
-    @staticmethod
-    def apply(settings: Settings) -> None:
+    @classmethod
+    def apply(cls, settings: Settings) -> None:
         service = Service('postgres-static')
         settings['DATABASES']['default']['PORT'] = service.container_port('5432/tcp')
-        settings['INSTALLED_APPS'] += ['tests.static_site']
+        cls.append(settings['INSTALLED_APPS'], 'tests.static_site')

@@ -1,5 +1,5 @@
 import re
-from typing import Any, Dict
+from typing import Any
 
 from django.conf import settings
 from django.template import Origin, TemplateDoesNotExist
@@ -14,7 +14,7 @@ from django_logikal.templates import filters, functions, tests
 class JinjaTemplates(Jinja2):
     app_dirname = 'templates'
 
-    def __init__(self, params: Dict[str, Any]):
+    def __init__(self, params: dict[str, Any]):
         params = params.copy()
         self._extension = params['OPTIONS'].pop('match_extension', '.j')
         environment_path = f'{environment.__module__}.{environment.__qualname__}'
@@ -44,7 +44,7 @@ class JinjaTemplates(Jinja2):
         raise TemplateDoesNotExist(template_name, tried=[(origin, error)], backend=self)
 
 
-def environment(**options: Dict[str, Any]) -> Environment:
+def environment(**options: dict[str, Any]) -> Environment:
     options = {option: value for option, value in options.items() if option != 'autoescape'}
     env = Environment(**options, autoescape=True)  # type: ignore[arg-type]
     env.policies.update({'ext.i18n.trimmed': True})

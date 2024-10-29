@@ -1,8 +1,9 @@
 import re
+from collections.abc import Sequence
 from email.mime.base import MIMEBase
 from logging import getLogger
 from pathlib import Path
-from typing import Any, Mapping, Optional, Sequence, Union
+from typing import Any
 
 import premailer
 from antimarkdown import to_markdown
@@ -52,7 +53,7 @@ class Email:
 
     Functions
     ---------
-    .. py:function:: image(path: typing.Union[str, ~pathlib.Path]) -> str
+    .. py:function:: image(path: str | ~pathlib.Path) -> str
         :noindex:
 
         Add an inline image from a local path to the email and return the image source string.
@@ -64,8 +65,8 @@ class Email:
     def __init__(
         self,
         template: str,
-        context: Optional[Mapping[str, Any]] = None,
-        prefix: Optional[str] = None,
+        context: dict[str, Any] | None = None,
+        prefix: str | None = None,
     ):
         # Loading template
         loaded_template = get_template(template)
@@ -75,7 +76,7 @@ class Email:
         # Creating email instance
         if (prefix := prefix if prefix is not None else settings.EMAIL_SUBJECT_PREFIX.strip()):
             prefix += ' '
-        self._email = AnymailMessage(subject=f'{prefix}{self._get_block("subject")}')
+        self._email = AnymailMessage(subject=f'{prefix}{self._get_block('subject')}')
 
         # Rendering html
         from django.contrib.sites.models import Site  # pylint: disable=import-outside-toplevel
@@ -102,19 +103,19 @@ class Email:
             text = re.sub(r'^---$', '---\n', text, flags=re.MULTILINE)  # fix horizontal rule
         self._email.body = text.strip() + '\n'
 
-    def _get_block(self, name: str, required: bool = True) -> Optional[str]:
+    def _get_block(self, name: str, required: bool = True) -> str | None:
         block = self._template.blocks.get(name)
         if required and not block:
             raise RuntimeError(f'The "{name}" block must be defined in the tempate')
         return concat(block(self._template_context)).strip() if block else None
 
-    def _attach_image(self, path: Union[str, Path], subtype: Optional[str] = None) -> str:
+    def _attach_image(self, path: str | Path, subtype: str | None = None) -> str:
         return f'cid:{self._email.attach_inline_image_file(path=path, subtype=subtype)}'
 
     def attach(
-        self, filename: Union[str, MIMEBase],
-        content: Optional[Any] = None,
-        mimetype: Optional[str] = None,
+        self, filename: str | MIMEBase,
+        content: Any | None = None,
+        mimetype: str | None = None,
     ) -> None:
         """
         Create a new file attachment and add it to the message.
@@ -123,7 +124,7 @@ class Email:
         """
         self._email.attach(filename=filename, content=content, mimetype=mimetype)
 
-    def attach_file(self, path: Union[str, Path], mimetype: Optional[str] = None) -> None:
+    def attach_file(self, path: str | Path, mimetype: str | None = None) -> None:
         """
         Create a new attachment using a file from the filesystem.
 
@@ -133,11 +134,12 @@ class Email:
 
     def send(  # pylint: disable=too-many-arguments
         self,
+        *,
         sender: str,
         to: Sequence[str],
-        cc: Optional[Sequence[str]] = None,
-        bcc: Optional[Sequence[str]] = None,
-        reply_to: Optional[Sequence[str]] = None,
+        cc: Sequence[str] | None = None,
+        bcc: Sequence[str] | None = None,
+        reply_to: Sequence[str] | None = None,
     ) -> int:
         """
         Send the email.

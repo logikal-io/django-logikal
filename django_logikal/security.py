@@ -1,4 +1,5 @@
-from typing import Any, Callable, Dict, List
+from collections.abc import Callable
+from typing import Any
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest
@@ -32,8 +33,8 @@ class LoginRequiredByDefaultMiddleware(Middleware):
         self,
         request: HttpRequest,
         view_func: Callable[..., Any],
-        view_args: List[Any],
-        view_kwargs: Dict[str, Any],
+        view_args: list[Any],
+        view_kwargs: dict[str, Any],
     ) -> Any:
         # The Django REST framework has its own separate authentication configuration
         # (see https://www.django-rest-framework.org/api-guide/authentication/)

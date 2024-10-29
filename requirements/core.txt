@@ -1,5 +1,5 @@
-Django~=4.2
-django-stubs-ext~=4.2
+Django~=5.1
+django-stubs-ext~=5.1
 
 # Django utilities
 django-debug-toolbar~=4.4
@@ -14,8 +14,8 @@ factory-boy~=3.3
 
 # Other utilities
 babel~=2.16
-black~=24.8  # used for migration formatting
-termcolor~=2.4
+black~=24.10  # used for migration formatting
+termcolor~=2.5
 google-cloud-logging~=3.11
 Jinja2~=3.1
 

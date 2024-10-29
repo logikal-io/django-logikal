@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any
 
 import robots
 from django.contrib.auth.hashers import make_password
@@ -49,7 +49,7 @@ class RobotsRuleFactory(DjangoModelFactory):  # type: ignore[misc]
     def disallowed(
         self,
         create: bool,  # pylint: disable=unused-argument
-        extracted: List[robots.models.Url],
+        extracted: list[robots.models.Url],
         **_kwargs: Any,
     ) -> None:
         for url in extracted:
@@ -59,7 +59,7 @@ class RobotsRuleFactory(DjangoModelFactory):  # type: ignore[misc]
     def sites(
         self,
         create: bool,  # pylint: disable=unused-argument
-        extracted: List[Site],
+        extracted: list[Site],
         **_kwargs: Any,
     ) -> None:
         for site in extracted:

@@ -15,6 +15,6 @@ class BaseSettings(CommonBaseSettings):
     # Static site generation
     DISTILL_DIR = Path(os.getcwd()) / 'generated'
 
-    @staticmethod
-    def apply(settings: Settings) -> None:
-        settings['INSTALLED_APPS'] += ['django_distill']
+    @classmethod
+    def apply(cls, settings: Settings) -> None:
+        cls.append(settings['INSTALLED_APPS'], 'django_distill')

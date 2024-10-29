@@ -1,16 +1,16 @@
 import logging
 import sys
-from typing import Any, Optional
+from typing import Any
 
 from django_logikal.logging import ConsoleLogFormatter
 
 
 def record(
     level: int,
-    status_code: Optional[int] = None,
-    message: Optional[str] = None,
+    status_code: int | None = None,
+    message: str | None = None,
     exc_info: Any = None,
-    stack: Optional[str] = None,
+    stack: str | None = None,
 ) -> logging.LogRecord:
     log_record = logging.LogRecord(
         name='test_name', level=level, pathname='test_path', lineno=1,

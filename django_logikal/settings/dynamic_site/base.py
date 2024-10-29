@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 from stormware.amazon.auth import AWSAuth
 
@@ -53,7 +53,7 @@ class BaseSettings(CommonBaseSettings):
     # Email
     EMAIL_BACKEND = 'anymail.backends.amazon_ses.EmailBackend'
     EMAIL_TIMEOUT = 10  # default: infinite
-    ANYMAIL: Dict[str, Any] = {
+    ANYMAIL: dict[str, Any] = {
         'REQUESTS_TIMEOUT': 10,  # default: 30s
         'AMAZON_SES_SESSION_PARAMS': {'profile_name': AWSAuth().profile()},
     }
@@ -64,11 +64,11 @@ class BaseSettings(CommonBaseSettings):
     }}
     WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
-    @staticmethod
-    def apply(settings: Settings) -> None:
-        settings['INSTALLED_APPS'] += [
+    @classmethod
+    def apply(cls, settings: Settings) -> None:
+        cls.extend(settings['INSTALLED_APPS'], [
             'django.contrib.admin',
             'django.contrib.messages',  # required by Django admin
             'django.contrib.sessions',  # required by Django admin
             'anymail',
-        ]
+        ])

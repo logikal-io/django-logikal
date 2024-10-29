@@ -38,19 +38,19 @@ class CommonDevSettings(SettingsUpdate):
     MIGRATION_LINTER_OPTIONS = {'exclude_apps': ['sites', 'robots']}
     MIGRATION_LINTER_OVERRIDE_MAKEMIGRATIONS = True
 
-    @staticmethod
-    def apply(settings: Settings) -> None:
+    @classmethod
+    def apply(cls, settings: Settings) -> None:
         # HTML validation
-        settings['MIDDLEWARE'] += ['django_logikal.validation.ValidationMiddleware']
+        cls.append(settings['MIDDLEWARE'], 'django_logikal.validation.ValidationMiddleware')
 
         # Migration linter
-        settings['INSTALLED_APPS'] += ['django_migration_linter']
+        cls.append(settings['INSTALLED_APPS'], 'django_migration_linter')
 
         # Debug toolbar
         if option_is_set('toolbar'):  # pragma: no cover, tested in subprocess
-            settings['MIDDLEWARE'].insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
-            settings['CSP_DEFAULT_SRC'] += " 'nonce-debug-toolbar'"
-            settings['INSTALLED_APPS'] += ['debug_toolbar', 'template_profiler_panel']
+            cls.prepend(settings['MIDDLEWARE'], 'debug_toolbar.middleware.DebugToolbarMiddleware')
+            cls.add(settings['CSP_DEFAULT_SRC'], " 'nonce-debug-toolbar'")
+            cls.extend(settings['INSTALLED_APPS'], ['debug_toolbar', 'template_profiler_panel'])
             settings['INTERNAL_IPS'] = ['127.0.0.1']
             settings['DEBUG_TOOLBAR_PANELS'] = [
                 'debug_toolbar.panels.history.HistoryPanel',
@@ -77,6 +77,6 @@ class CommonDevSettings(SettingsUpdate):
                 },
             }
             if 'EMAIL_BACKEND' in settings:
-                settings['INSTALLED_APPS'] += ['mail_panel']
+                cls.append(settings['INSTALLED_APPS'], 'mail_panel')
                 settings['EMAIL_BACKEND'] = 'mail_panel.backend.MailToolbarBackend'
-                settings['DEBUG_TOOLBAR_PANELS'].insert(0, 'mail_panel.panels.MailToolbarPanel')
+                cls.prepend(settings['DEBUG_TOOLBAR_PANELS'], 'mail_panel.panels.MailToolbarPanel')

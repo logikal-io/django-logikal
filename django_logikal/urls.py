@@ -1,5 +1,6 @@
+from collections.abc import Sequence
 from importlib import import_module
-from typing import Any, List, Mapping, Optional, Sequence, Tuple, Type, Union
+from typing import Any
 
 import debug_toolbar
 import django
@@ -11,8 +12,8 @@ from django.urls import URLPattern, URLResolver, include, path
 from django_logikal.env import is_dev, option_is_set
 from django_logikal.views import ERROR_HANDLERS, public
 
-URLType = Union[URLResolver, URLPattern]
-IncludeType = Tuple[Sequence[URLType], Optional[str], Optional[str]]
+URLType = URLResolver | URLPattern
+IncludeType = tuple[Sequence[URLType], str | None, str | None]
 
 
 def admin_urls() -> IncludeType:
@@ -50,10 +51,10 @@ def debug_toolbar_urls() -> IncludeType:  # pragma: no cover, tested in subproce
 
 
 def utility_paths(
-    sitemaps: Optional[Mapping[str, Union[Sitemap[Any], Type[Sitemap[Any]]]]] = None,
+    sitemaps: dict[str, Sitemap[Any] | type[Sitemap[Any]]] | None = None,
     admin: bool = True,
     static: bool = False,
-) -> List[URLType]:
+) -> list[URLType]:
     """
     Return the common utility paths.
 
@@ -63,7 +64,7 @@ def utility_paths(
     # Note: we have to import late for documentation building to succeed
     from robots.views import rules_list  # pylint: disable=import-outside-toplevel
 
-    paths: List[URLType] = []
+    paths: list[URLType] = []
     universal_path = path  # included for both static and dynamic sites
     if static:
         from django_distill import distill_path  # pylint: disable=import-outside-toplevel
