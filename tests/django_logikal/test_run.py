@@ -8,4 +8,4 @@ def test_main(mocker: MockerFixture) -> None:
     mocker.patch('django_logikal.run.environ')  # to avoid modifying it
     execute = mocker.patch('django_logikal.run.execute_from_command_line')
     assert not main(['--debug', '--toolbar', '--cloud-logging', '--send-emails'])
-    execute.assert_called_with(['manage', 'runserver'])
+    execute.assert_called_with(['manage', 'runserver', '127.0.0.1:8000'])

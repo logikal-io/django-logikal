@@ -34,5 +34,9 @@ def main(args: Sequence[str] = tuple(sys.argv[1:])) -> int:
         'DJANGO_SETTINGS_MODULE',
         tool_config('django_logikal')['DJANGO_SETTINGS_MODULE'],
     )
+    default_address_port = tool_config('django_logikal').get('run', {}).get('default_address_port')
+    if not manage_args and default_address_port:
+        manage_args.append(default_address_port)
+
     execute_from_command_line(['manage', 'runserver'] + manage_args)
     return 0

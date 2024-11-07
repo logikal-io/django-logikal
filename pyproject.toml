@@ -87,6 +87,9 @@ DJANGO_SETTINGS_MODULE = 'tests.dynamic_site.settings.testing'
 [tool.django_logikal]
 DJANGO_SETTINGS_MODULE = 'tests.dynamic_site.settings.dev'
 
+[tool.django_logikal.run]
+default_address_port = '127.0.0.1:8000'
+
 [tool.django_logikal.translate]
 apps = ['dynamic_site']
 contact = 'Gergely Kalmár <contact@logikal.io>'

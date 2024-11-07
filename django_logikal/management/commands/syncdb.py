@@ -108,8 +108,8 @@ class Command(BaseCommand):
 
     def handle(self, *_args: Any, **options: Any) -> None:
         database = self._connection.settings_dict
-        config = tool_config('django_logikal')
-        if database['HOST'] not in config.get('allowed_syncdb_hosts', DEFAULT_ALLOWED_HOSTS):
+        config = tool_config('django_logikal').get('syncdb', {})
+        if database['HOST'] not in config.get('allowed_hosts', DEFAULT_ALLOWED_HOSTS):
             raise CommandError(f'Disallowed database host "{database['HOST']}"')
 
         database_url = f'{database['HOST']}:{database['PORT']}/{database['NAME']}'
