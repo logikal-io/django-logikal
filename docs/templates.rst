@@ -139,7 +139,7 @@ Filters
 -------
 The following Python built-in objects are exposed as filters:
 
-- Functions: :func:`dir`, :func:`getattr`, :func:`repr`, :func:`type`
+- Functions: :func:`dir`, :func:`getattr`, :func:`hasattr`, :func:`repr`, :func:`type`
 - Types: :obj:`str`
 
 .. automodule:: django_logikal.templates.filters

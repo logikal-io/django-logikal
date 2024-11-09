@@ -61,6 +61,7 @@ def environment(**options: dict[str, Any]) -> Environment:
         # Built-in functions
         'dir': dir,
         'getattr': getattr,
+        'hasattr': hasattr,
         'repr': repr,
         'type': type,
         # Built-in types
