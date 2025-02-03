@@ -15,9 +15,6 @@ def strip_patch(package: str) -> str:
 
 
 def pkg_version(package_name: str) -> str:
-    if package_name == 'factory-boy':
-        # See https://github.com/FactoryBoy/factory_boy/issues/1095
-        return '3.3.0'
     return importlib.metadata.version(package_name)
 
 

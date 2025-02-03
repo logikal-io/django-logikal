@@ -3,8 +3,9 @@ import re
 from pathlib import Path
 from subprocess import run
 
+from logikal_browser import Browser, scenarios
 from pytest import mark
-from pytest_logikal.browser import Browser, scenarios, set_browser
+from pytest_logikal.browser import set_browser
 
 from django_logikal.settings.static_site.testing import TestingSettings
 
@@ -31,7 +32,9 @@ def test_generate(tmp_path: Path, browser: Browser) -> None:
     browser.check('test')
     browser.get(f'file://{output_path}/en-us/localization/index.html')
     browser.check('localization-en-us')
-    browser.get(f'file://{output_path}/en-gb/localisation/index.html')
+    browser.get(
+        f'file://{output_path}/en-gb/localisation/index.html'  # codespell:ignore localisation
+    )
     browser.check('localization-en-gb')
     robots = (output_path / 'robots.txt').read_text()
     assert 'User-agent: *\n' in robots
@@ -39,4 +42,8 @@ def test_generate(tmp_path: Path, browser: Browser) -> None:
     sitemap = (output_path / 'sitemap.xml').read_text()
     assert '<loc>http://logikal.io/</loc><priority>1</priority>' in sitemap
     assert '<loc>http://logikal.io/en-us/localization/</loc><priority>0.5</priority>' in sitemap
-    assert '<loc>http://logikal.io/en-gb/localisation/</loc><priority>0.5</priority>' in sitemap
+    assert (
+        '<loc>http://logikal.io/en-gb/localisation/'  # codespell:ignore localisation
+        '</loc><priority>0.5</priority>'
+        in sitemap
+    )

@@ -39,12 +39,12 @@ class Project(models.Model):
         ]
 
 
-class ProjectSerializer(serializers.HyperlinkedModelSerializer):  # type: ignore[misc]
+class ProjectSerializer(serializers.HyperlinkedModelSerializer[Project]):
     class Meta:
         model = Project
         fields = '__all__'
 
 
-class ProjectViewSet(viewsets.ModelViewSet[Project]):  # type: ignore[misc]
+class ProjectViewSet(viewsets.ModelViewSet[Project]):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer

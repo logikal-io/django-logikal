@@ -1,10 +1,10 @@
+# mypy: disable-error-code="no-untyped-call, attr-defined"
 from typing import Any
 
 import robots
-from django.contrib.auth.hashers import make_password
 from django.contrib.sites.models import Site
 from factory import Faker, LazyFunction, post_generation
-from factory.django import DjangoModelFactory
+from factory.django import DjangoModelFactory, Password
 from faker import Faker as FakerFactory
 
 from tests.dynamic_site.models import Project, User
@@ -12,9 +12,9 @@ from tests.dynamic_site.models import Project, User
 faker = FakerFactory()
 
 
-class UserFactory(DjangoModelFactory):  # type: ignore[misc]
+class UserFactory(DjangoModelFactory[User]):
     username = 'user'
-    password = LazyFunction(lambda: make_password('local'))  # nosec: used for testing
+    password = Password('local')
     first_name = Faker('first_name')
     last_name = Faker('last_name')
     email = Faker('email')
@@ -33,12 +33,12 @@ class SuperUserFactory(StaffUserFactory):
     is_superuser = True
 
 
-class RobotsUrlFactory(DjangoModelFactory):  # type: ignore[misc]
+class RobotsUrlFactory(DjangoModelFactory[robots.models.Url]):
     class Meta:
         model = robots.models.Url
 
 
-class RobotsRuleFactory(DjangoModelFactory):  # type: ignore[misc]
+class RobotsRuleFactory(DjangoModelFactory[robots.models.Rule]):
     robot = '*'
 
     class Meta:
@@ -66,7 +66,7 @@ class RobotsRuleFactory(DjangoModelFactory):  # type: ignore[misc]
             self.sites.add(site)
 
 
-class ProjectFactory(DjangoModelFactory):  # type: ignore[misc]
+class ProjectFactory(DjangoModelFactory[Project]):
     id = Faker('uuid4')
     name = LazyFunction(lambda: faker.bs().title())
 

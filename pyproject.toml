@@ -72,14 +72,9 @@ packages = [
 addopts = '--ignore=static'
 filterwarnings = [
   'error',
-  # See https://github.com/googleapis/python-crc32c/issues/168
-  'ignore:pkg_resources is deprecated as an API:DeprecationWarning',
-  # See https://github.com/googleapis/api-common-protos/issues/121
-  "ignore:Deprecated call to `pkg_resources.declare_namespace\\('google:DeprecationWarning",
-  "ignore:Deprecated call to `pkg_resources.declare_namespace\\('sphinxcontrib:DeprecationWarning",
-  # Can be removed with the next release of django-migration-linter
-  "ignore:unclosed file .* name='/dev/null':ResourceWarning",
   # Caused by pybtex
+  "ignore:Deprecated call to `pkg_resources.declare_namespace\\('sphinxcontrib:DeprecationWarning",
+  'ignore:pkg_resources is deprecated as an API:DeprecationWarning',
   'ignore:open_text is deprecated:DeprecationWarning',
 ]
 DJANGO_SETTINGS_MODULE = 'tests.dynamic_site.settings.testing'
@@ -124,7 +119,6 @@ module = [
 exclude_lines = [
   'pragma: no cover',
   '\.\.\.',  # exclude abstract methods
-  'except ImportError:',  # exclude import guard
 ]
 
 [tool.pylint.BASIC]
