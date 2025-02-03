@@ -93,7 +93,7 @@ contact = 'Gergely Kalmár <contact@logikal.io>'
 parallel = false  # parallel builds do not work with automatic docker compose service starting
 
 [tool.browser.versions]
-chrome = '130.0.6723.69'
+chrome = '132.0.6834.83'
 
 [tool.mypy]
 plugins = ['mypy_django_plugin.main']
