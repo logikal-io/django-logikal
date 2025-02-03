@@ -70,7 +70,8 @@ class Command(BaseCommand):
         call_command('migrate', **options)
 
     def _insert_local_data(self) -> None:
-        factory_random.reseed_random(DEFAULT_RANDOM_SEED)  # for deterministic data
+        # Setting seed for deterministic data
+        factory_random.reseed_random(DEFAULT_RANDOM_SEED)  # type: ignore[no-untyped-call]
         info_message_shown = False
         for app in apps.get_app_configs():
             if not (module := getattr(app, 'module', None)):

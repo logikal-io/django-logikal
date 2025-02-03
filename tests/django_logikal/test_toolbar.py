@@ -1,6 +1,7 @@
+from logikal_browser import Browser, scenarios
 from pytest import MonkeyPatch, mark
 from pytest_django.fixtures import SettingsWrapper
-from pytest_logikal.browser import Browser, scenarios, set_browser
+from pytest_logikal.browser import set_browser
 from pytest_logikal.django import LiveURL
 from selenium.webdriver.common.by import By
 

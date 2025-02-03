@@ -10,10 +10,11 @@ from django.core.management.base import CommandError
 from django.template.loader import get_template
 from django.test import Client
 from django.urls import reverse
+from logikal_browser import Browser, scenarios
 from pytest import mark, raises
 from pytest_django.live_server_helper import LiveServer
 from pytest_factoryboy import register
-from pytest_logikal.browser import Browser, scenarios, set_browser
+from pytest_logikal.browser import set_browser
 from pytest_logikal.django import LiveURL, all_languages
 from pytest_mock import MockerFixture
 from selenium.webdriver.common.by import By
@@ -334,7 +335,11 @@ def test_sitemap(live_url: LiveURL, client: Client) -> None:
     assert '<loc>http://logikal.io/</loc><priority>1</priority>' in source
     assert '<loc>http://logikal.io/models/</loc><priority>0.75</priority>' in source
     assert '<loc>http://logikal.io/en-us/localization/</loc><priority>0.5</priority>' in source
-    assert '<loc>http://logikal.io/en-gb/localisation/</loc><priority>0.5</priority>' in source
+    assert (
+        '<loc>http://logikal.io/en-gb/localisation/'  # codespell:ignore localisation
+        '</loc><priority>0.5</priority>'
+        in source
+    )
     assert 'internal/' not in source
 
 
