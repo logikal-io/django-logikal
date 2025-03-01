@@ -2,7 +2,7 @@
 whitenoise[brotli]~=6.8
 
 # Secrets
-stormware[amazon,google]~=1.2
+stormware[amazon,google]~=2.0
 
 # Emails
 antimarkdown~=1.0
