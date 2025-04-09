@@ -1,4 +1,3 @@
-# mypy: disable-error-code="no-untyped-call, attr-defined"
 from typing import Any
 
 import robots

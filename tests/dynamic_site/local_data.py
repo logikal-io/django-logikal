@@ -1,4 +1,3 @@
-# mypy: disable-error-code="no-untyped-call, attr-defined"
 from datetime import date
 
 from django_logikal.local_data import LocalData, SkipInsert
