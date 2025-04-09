@@ -2,8 +2,9 @@ import importlib
 import os
 import sys
 
+from docutils.nodes import document
 from logikal_utils.project import tool_config
-from sphinx.addnodes import desc_signature, document
+from sphinx.addnodes import desc_signature
 from sphinx.application import Sphinx
 
 sys.path.insert(0, '.')

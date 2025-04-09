@@ -49,7 +49,10 @@ class CommonDevSettings(SettingsUpdate):
         # Debug toolbar
         if option_is_set('toolbar'):  # pragma: no cover, tested in subprocess
             cls.prepend(settings['MIDDLEWARE'], 'debug_toolbar.middleware.DebugToolbarMiddleware')
-            cls.add(settings['CSP_DEFAULT_SRC'], " 'nonce-debug-toolbar'")
+            cls.append(
+                settings['CONTENT_SECURITY_POLICY']['DIRECTIVES']['default-src'],
+                "'nonce-debug-toolbar'",
+            )
             cls.extend(settings['INSTALLED_APPS'], ['debug_toolbar', 'template_profiler_panel'])
             settings['INTERNAL_IPS'] = ['127.0.0.1']
             settings['DEBUG_TOOLBAR_PANELS'] = [

@@ -96,7 +96,7 @@ chrome = '132.0.6834.83'
 
 [tool.mypy]
 plugins = ['mypy_django_plugin.main']
-untyped_calls_exclude = ['factory']
+untyped_calls_exclude = ['factory', 'tests.django_logikal.factories']
 
 [[tool.mypy.overrides]]
 ignore_missing_imports = true

@@ -71,7 +71,7 @@ class Command(BaseCommand):
 
     def _insert_local_data(self) -> None:
         # Setting seed for deterministic data
-        factory_random.reseed_random(DEFAULT_RANDOM_SEED)  # type: ignore[no-untyped-call]
+        factory_random.reseed_random(DEFAULT_RANDOM_SEED)
         info_message_shown = False
         for app in apps.get_app_configs():
             if not (module := getattr(app, 'module', None)):
