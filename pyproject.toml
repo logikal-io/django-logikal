@@ -7,13 +7,12 @@ name = 'django-logikal'
 description = 'Django utilities used at Logikal'
 readme = 'README.rst'
 requires-python = '~= 3.12'
-license = {file = 'LICENSE.txt'}
+license = 'MIT'
 authors = [{name = 'Logikal GmbH', email = 'contact@logikal.io'}]
 keywords = ['python', 'django']
 classifiers = [
   'Development Status :: 5 - Production/Stable',
   'Intended Audience :: Developers',
-  'License :: OSI Approved :: MIT License',
   'Operating System :: POSIX :: Linux',
   'Programming Language :: Python :: 3',
   'Programming Language :: Python :: 3.12',
@@ -97,6 +96,7 @@ chrome = '132.0.6834.83'
 
 [tool.mypy]
 plugins = ['mypy_django_plugin.main']
+untyped_calls_exclude = ['factory', 'tests.django_logikal.factories']
 
 [[tool.mypy.overrides]]
 ignore_missing_imports = true

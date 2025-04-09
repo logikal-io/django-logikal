@@ -1,10 +1,11 @@
-# mypy: disable-error-code="no-untyped-call, attr-defined"
 from typing import Any
 
 import robots
 from django.contrib.sites.models import Site
-from factory import Faker, LazyFunction, post_generation
+from factory.declarations import LazyFunction
 from factory.django import DjangoModelFactory, Password
+from factory.faker import Faker
+from factory.helpers import post_generation
 from faker import Faker as FakerFactory
 
 from tests.dynamic_site.models import Project, User

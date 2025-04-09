@@ -1,5 +1,6 @@
 from typing import Any
 
+from csp.constants import NONCE, SELF
 from stormware.amazon.auth import AWSAuth
 
 from django_logikal.settings import Settings
@@ -25,9 +26,9 @@ class BaseSettings(CommonBaseSettings):
     # Security
     SECURE_REFERRER_POLICY = ['same-origin', 'origin-when-cross-origin']
     SESSION_COOKIE_AGE = 7 * 24 * 60 * 60  # 7 days (default: 14 days)
-    CSP_DEFAULT_SRC = "'self'"  # the single quotes are important
-    CSP_BLOCK_ALL_MIXED_CONTENT = True
-    CSP_INCLUDE_NONCE_IN = ['default-src']
+    CONTENT_SECURITY_POLICY = {
+        'DIRECTIVES': {'default-src': [SELF, NONCE]},
+    }
 
     # Internationalization
     LANGUAGE_COOKIE_NAME = 'language'
@@ -71,4 +72,5 @@ class BaseSettings(CommonBaseSettings):
             'django.contrib.messages',  # required by Django admin
             'django.contrib.sessions',  # required by Django admin
             'anymail',
+            'csp',
         ])

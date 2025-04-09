@@ -1,11 +1,11 @@
-Django~=5.1
+Django~=5.2
 django-stubs-ext~=5.1
 
 # Django utilities
-django-debug-toolbar~=5.0
+django-debug-toolbar~=5.1
 django-debug-toolbar-template-profiler~=2.1
 django-mail-panel~=4.0
-django-csp~=3.8
+django-csp~=4.0
 django-robots~=6.1
 
 # Databases
