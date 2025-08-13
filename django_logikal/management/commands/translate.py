@@ -75,7 +75,7 @@ class Command(BaseCommand):
         locale_path = (output or app.path) / 'locale'
         locale_path.mkdir(parents=True, exist_ok=True)
         for domain in DOMAINS:
-            CommandLineInterface().run([  # type: ignore[no-untyped-call]
+            args = [
                 sys.argv[0], 'extract',
                 # Configuration
                 '--mapping-file', str(Path(__file__).parents[2] / f'babel/{domain}.ini'),
@@ -83,14 +83,19 @@ class Command(BaseCommand):
                 '--add-comments', 'Translators:',
                 # Metadata
                 '--project', app.name.replace('_', '-'),
-                '--version', f'v{metadata.version(PYPROJECT['project']['name'])}',
                 '--msgid-bugs-address', tool_config('django_logikal')['translate']['contact'],
                 '--copyright-holder', PYPROJECT['project']['authors'][0]['name'],
                 '--header-comment', TEMPLATE_HEADER,
                 # Input and output file
                 '--output-file', str(locale_path / f'{domain}.pot'),
                 str(app.path),
-            ])
+            ]
+            try:
+                version = metadata.version(PYPROJECT['project']['name'])
+                args.extend(['--version', f'v{version}'])
+            except metadata.PackageNotFoundError:  # pragma: no cover
+                pass  # pragma: no cover; ignore missing version data
+            CommandLineInterface().run(args)  # type: ignore[no-untyped-call]
         self.stdout.write()
 
     def action_init(self, apps: Sequence[App], locale: str, output: Path | None) -> None:
