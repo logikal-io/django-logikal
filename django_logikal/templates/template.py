@@ -34,7 +34,7 @@ class Template:
 
         class TemplateViewWithContext(TemplateView):
             def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-                return {**context, **get_context_data(self, **kwargs)}
+                return {**context, **get_context_data(self, **kwargs)}  # type: ignore[arg-type]
 
         template_name = f'{self.app + '/' if self.app else ''}{name}.html.j'
         view = TemplateViewWithContext.as_view(template_name=template_name)
