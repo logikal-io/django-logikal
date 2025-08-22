@@ -1,5 +1,6 @@
 from datetime import date, datetime, timezone
 from decimal import Decimal
+from typing import Any
 
 from django.conf.urls.i18n import i18n_patterns
 from django.urls import include, path
@@ -13,8 +14,14 @@ from django_logikal.urls import utility_paths
 from django_logikal.views import ERROR_HANDLERS, public, redirect_to
 from tests.dynamic_site import models, views
 
+
+class TemplateWithContext(Template):
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        return {'get_context_data': 'context'}
+
+
 app_name = 'dynamic_site'
-template = Template(app=app_name, extra_context={'extra_template_data': 'template'})
+template = TemplateWithContext(app=app_name, extra_context={'extra_template_data': 'template'})
 template_localized = Template(app=f'{app_name}_localized')
 
 handler400 = ERROR_HANDLERS[400]
