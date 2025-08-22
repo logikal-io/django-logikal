@@ -40,6 +40,7 @@
     <li>{{ __function('language') }}</li>
     <li>{{ __function('format', call=false) }}{{ re.sub(' at 0x[^>]+', '', format()|str) }}</li>
     <li><b>get_context_data:</b> {{ get_context_data }}</li>
+    <li><b>get_context_data_request:</b> {{ get_context_data_request }}</li>
     <li><b>extra_template_data:</b> {{ extra_template_data }}</li>
     <li><b>extra_view_data:</b> {{ extra_view_data }}</li>
   </ul>
