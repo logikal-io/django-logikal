@@ -51,7 +51,6 @@ class CommonBaseSettings(SettingsUpdate):
     # Internationalization
     LANGUAGES = [('en-us', gettext_lazy('English (United States)'))]
     LANGUAGE_CODE = 'en-us'
-    LANGUAGE_COOKIE_NAME = 'language'
     TIME_ZONE = 'Europe/Zurich'
 
     @staticmethod

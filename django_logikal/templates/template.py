@@ -29,15 +29,24 @@ class Template:
         public: bool | None = None,
         extra_context: dict[str, Any] | None = None,
     ) -> Callable[..., HttpResponseBase]:
+        parent_get_context_data = self.get_context_data
         extra_context = {**(self.extra_context or {}), **(extra_context or {})}
+
+        class TemplateViewWithContext(TemplateView):
+            def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+                return {**extra_context, **parent_get_context_data(**kwargs)}
+
         template_name = f'{self.app + '/' if self.app else ''}{name}.html.j'
-        view = TemplateView.as_view(template_name=template_name, extra_context=extra_context)
+        view = TemplateViewWithContext.as_view(template_name=template_name)
         public = public if public is not None else self.public
         return mark_public(view) if public else view
 
     def _add_path_priority(self, name: str, priority: str | None) -> None:
         if priority:
             self._path_priority[name if not self.app else f'{self.app}:{name}'] = priority
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:  # pylint: disable=no-self-use
+        return {}
 
     def path(  # pylint:disable=too-many-arguments
         self,
