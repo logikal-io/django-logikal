@@ -17,7 +17,7 @@ from tests.dynamic_site import models, views
 
 class TemplateWithContext(Template):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        return {'get_context_data': 'context'}
+        return {'get_context_data': 'context', 'get_context_data_request': self.request}
 
 
 app_name = 'dynamic_site'
