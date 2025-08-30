@@ -1,16 +1,16 @@
 # Translation template for project "dynamic-site"
-# Copyright 2023 Logikal GmbH
+# Copyright 2025 Logikal GmbH
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: dynamic-site v0.1.dev1+g8fb9899.d20230531\n"
+"Project-Id-Version: dynamic-site v3.15.2.dev0+gd42bbf38f.d20250829\n"
 "Report-Msgid-Bugs-To: Gergely Kalmár <contact@logikal.io>\n"
-"POT-Creation-Date: 2023-06-01 18:38+0200\n"
+"POT-Creation-Date: 2025-08-30 02:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.12.1\n"
+"Generated-By: Babel 2.17.0\n"
 

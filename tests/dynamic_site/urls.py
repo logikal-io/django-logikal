@@ -4,7 +4,7 @@ from typing import Any
 
 from django.conf.urls.i18n import i18n_patterns
 from django.urls import include, path
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy  # not using underscore to test extraction
 from rest_framework import urls as rest_framework_auth_urls
 from rest_framework.routers import DefaultRouter as APIRouter
 
@@ -51,7 +51,7 @@ urlpatterns = [
     *i18n_patterns(
         path('', template_localized.include([
             template_localized.path(
-                _('localization/'), name='localization', public=True, priority='0.5',
+                gettext_lazy('localization/'), name='localization', public=True, priority='0.5',
                 extra_context={
                     'date': date(2023, 7, 1),
                     'timestamp': datetime(2023, 7, 1, 14, 34, 56, tzinfo=timezone.utc),
@@ -59,8 +59,8 @@ urlpatterns = [
                     'currency': Decimal('105432.12345'),
                     # Note: we use a lambda to make sure the active language is used
                     # Translators: This is a view test comment for translators
-                    'localized_view_data': lambda: _('localized %(word)s') % {
-                        'word': _('marvelous'),
+                    'localized_view_data': lambda: gettext_lazy('localized %(word)s') % {
+                        'word': gettext_lazy('marvelous'),
                     }
                 },
             ),
