@@ -60,3 +60,10 @@ def nowrap(text: str) -> SafeString:
     Replace spaces with non-breaking spaces.
     """
     return mark_safe(escape(text).replace(' ', '&nbsp;'))  # nosec: text is escaped
+
+
+def truncate(text: str, length: int) -> str:
+    """
+    Truncate a string to a given length.
+    """
+    return text[:length]

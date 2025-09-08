@@ -36,3 +36,9 @@ def test_wrap() -> None:
 
 def test_nowrap() -> None:
     assert f.nowrap('hello world') == 'hello&nbsp;world'
+
+
+def test_truncate() -> None:
+    assert f.truncate('hello world', 3) == 'hel'
+    assert f.truncate('hello world', 11) == 'hello world'
+    assert f.truncate('hello world', 12) == 'hello world'
