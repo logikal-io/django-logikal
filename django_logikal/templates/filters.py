@@ -62,8 +62,22 @@ def nowrap(text: str) -> SafeString:
     return mark_safe(escape(text).replace(' ', '&nbsp;'))  # nosec: text is escaped
 
 
-def truncate(text: str, length: int) -> str:
+def truncate(text: str, length: int, truncation: str = '...') -> str:
     """
     Truncate a string to a given length.
+
+    If the original text exceeds the desired length, return a string whose
+    total length is at most `length`, appending the `truncation` string.
+    The `truncation` string is only appended when truncation occurs.
     """
-    return text[:length]
+    if len(text) <= length:
+        return text
+    if length <= 0:
+        return ''
+    if not truncation:
+        return text[:length]
+    if len(truncation) >= length:
+        # If truncation marker itself would exceed or fill the length, return a slice of it
+        return truncation[:length]
+    visible_length = max(0, length - len(truncation))
+    return f"{text[:visible_length]}{truncation}"
