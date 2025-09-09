@@ -52,4 +52,4 @@ def test_truncate() -> None:
     assert f.truncate('hello world', 3) == '...'
     assert f.truncate('hello world', 2) == '..'
     # Non-positive length yields empty
-    assert f.truncate('hello world', 0) == ''
+    assert not f.truncate('hello world', 0)
