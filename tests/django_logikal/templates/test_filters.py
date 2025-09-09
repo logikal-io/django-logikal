@@ -40,16 +40,23 @@ def test_nowrap() -> None:
 
 def test_truncate() -> None:
     # Appends default ellipsis when truncated
-    assert f.truncate('hello world', 4) == 'h...'
+    assert f.truncate('hello world', 5) == 'hell…'
     # No truncation when text fits
     assert f.truncate('hello world', 11) == 'hello world'
     assert f.truncate('hello world', 12) == 'hello world'
-    # Custom truncation marker (proper ellipsis)
-    assert f.truncate('hello world', 4, '…') == 'hel…'
+    # Custom truncation marker (three dots)
+    assert f.truncate('hello world', 4, '...') == 'h...'
     # Empty truncation string => pure slice
     assert f.truncate('hello world', 4, '') == 'hell'
-    # Length less or equal to truncation length uses marker only
-    assert f.truncate('hello world', 3) == '...'
-    assert f.truncate('hello world', 2) == '..'
-    # Non-positive length yields empty
-    assert not f.truncate('hello world', 0)
+    # Length less or equal to truncation length raises ValueError
+    try:
+        f.truncate('hello world', 3, '...')
+        assert False, 'Expected ValueError: Truncation string must be shorter than length'
+    except ValueError:
+        pass
+    # Non-positive length raises ValueError
+    try:
+        f.truncate('hello world', 0)
+        assert False, 'Expected ValueError: Length must be positive'
+    except ValueError:
+        pass
