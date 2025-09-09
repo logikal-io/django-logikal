@@ -5,6 +5,7 @@ import logging
 import os
 import sys
 from collections.abc import Sequence
+from datetime import datetime
 from importlib import metadata
 from pathlib import Path
 from typing import Any, cast
@@ -14,12 +15,26 @@ from babel.messages.frontend import CommandLineInterface
 from django.core.management.base import BaseCommand, CommandError, CommandParser
 from logikal_utils.project import PYPROJECT, tool_config
 
-TEMPLATE_HEADER = """
+TEMPLATE_HEADER = f"""
 # Translation template for project "PROJECT"
-# Copyright 2023 ORGANIZATION
+# Copyright {datetime.now().year} ORGANIZATION
 """
-DEFAULT_WIDTH = 76
+DEFAULT_WIDTH = 96
 DOMAINS = ('django', 'djangojs')
+KEYWORDS = {  # See https://github.com/python-babel/babel/issues/71
+    'django': [
+        # See https://docs.djangoproject.com/en/5.2/ref/utils/#module-django.utils.translation
+        '_',
+        'gettext',
+        'gettext_lazy',
+        'ngettext:1,2',
+        'ngettext_lazy:1,2',
+        'pgettext:1c,2',
+        'pgettext_lazy:1c,2',
+        'npgettext:1c,2,3',
+        'npgettext_lazy:1c,2,3',
+    ],
+}
 
 
 class App:
@@ -80,16 +95,19 @@ class Command(BaseCommand):
                 # Configuration
                 '--mapping-file', str(Path(__file__).parents[2] / f'babel/{domain}.ini'),
                 '--width', DEFAULT_WIDTH,
+                '--sort-by-file',
                 '--add-comments', 'Translators:',
                 # Metadata
                 '--project', app.name.replace('_', '-'),
                 '--msgid-bugs-address', tool_config('django_logikal')['translate']['contact'],
-                '--copyright-holder', PYPROJECT['project']['authors'][0]['name'],
+                '--copyright-holder', tool_config('django_logikal')['translate']['copyright'],
                 '--header-comment', TEMPLATE_HEADER,
                 # Input and output file
                 '--output-file', str(locale_path / f'{domain}.pot'),
                 str(app.path),
             ]
+            for keyword in KEYWORDS.get(domain, []):
+                args.extend(['--keyword', keyword])
             try:
                 version = metadata.version(PYPROJECT['project']['name'])
                 args.extend(['--version', f'v{version}'])
@@ -137,11 +155,11 @@ class Command(BaseCommand):
             for domain in DOMAINS:
                 CommandLineInterface().run([  # type: ignore[no-untyped-call]
                     sys.argv[0], 'init',
-                    '--width', DEFAULT_WIDTH,
-                    '--locale', locale,
                     '--domain', domain,
                     '--input-file', str((output or app.path) / f'locale/{domain}.pot'),
                     '--output-file', str(output_files[app.name][domain]),
+                    '--locale', locale,
+                    '--width', DEFAULT_WIDTH,
                 ])
 
         self.stdout.write(self.style.SUCCESS('\nMessage catalog successfully created'))
@@ -153,10 +171,11 @@ class Command(BaseCommand):
             for domain in DOMAINS:
                 CommandLineInterface().run([  # type: ignore[no-untyped-call]
                     sys.argv[0], 'update',
-                    '--width', DEFAULT_WIDTH,
                     '--domain', domain,
                     '--input-file', str((output or app.path) / f'locale/{domain}.pot'),
                     '--output-dir', str((output or app.path) / 'locale'),
+                    '--width', DEFAULT_WIDTH,
+                    '--update-header-comment',
                 ])
             self.stdout.write()
         self.stdout.write(self.style.SUCCESS('Message catalogs successfully updated'))
