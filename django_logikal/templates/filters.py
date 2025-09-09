@@ -62,7 +62,7 @@ def nowrap(text: str) -> SafeString:
     return mark_safe(escape(text).replace(' ', '&nbsp;'))  # nosec: text is escaped
 
 
-def truncate(text: str, length: int, truncation: str = '...') -> str:
+def truncate(text: str, length: int, truncation: str = '…') -> str:
     """
     Truncate a string to a given length.
 
