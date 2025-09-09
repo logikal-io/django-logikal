@@ -73,11 +73,10 @@ def truncate(text: str, length: int, truncation: str = '…') -> str:
     if len(text) <= length:
         return text
     if length <= 0:
-        return ''
+        raise ValueError('Length must be positive')
     if not truncation:
         return text[:length]
     if len(truncation) >= length:
-        # If truncation marker itself would exceed or fill the length, return a slice of it
-        return truncation[:length]
+        raise ValueError('Truncation string must be shorter than length')
     visible_length = max(0, length - len(truncation))
     return f"{text[:visible_length]}{truncation}"
