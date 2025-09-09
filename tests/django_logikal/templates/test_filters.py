@@ -1,3 +1,5 @@
+import pytest
+
 from django_logikal.templates import filters as f
 
 
@@ -49,14 +51,8 @@ def test_truncate() -> None:
     # Empty truncation string => pure slice
     assert f.truncate('hello world', 4, '') == 'hell'
     # Length less or equal to truncation length raises ValueError
-    try:
+    with pytest.raises(ValueError):
         f.truncate('hello world', 3, '...')
-        assert False, 'Expected ValueError: Truncation string must be shorter than length'
-    except ValueError:
-        pass
     # Non-positive length raises ValueError
-    try:
+    with pytest.raises(ValueError):
         f.truncate('hello world', 0)
-        assert False, 'Expected ValueError: Length must be positive'
-    except ValueError:
-        pass
