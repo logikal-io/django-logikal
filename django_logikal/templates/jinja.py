@@ -73,6 +73,7 @@ def environment(**options: dict[str, Any]) -> Environment:
         'unslugify': filters.unslugify,
         'wrap': filters.wrap,
         'nowrap': filters.nowrap,
+        'truncate': filters.truncate,
     })
     env.tests.update({
         'startswith': tests.startswith,
