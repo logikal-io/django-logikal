@@ -281,7 +281,7 @@ def test_browsable_api(live_url: LiveURL, browser: Browser, user: User) -> None:
 
     url = browser.find_element(By.CSS_SELECTOR, 'div.response-info a span.str')
     url_text = re.sub(':[0-9]+/', '/', url.text)  # remove the non-deterministic port number
-    browser.execute_script(f'arguments[0].innerHTML = "{url_text}"', url)  # type: ignore
+    browser.execute_script(f'arguments[0].innerHTML = "{url_text}"', url)
 
     browser.check('after_login')
 

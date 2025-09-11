@@ -21,8 +21,15 @@ class ModelAccessOperation(ABC, Operation):
             accesses: An iterable of accesses to manage.
 
         """
+        tables: list[str] = []
+        for model in models:
+            tables.append(model._meta.db_table)
+            if history_field := getattr(model._meta, 'simple_history_manager_attribute', None):
+                history_model = getattr(model, history_field).model
+                tables.append(history_model._meta.db_table)
+
         self.accesses = ', '.join(access.upper() for access in accesses)
-        self.tables = ', '.join(f'"{model._meta.db_table}"' for model in models)
+        self.tables = ', '.join(f'"{table}"' for table in tables)
         self.roles = ', '.join(f'"{role}"' for role in roles)
 
     def state_forwards(self, app_label: str, state: ProjectState) -> None:

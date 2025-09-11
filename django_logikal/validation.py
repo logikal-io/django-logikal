@@ -67,7 +67,9 @@ class ValidationMiddleware(Middleware):
             ))
             context = {
                 # These are safe strings
-                'code_styles': mark_safe(HtmlFormatter(style='manni').get_style_defs()),  # nosec
+                'code_styles': mark_safe(  # nosec
+                    HtmlFormatter(style='manni').get_style_defs()  # type: ignore[no-untyped-call]
+                ),
                 'source': mark_safe(highlight(  # nosec
                     code=content,
                     formatter=HtmlFormatter(linenos=True, hl_lines=lines, wrapcode=True),
