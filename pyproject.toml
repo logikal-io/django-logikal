@@ -73,7 +73,7 @@ filterwarnings = [
   'error',
   # Caused by pybtex
   "ignore:Deprecated call to `pkg_resources.declare_namespace\\('sphinxcontrib:DeprecationWarning",
-  'ignore:pkg_resources is deprecated as an API:DeprecationWarning',
+  'ignore:pkg_resources is deprecated as an API:UserWarning',
   'ignore:open_text is deprecated:DeprecationWarning',
 ]
 DJANGO_SETTINGS_MODULE = 'tests.dynamic_site.settings.testing'
@@ -93,7 +93,7 @@ copyright = 'Logikal GmbH'
 parallel = false  # parallel builds do not work with automatic docker compose service starting
 
 [tool.browser.versions]
-chrome = '132.0.6834.83'
+chrome = '139.0.7258.68'
 
 [tool.mypy]
 plugins = ['mypy_django_plugin.main']
@@ -114,13 +114,11 @@ module = [
   'pybtex.*',
   'robots.*',
   'rest_framework.*',
+  'simple_history.*',
 ]
 
-[tool.coverage.report]
-exclude_lines = [
-  'pragma: no cover',
-  '\.\.\.',  # exclude abstract methods
-]
+[tool.coverage.run]
+patch = ['subprocess']
 
 [tool.pylint.BASIC]
 good-names = ['rf', 'to', 'cc']

@@ -6,6 +6,7 @@ from django.db import models
 from django.db.models import CharField, DateField, F, UUIDField
 from django.db.models.functions import Lower
 from rest_framework import serializers, viewsets
+from simple_history.models import HistoricalRecords
 
 from django_logikal.models import OrderedTextChoices
 
@@ -16,13 +17,14 @@ class User(AbstractUser):
     """
     Model representing users.
     """
+    history = HistoricalRecords()
 
 
 class Status(OrderedTextChoices):
-    PLANNING = 'planning', 'planning'
-    ACTIVE = 'active', 'active'
-    COMPLETED = 'completed', 'completed'
-    CANCELED = 'canceled', 'canceled'
+    PLANNING = ('planning', 'planning')
+    ACTIVE = ('active', 'active')
+    COMPLETED = ('completed', 'completed')
+    CANCELED = ('canceled', 'canceled')
 
 
 class Project(models.Model):
