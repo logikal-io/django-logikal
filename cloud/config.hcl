@@ -1,22 +1,22 @@
 locals {
+  state_backend = "gcs"
   organization = "logikal.io"
   project = "django"
-  backend = "gcs"
 
   providers = {
     random = {
-      version = "~> 3.6"
+      version = "~> 3.7"
     }
     google = {
-      version = "~> 6.19"
+      version = "~> 7.11"
       region = "europe-west6"
     }
     aws = {
-      version = "~> 5.31"
+      version = "~> 6.21"
       region = "eu-central-2"
     }
     dnsimple = {
-      version = "~> 1.3"
+      version = "~> 1.10"
     }
   }
 }

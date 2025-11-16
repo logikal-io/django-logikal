@@ -67,15 +67,8 @@ packages = [
 
 [tool.setuptools_scm]
 
-[tool.pytest.ini_options]
-addopts = '--ignore=static'
-filterwarnings = [
-  'error',
-  # Caused by pybtex
-  "ignore:Deprecated call to `pkg_resources.declare_namespace\\('sphinxcontrib:DeprecationWarning",
-  'ignore:pkg_resources is deprecated as an API:UserWarning',
-  'ignore:open_text is deprecated:DeprecationWarning',
-]
+[tool.pytest]
+addopts = ['--ignore=static']
 DJANGO_SETTINGS_MODULE = 'tests.dynamic_site.settings.testing'
 
 [tool.django_logikal]

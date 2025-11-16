@@ -36,7 +36,7 @@ class Project(models.Model):
 
     class Meta:
         ordering = [
-            Status.order('status'), Lower('name'),
+            Status.order('status'), Lower('name'),  # type: ignore[list-item]
             'start_date', F('end_date').asc(nulls_last=True),
         ]
 
