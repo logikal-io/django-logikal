@@ -86,7 +86,7 @@ copyright = 'Logikal GmbH'
 parallel = false  # parallel builds do not work with automatic docker compose service starting
 
 [tool.browser.versions]
-chrome = '139.0.7258.68'
+chrome = '142.0.7444.162'
 
 [tool.mypy]
 plugins = ['mypy_django_plugin.main']
