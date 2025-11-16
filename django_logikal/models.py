@@ -8,7 +8,7 @@ class OrderedTextChoices(TextChoices):  # pylint: disable=too-many-ancestors
     @classmethod
     def order(cls, field_name: str) -> Expression:
         return Case(*(
-            When(**{field_name: attribute.label}, then=Value(index))  # type: ignore
+            When(**{field_name: attribute.label}, then=Value(index))
             for index, (name, attribute) in enumerate(cls.__dict__.items())
             if isinstance(attribute, Enum)
         ))

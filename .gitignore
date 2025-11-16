@@ -3,7 +3,7 @@ __pycache__
 .coverage*
 .mypy_cache/
 .pytest_cache/
-.terragrunt-cache
+.terragrunt-cache/
 
 # Build artifacts
 /build/

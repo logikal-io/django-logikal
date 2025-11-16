@@ -34,9 +34,8 @@ def dash(text: Text) -> Text:
     return Text(Symbol('ndash')).join(text.split('-'))
 
 
-url = href()[  # note: add external=True when the next version of pybtex is released
-    field('url', apply_func=format_url, raw=True),  # href
-    field('url', apply_func=format_url, raw=True),  # text content
+url = href(url=field('url', apply_func=format_url, raw=True), external=True)[
+    field('url', apply_func=format_url, raw=True)
 ]
 
 date = first_of[
@@ -165,13 +164,6 @@ class Bibliography:
             f'[<span>{self._index}</span>]</a>'
         )
 
-    # Note: this function is only necessary because it is not possible to configure pybtex links to
-    # open in a new tab (feature is implemented but not released)
-    @staticmethod
-    def _render_reference(style: WebStyle, name: str, entry: BibliographyData) -> str:
-        reference = str(style.format_entry(name, entry).text.render_as('html'))
-        return reference.replace('<a ', '<a target="_blank" ')
-
     def references(self, classes: Sequence[str] = ('references', )) -> SafeString:
         """
         Render the stored references as an ordered, numbered list.
@@ -183,7 +175,7 @@ class Bibliography:
         style = WebStyle(name_style='plain')
         items = '\n'.join(
             f'<li id="ref-{name}"><a href="#cite-{name}" class="cite up">&uarr;</a>'
-            f'{self._render_reference(style=style, name=name, entry=entry)}</li>'
+            f'{style.format_entry(name, entry).text.render_as('html')}</li>'
             for name, entry in self._references.items()
         )
         return mark_safe(  # nosec: name and entries are escaped
