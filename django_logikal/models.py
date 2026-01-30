@@ -4,7 +4,7 @@ from django.db.models import Case, TextChoices, Value, When
 from django.db.models.expressions import Expression
 
 
-class OrderedTextChoices(TextChoices):  # pylint: disable=too-many-ancestors
+class OrderedTextChoices(TextChoices):
     @classmethod
     def order(cls, field_name: str) -> Expression:
         return Case(*(

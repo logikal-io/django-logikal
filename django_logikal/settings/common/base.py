@@ -9,10 +9,6 @@ from django_logikal.settings import Settings, SettingsUpdate
 
 class CommonBaseSettings(SettingsUpdate):
     ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '[::1]']  # variants of localhost
-
-    # Note: we cannot use UUID fields as a default (https://code.djangoproject.com/ticket/32577)
-    DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
     INSTALLED_APPS = [
         'django.contrib.auth',  # required by sites, Django admin and the auth framework
         'django.contrib.contenttypes',  # required by sites, Django admin and the auth framework
@@ -36,6 +32,7 @@ class CommonBaseSettings(SettingsUpdate):
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',  # required by Django admin
+                'django.template.context_processors.csp',  # needed for Django admin overrides
                 'django.contrib.auth.context_processors.auth',  # required by Django admin
                 'django.contrib.messages.context_processors.messages',  # required by Django admin
             ],

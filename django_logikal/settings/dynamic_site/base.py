@@ -1,6 +1,6 @@
 from typing import Any
 
-from csp.constants import NONCE, SELF
+from django.utils.csp import CSP
 from stormware.amazon.auth import AWSAuth
 
 from django_logikal.settings import Settings
@@ -20,15 +20,13 @@ class BaseSettings(CommonBaseSettings):
         'django.contrib.messages.middleware.MessageMiddleware',  # required by Django admin
         'django.contrib.sites.middleware.CurrentSiteMiddleware',  # adds site attribute to requests
         'django.middleware.clickjacking.XFrameOptionsMiddleware',  # defense against clickjacking
-        'csp.middleware.CSPMiddleware',  # adds the Content-Security-Policy header
+        'django.middleware.csp.ContentSecurityPolicyMiddleware',  # CSP header and nonce support
     ]
 
     # Security
+    SECURE_CSP = {'default-src': [CSP.SELF, CSP.NONCE]}
     SECURE_REFERRER_POLICY = ['same-origin', 'origin-when-cross-origin']
     SESSION_COOKIE_AGE = 7 * 24 * 60 * 60  # 7 days (default: 14 days)
-    CONTENT_SECURITY_POLICY = {
-        'DIRECTIVES': {'default-src': [SELF, NONCE]},
-    }
 
     # Internationalization
     LANGUAGE_COOKIE_NAME = 'language'
@@ -72,5 +70,4 @@ class BaseSettings(CommonBaseSettings):
             'django.contrib.messages',  # required by Django admin
             'django.contrib.sessions',  # required by Django admin
             'anymail',
-            'csp',
         ])

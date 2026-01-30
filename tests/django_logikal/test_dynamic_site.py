@@ -10,19 +10,17 @@ from django.core.management.base import CommandError
 from django.template.loader import get_template
 from django.test import Client
 from django.urls import reverse
-from logikal_browser import Browser, scenarios
 from pytest import mark, raises
 from pytest_django.live_server_helper import LiveServer
 from pytest_factoryboy import register
-from pytest_logikal.browser import set_browser
-from pytest_logikal.django import LiveURL, all_languages
+from pytest_logikal import Browser, LiveURL, set_browser
 from pytest_mock import MockerFixture
 from selenium.webdriver.common.by import By
 
 from django_logikal.local_data import LocalData, SkipInsert
 from django_logikal.management.commands import syncdb, translate
 from django_logikal.views import ERROR_HANDLERS
-from tests.django_logikal import factories
+from tests.django_logikal import factories, scenarios
 from tests.django_logikal.conftest import app_url
 from tests.dynamic_site import local_data
 from tests.dynamic_site.models import SITE, User
@@ -55,13 +53,13 @@ def test_production_settings(mocker: MockerFixture) -> None:
         'port': 'test_port',
         'database': 'test_database',
         'username': 'test_username',
-        'password': 'test_password',
+        'password': 'test_password',  # nosec: only used for testing
     }
     secret_key = 'production'  # nosec: only used for this test
     secret_manager = mocker.patch('stormware.google.secrets.SecretManager')
     secret_manager.return_value.__enter__.return_value = {
-        'django-logikal-website-secret-key': secret_key,
-        'django-logikal-website-database-secrets': json.dumps(database_secrets),
+        'website-secret-key': secret_key,
+        'website-database-access': json.dumps(database_secrets),
     }
     production = import_module('tests.dynamic_site.settings.production')
     assert production.SECRET_KEY == secret_key
@@ -189,7 +187,7 @@ def test_index_head(live_server: LiveServer, client: Client) -> None:
 
     # Content security policy
     assert "default-src 'self' 'nonce-" in response.headers['Content-Security-Policy']
-    assert re.search('<script nonce="[^"]+">let test = 42;</script>', source)
+    assert re.search('<script nonce="[^"]+">[\\s]+let test = 42;[\\s]+</script>', source)
 
 
 @set_browser(scenarios.desktop)
@@ -198,11 +196,10 @@ def test_index(live_server: LiveServer, browser: Browser) -> None:
     browser.check()
 
 
-@all_languages()
-@set_browser(scenarios.desktop)
-def test_localization(language: str, live_url: LiveURL, browser: Browser) -> None:
+@set_browser(scenarios.desktop_all_languages)
+def test_localization(live_url: LiveURL, browser: Browser) -> None:
     browser.get(live_url('dynamic_site_localized:localization'))
-    browser.check(language)
+    browser.check()
 
 
 @set_browser(scenarios.desktop)

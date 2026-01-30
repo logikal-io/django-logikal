@@ -46,7 +46,7 @@ class RobotsRuleFactory(DjangoModelFactory[robots.models.Rule]):
         model = robots.models.Rule
         skip_postgeneration_save = True
 
-    @post_generation  # type: ignore[misc]
+    @post_generation  # type: ignore[untyped-decorator]
     def disallowed(
         self,
         create: bool,  # pylint: disable=unused-argument
@@ -56,7 +56,7 @@ class RobotsRuleFactory(DjangoModelFactory[robots.models.Rule]):
         for url in extracted:
             self.disallowed.add(url)
 
-    @post_generation  # type: ignore[misc]
+    @post_generation  # type: ignore[untyped-decorator]
     def sites(
         self,
         create: bool,  # pylint: disable=unused-argument

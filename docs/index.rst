@@ -5,6 +5,7 @@
 
     self
     settings
+    environment
     templates
     middleware
     views

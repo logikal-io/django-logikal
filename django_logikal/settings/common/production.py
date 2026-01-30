@@ -1,6 +1,5 @@
 import json
 
-from logikal_utils.project import PYPROJECT
 from stormware.google.secrets import SecretManager
 
 from django_logikal.logging import logging_config
@@ -14,8 +13,8 @@ class CommonProductionSettings(SettingsUpdate):
     CONN_HEALTH_CHECKS = True
 
     # Security
-    SECRET_KEY_PATH = f'{PYPROJECT['project']['name']}-website-secret-key'  # nosec: this is a path
-    DATABASE_SECRETS_PATH = f'{PYPROJECT['project']['name']}-website-database-secrets'
+    SECRET_KEY_PATH = 'website-secret-key'  # nosec: this is a path
+    DATABASE_SECRETS_PATH = 'website-database-access'
 
     CSRF_COOKIE_SECURE = True
     LANGUAGE_COOKIE_SECURE = True

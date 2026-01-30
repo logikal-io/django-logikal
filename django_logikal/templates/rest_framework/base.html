@@ -5,7 +5,7 @@
   {{ block.super }}
 
   <link rel="stylesheet" href="{% static 'django_logikal/fonts.css' %}">
-  <style nonce="{{ request.csp_nonce }}">
+  <style nonce="{{ csp_nonce }}">
     html, body {
       font-family: 'lato', sans-serif;
     }
