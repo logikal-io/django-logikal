@@ -1,12 +1,12 @@
-from datetime import timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from django.test import RequestFactory
 from django.urls import ResolverMatch
 from django.urls.exceptions import NoReverseMatch
-from freezegun.api import FakeDatetime, FrozenDateTimeFactory
 from pytest import raises
 from pytest_mock import MockerFixture
+from time_machine import Traveller
 
 from django_logikal.templates import functions as f
 
@@ -60,10 +60,10 @@ def test_cwd(mocker: MockerFixture) -> None:
     assert f.cwd() == Path(cwd)
 
 
-def test_now(freezer: FrozenDateTimeFactory) -> None:
-    date = FakeDatetime(2023, 3, 20, tzinfo=timezone.utc)
-    freezer.move_to(date)
-    assert f.now() == date
+def test_now(time_machine: Traveller) -> None:
+    timestamp = datetime(2023, 3, 20, tzinfo=UTC)
+    time_machine.move_to(timestamp)
+    assert f.now() == timestamp
 
 
 def test_bibliography() -> None:
