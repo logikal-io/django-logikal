@@ -39,7 +39,7 @@ def error_urls() -> IncludeType:
     ], 'error'))
 
 
-def debug_toolbar_urls() -> IncludeType:  # pragma: no cover; tested in subprocess
+def debug_toolbar_urls() -> IncludeType:  # pragma: no cover, tested in subprocess
     """
     Return URLs for the Django debug toolbar.
     """
@@ -74,7 +74,7 @@ def utility_paths(
         paths.append(path('admin/', admin_urls()))
     if is_dev_env() or is_testing_env():
         paths.append(path('error/', error_urls()))
-    if option_is_set('toolbar'):  # pragma: no cover; tested in subprocess
+    if option_is_set('toolbar'):  # pragma: no cover, tested in subprocess
         paths.append(universal_path('__debug__/', debug_toolbar_urls()))
     if sitemaps:
         extra = {'sitemaps': sitemaps}

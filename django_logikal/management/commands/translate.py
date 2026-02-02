@@ -112,7 +112,7 @@ class Command(BaseCommand):
                 version = metadata.version(PYPROJECT['project']['name'])
                 args.extend(['--version', f'v{version}'])
             except metadata.PackageNotFoundError:  # pragma: no cover
-                pass  # pragma: no cover; ignore missing version data
+                pass  # pragma: no cover, ignore missing version data
             CommandLineInterface().run(args)  # type: ignore[no-untyped-call]
         self.stdout.write()
 

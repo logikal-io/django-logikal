@@ -47,7 +47,7 @@ class CommonDevSettings(SettingsUpdate):
         cls.append(settings['INSTALLED_APPS'], 'django_migration_linter')
 
         # Debug toolbar
-        if option_is_set('toolbar'):  # pragma: no cover; tested in subprocess
+        if option_is_set('toolbar'):  # pragma: no cover, tested in subprocess
             cls.prepend(settings['MIDDLEWARE'], 'debug_toolbar.middleware.DebugToolbarMiddleware')
             cls.append(settings['SECURE_CSP']['default-src'], "'nonce-debug-toolbar'")
             cls.extend(settings['INSTALLED_APPS'], ['debug_toolbar', 'template_profiler_panel'])
