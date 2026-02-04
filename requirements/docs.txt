@@ -6,4 +6,4 @@
 -r extras/bibliography.txt
 
 logikal-docs==1.2.4
-pytest-logikal[django]~=6.0
+pytest-logikal[django]~=6.1
