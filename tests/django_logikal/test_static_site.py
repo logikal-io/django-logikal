@@ -3,11 +3,11 @@ import re
 from pathlib import Path
 from subprocess import run
 
-from logikal_browser import Browser, scenarios
 from pytest import mark
-from pytest_logikal.browser import set_browser
+from pytest_logikal import Browser, set_browser
 
 from django_logikal.settings.static_site.testing import TestingSettings
+from tests.django_logikal import scenarios
 
 
 @mark.django_db
@@ -26,16 +26,17 @@ def test_generate(tmp_path: Path, browser: Browser) -> None:
         replacement = os.path.relpath(static_path, path.parent)
         path.write_text(re.sub('/static/', f'{replacement}/', path.read_text()))
 
+    browser.language = None
     browser.get(f'file://{output_path}/index.html')
     browser.check('index')
-    browser.get(f'file://{output_path}/test/index.html')
-    browser.check('test')
+    browser.get(f'file://{output_path}/subpage/index.html')
+    browser.check('subpage')
     browser.get(f'file://{output_path}/en-us/localization/index.html')
-    browser.check('localization-en-us')
+    browser.check('localization_en-us')
     browser.get(
         f'file://{output_path}/en-gb/localisation/index.html'  # codespell:ignore localisation
     )
-    browser.check('localization-en-gb')
+    browser.check('localization_en-gb')
     robots = (output_path / 'robots.txt').read_text()
     assert 'User-agent: *\n' in robots
     assert '\nDisallow:\n' in robots

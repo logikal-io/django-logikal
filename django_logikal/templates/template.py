@@ -69,8 +69,9 @@ class Template:
         priority: str | None = None,
         **kwargs: Any,
     ) -> Any:
-        self._add_path_priority(name, priority)
         from django_distill import distill_path  # pylint: disable=import-outside-toplevel
+
+        self._add_path_priority(name, priority)
         return distill_path(route=route, view=self._view(name), name=name, **kwargs)
 
     def include(

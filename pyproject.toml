@@ -98,6 +98,8 @@ module = [
   'antimarkdown.*',
   'anymail.message',
   'debug_toolbar',
+  'django.middleware.csp',  # see https://github.com/typeddjango/django-stubs/issues/2944
+  'django.utils.csp',  # see https://github.com/typeddjango/django-stubs/issues/2944
   'django_distill',
   'django_migration_linter',
   'docker.*',

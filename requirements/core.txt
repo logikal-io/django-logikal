@@ -1,25 +1,24 @@
-Django~=5.2
+Django~=6.0
+django-stubs~=5.2
 django-stubs-ext~=5.2
 
 # Django utilities
-django-debug-toolbar~=5.2
+django-debug-toolbar~=6.2
 django-debug-toolbar-template-profiler~=2.1
-django-mail-panel~=4.1
-django-csp~=4.0
 django-robots~=6.1
-django-simple-history~=3.10
+django-simple-history~=3.11
 
 # Databases
-psycopg~=3.2
+psycopg~=3.3
 factory-boy~=3.3
 
 # Other utilities
 babel~=2.17
-black~=25.11  # used for migration formatting
-termcolor~=3.2
-google-cloud-logging~=3.12
+black~=26.1  # used for migration formatting
+termcolor~=3.3
+google-cloud-logging~=3.13
 Jinja2~=3.1
 
 # Development utilities
-logikal-utils[docker]~=1.4
+logikal-utils[docker]~=1.6
 Pygments~=2.19

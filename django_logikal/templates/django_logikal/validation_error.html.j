@@ -6,7 +6,7 @@
 {% block head %}
   <link rel="stylesheet" href="{{ static('django_logikal/fonts.css') }}">
   <link rel="stylesheet" href="{{ static('django_logikal/validation_error.css') }}">
-  <style nonce="{{ request.csp_nonce }}">
+  <style nonce="{{ csp_nonce }}">
     {{ code_styles }}
   </style>
 {% endblock %}

@@ -4,32 +4,27 @@ Commands
 
 General Commands
 ----------------
-.. py:data:: manage <command> [options]
-    :noindex:
+.. describe:: manage <command> [options]
 
     .. automodule:: django_logikal.manage
 
-.. py:data:: run [options]
-    :noindex:
+.. describe:: run [options]
 
     .. automodule:: django_logikal.run
 
 Management Commands
 -------------------
-.. py:data:: manage generate [options]
-    :noindex:
+.. describe:: manage generate [options]
 
     .. automodule:: django_logikal.management.commands.generate
         :exclude-members: Command
 
-.. py:data:: manage syncdb [options]
-    :noindex:
+.. describe:: manage syncdb [options]
 
     .. automodule:: django_logikal.management.commands.syncdb
         :exclude-members: Command
 
-.. py:data:: manage translate [options]
-    :noindex:
+.. describe:: manage translate [options]
 
     .. automodule:: django_logikal.management.commands.translate
         :exclude-members: Command

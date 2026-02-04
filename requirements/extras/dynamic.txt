@@ -2,9 +2,9 @@
 whitenoise[brotli]~=6.11
 
 # Secrets
-stormware[amazon,google]~=2.2
+stormware[amazon,google]~=3.0
 
 # Emails
 antimarkdown~=1.0
-django-anymail[amazon-ses]~=13.1
+django-anymail[amazon-ses]~=14.0
 premailer~=3.10

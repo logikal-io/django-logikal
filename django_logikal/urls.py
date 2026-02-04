@@ -3,13 +3,13 @@ from importlib import import_module
 from typing import Any
 
 import debug_toolbar
-import django
 from django.conf import settings
+from django.contrib import admin as django_admin
 from django.contrib.sitemaps import Sitemap
 from django.contrib.sitemaps.views import sitemap
 from django.urls import URLPattern, URLResolver, include, path
 
-from django_logikal.env import is_dev, option_is_set
+from django_logikal.env import is_dev_env, is_testing_env, option_is_set
 from django_logikal.views import ERROR_HANDLERS, public
 
 URLType = URLResolver | URLPattern
@@ -20,7 +20,7 @@ def admin_urls() -> IncludeType:
     """
     Return URLs for the :mod:`django.contrib.auth` app.
     """
-    urls = django.contrib.admin.site.urls
+    urls = django_admin.site.urls
     for url in urls[0]:
         if getattr(url, 'name', None) == 'login' and url.callback:
             url.callback = public(url.callback)
@@ -68,10 +68,11 @@ def utility_paths(
     universal_path = path  # included for both static and dynamic sites
     if static:
         from django_distill import distill_path  # pylint: disable=import-outside-toplevel
+
         universal_path = distill_path
     elif admin:
         paths.append(path('admin/', admin_urls()))
-    if is_dev():
+    if is_dev_env() or is_testing_env():
         paths.append(path('error/', error_urls()))
     if option_is_set('toolbar'):  # pragma: no cover, tested in subprocess
         paths.append(universal_path('__debug__/', debug_toolbar_urls()))

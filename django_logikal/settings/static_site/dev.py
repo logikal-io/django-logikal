@@ -9,4 +9,4 @@ class DevSettings(CommonDevSettings, BaseSettings):
     """
     @staticmethod
     def apply(settings: Settings) -> None:
-        pass
+        pass  # disable migration linting, debug toolbar and other typical dev utilities

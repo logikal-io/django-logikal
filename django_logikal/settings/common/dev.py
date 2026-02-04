@@ -49,10 +49,7 @@ class CommonDevSettings(SettingsUpdate):
         # Debug toolbar
         if option_is_set('toolbar'):  # pragma: no cover, tested in subprocess
             cls.prepend(settings['MIDDLEWARE'], 'debug_toolbar.middleware.DebugToolbarMiddleware')
-            cls.append(
-                settings['CONTENT_SECURITY_POLICY']['DIRECTIVES']['default-src'],
-                "'nonce-debug-toolbar'",
-            )
+            cls.append(settings['SECURE_CSP']['default-src'], "'nonce-debug-toolbar'")
             cls.extend(settings['INSTALLED_APPS'], ['debug_toolbar', 'template_profiler_panel'])
             settings['INTERNAL_IPS'] = ['127.0.0.1']
             settings['DEBUG_TOOLBAR_PANELS'] = [
@@ -65,21 +62,19 @@ class CommonDevSettings(SettingsUpdate):
                 'template_profiler_panel.panels.template.TemplateProfilerPanel',
                 'debug_toolbar.panels.staticfiles.StaticFilesPanel',
                 'debug_toolbar.panels.cache.CachePanel',
+                'debug_toolbar.panels.alerts.AlertsPanel',
                 'debug_toolbar.panels.signals.SignalsPanel',
-                'debug_toolbar.panels.redirects.RedirectsPanel',
                 'debug_toolbar.panels.profiling.ProfilingPanel',
             ]
             settings['DEBUG_TOOLBAR_CONFIG'] = {
+                'IS_RUNNING_TESTS': False,
+                'ROOT_TAG_EXTRA_ATTRS': 'hx-preserve',  # htmx compatibility
                 'SHOW_COLLAPSED': True,
                 'TOOLBAR_LANGUAGE': 'en-us',
+                'UPDATE_ON_FETCH': True,
                 'SQL_WARNING_THRESHOLD': 100,  # milliseconds
                 'DISABLE_PANELS': {
                     'debug_toolbar.panels.signals.SignalsPanel',
-                    'debug_toolbar.panels.redirects.RedirectsPanel',
                     'debug_toolbar.panels.profiling.ProfilingPanel',
                 },
             }
-            if 'EMAIL_BACKEND' in settings:
-                cls.append(settings['INSTALLED_APPS'], 'mail_panel')
-                settings['EMAIL_BACKEND'] = 'mail_panel.backend.MailToolbarBackend'
-                cls.prepend(settings['DEBUG_TOOLBAR_PANELS'], 'mail_panel.panels.MailToolbarPanel')
