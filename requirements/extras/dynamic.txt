@@ -1,5 +1,5 @@
 # Static files
-whitenoise[brotli]~=6.11
+whitenoise[brotli]~=6.12
 
 # Secrets
 stormware[amazon,google]~=3.0

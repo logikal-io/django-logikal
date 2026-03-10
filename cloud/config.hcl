@@ -5,18 +5,19 @@ locals {
 
   providers = {
     random = {
-      version = "~> 3.7"
+      version = "~> 3.8"
     }
     google = {
-      version = "~> 7.11"
+      version = "~> 7.22"
       region = "europe-west6"
     }
     aws = {
-      version = "~> 6.21"
+      version = "~> 6.35"
       region = "eu-central-2"
     }
-    dnsimple = {
-      version = "~> 1.10"
-    }
+  }
+
+  modules = {
+    "github.com/logikal-io/terraform-modules" = "v5.0.0"
   }
 }
