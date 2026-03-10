@@ -2,20 +2,20 @@ name: django-logikal
 
 services:
   validator:
-    image: ghcr.io/validator/validator:23.4.11
+    image: ghcr.io/validator/validator@sha256:9449eb55d574144ea7a794a5d7e90c01f7d3f7196873171c2034df296478949a
     ports: [{target: 8888}]
 
   postgres: &postgres
-    image: postgres:14.4
+    image: postgres:18.1
     environment:
       POSTGRES_DB: dev
       POSTGRES_USER: dev
       POSTGRES_PASSWORD: dev
-    ports: [{target: 5432, published: 42001}]
+    ports: [{target: 5432}]
     volumes:
       - type: volume
         source: postgres_data
-        target: /var/lib/postgresql/data
+        target: /var/lib/postgresql
     healthcheck:
       test: pg_isready --username dev --host 127.0.0.1
       interval: 3s
@@ -28,7 +28,7 @@ services:
     volumes:
       - type: volume
         source: postgres_static_data
-        target: /var/lib/postgresql/data
+        target: /var/lib/postgresql
 
 volumes:
   postgres_data:

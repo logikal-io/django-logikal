@@ -240,8 +240,8 @@ def test_redirect(live_app_url: LiveURL, client: Client) -> None:
     assert response.url == app_url('index') + args  # type: ignore[attr-defined]
 
 
-@mark.django_db  # to ensure migrations are applied properly
 def test_email(live_app_url: LiveURL, client: Client, mailoutbox: list[AnymailMessage]) -> None:
+    site_factory()
     response = client.get(live_app_url('email'))
     source = response.content.decode()
     assert 'Email successfully sent' in source
