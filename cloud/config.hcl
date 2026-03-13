@@ -18,6 +18,6 @@ locals {
   }
 
   modules = {
-    "github.com/logikal-io/terraform-modules" = "v5.0.0"
+    "github.com/logikal-io/terraform-modules" = "v5.1.0"
   }
 }
