@@ -48,5 +48,5 @@ resource "google_dns_record_set" "django_logikal_org_dkim" {
 
   managed_zone = data.google_dns_managed_zone.django_logikal_org.name
 
-  rrdatas = ["${each.key}.dkim.amazonses.com."]
+  rrdatas = ["${each.key}.dkim.eu-central-2.amazonses.com."]
 }
