@@ -115,6 +115,9 @@ module = [
 [tool.coverage.run]
 patch = ['subprocess']
 
+[tool.coverage.report]
+omit = ['docs/conf.py']
+
 [tool.pylint.BASIC]
 good-names = ['rf', 'to', 'cc']
 

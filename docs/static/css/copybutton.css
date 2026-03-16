@@ -1,11 +1,17 @@
 button.copybtn {
   opacity: 0.25;
-}
 
-button.copybtn:hover {
-  opacity: 1;
-}
+  &:hover {
+    opacity: 1;
+  }
 
-button.copybtn::after {
-  display: none;
+  &.o-tooltip--left { /* stylelint-disable-line selector-class-pattern */
+    &::after {
+      display: none;
+    }
+
+    &:hover::after {
+      display: none;
+    }
+  }
 }

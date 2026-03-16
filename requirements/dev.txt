@@ -2,5 +2,5 @@
 -r build.txt
 -r docs.txt
 
-pytest-logikal[browser,django]==6.2.2
+pytest-logikal[browser,django]==6.3.0
 types-Pygments
