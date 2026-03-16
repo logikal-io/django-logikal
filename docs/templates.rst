@@ -118,13 +118,13 @@ Objects
 
 .. py:data:: filters
     :noindexentry:
-    :type: typing.Dict[str, typing.Any]
+    :type: dict[str, typing.Any]
 
     The currently available filters.
 
 .. py:data:: tests
     :noindexentry:
-    :type: typing.Dict[str, typing.Any]
+    :type: dict[str, typing.Any]
 
     The currently available tests.
 

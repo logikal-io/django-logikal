@@ -7,3 +7,5 @@
 
 logikal-docs==1.2.5
 pytest-logikal[django]~=6.2
+sphinx-copybutton==0.5.2
+sphinx_design==0.7.0

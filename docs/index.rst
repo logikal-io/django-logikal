@@ -7,6 +7,7 @@
     settings
     environment
     templates
+    components
     middleware
     views
     urls
@@ -30,7 +31,8 @@ The ``django-logikal`` library provides a highly enhanced Django development exp
 mighty utilities:
 
 - Standard :ref:`settings modules <settings:Settings>`
-- A greatly extended :ref:`Jinja template backend <templates:Templates>`
+- A greatly extended :ref:`Jinja template backend <templates:Templates>` and a standard
+  :ref:`template component library <components:Components>`
 - :ref:`Paranoid mode <middleware:Paranoid Mode>` to ensure private pages don't become public
   accidentally
 - :ref:`HTML validation <middleware:HTML Validation>` during development and testing

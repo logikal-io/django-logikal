@@ -1,0 +1,11 @@
+button.copybtn {
+  opacity: 0.25;
+}
+
+button.copybtn:hover {
+  opacity: 1;
+}
+
+button.copybtn::after {
+  display: none;
+}
