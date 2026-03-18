@@ -1,4 +1,4 @@
-{% macro login_form(header, button) %}
+{% macro login_form(header, button=_('Test')) %}
   {#
   Render a login form.
 
@@ -6,18 +6,12 @@
     header (str): The text to use for the header.
     button (str): The button to use.
 
-  CSS variables:
-
-    --something: The color to use.
-    --something-else
-
   .. jinja:example::
 
-    {% set header = 'Test' %}
-    {{ auth.login_form(header='Test') }}
+    {{ auth.login_form(header=_('Test')) }}
 
   #}
-  <form class="login_form">
+  <form class="login-form">
     <h1>{{ header }}</h1>
   </form>
 {% endmacro %}

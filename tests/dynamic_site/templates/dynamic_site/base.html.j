@@ -7,5 +7,5 @@
 {% endblock %}
 {% block head %}
   <link rel="icon" href="{{ static('favicon.png') }}">
-  <link rel="stylesheet" href="{{ static('style.css') }}">
+  <link rel="stylesheet" href="{{ static('django_logikal/css/components/common.css') }}">
 {% endblock %}

@@ -4,8 +4,8 @@
 {% block title %}HTML Validation Error{% endblock %}
 {% block description %}HTML Validation Error{% endblock %}
 {% block head %}
-  <link rel="stylesheet" href="{{ static('django_logikal/fonts.css') }}">
-  <link rel="stylesheet" href="{{ static('django_logikal/validation_error.css') }}">
+  <link rel="stylesheet" href="{{ static('django_logikal/css/fonts.css') }}">
+  <link rel="stylesheet" href="{{ static('django_logikal/css/validation_error.css') }}">
   <style nonce="{{ csp_nonce }}">
     {{ code_styles }}
   </style>

@@ -1,4 +1,5 @@
 {% extends 'dynamic_site/base.html.j' %}
+{% import 'django_logikal/components/test.html.j' as test_macros %}
 
 {% block subtitle %}{% trans %}Localization{% endtrans %}{% endblock %}
 {% block body %}
@@ -38,7 +39,7 @@
     {% endtrans %}
   </p>
   {# Translators: This is a long gettext template test comment for translators that spans more than
-one line in the source file and also in the message file #}
+  one line in the source file and also in the message file #}
   <p>{{ _('The word &ldquo;%(word)s&rdquo; has been localized.', word=_('marvelous')) }}</p>
   <p><b>View data: </b>{{ localized_view_data() }}</p>
   <h2>Formatting</h2>
@@ -58,4 +59,6 @@ one line in the source file and also in the message file #}
     <b>Currency (</b><i>USD</i><b>):</b> {{ fmt.currency(currency, 'USD') }}<br>
     <b>Currency (</b><i>GBP</i><b>):</b> {{ fmt.currency(currency, 'GBP') }}
   </p>
+  <h2>Components</h2>
+  {{ test_macros.test_localization(text=_('localized')) }}
 {% endblock %}

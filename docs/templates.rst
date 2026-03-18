@@ -6,8 +6,8 @@ built-in Jinja template backend.
 .. note:: The extended Jinja backend uses ``.j`` as a file extension by default, therefore you
     should make sure to name your template files accordingly.
 
-.. note:: The :ref:`jinja2.ext.i18n <i18n-extension>` extension is added to the list of extensions
-    by default.
+.. note:: The :ref:`jinja2.ext.i18n <i18n-extension>` extension is added to the list of
+    extensions by default.
 
 Bases
 -----

@@ -93,7 +93,7 @@ class Command(BaseCommand):
             args = [
                 sys.argv[0], 'extract',
                 # Configuration
-                '--mapping-file', str(Path(__file__).parents[2] / f'babel/{domain}.ini'),
+                '--mapping-file', str(Path(__file__).parents[2] / f'babel/{domain}.toml'),
                 '--width', DEFAULT_WIDTH,
                 '--sort-by-file',
                 '--add-comments', 'Translators:',
