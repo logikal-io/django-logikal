@@ -8,10 +8,11 @@ from typing import Any
 import tinycss2
 from docutils import nodes
 from docutils.statemachine import StringList
-from jinja2 import ChoiceLoader, DictLoader, Environment, FileSystemLoader, nodes as jinja_nodes
-from jinja2.runtime import StrictUndefined
+from jinja2 import ChoiceLoader, DictLoader, FileSystemLoader, nodes as jinja_nodes
 from sphinx.ext.napoleon.docstring import GoogleDocstring
 from sphinx.util.docutils import SphinxDirective
+
+from django_logikal.templates import jinja
 
 STATIC_PATH = Path('django_logikal/static')
 COMPONENTS_CSS_PATH = STATIC_PATH / Path('django_logikal/css/components')
@@ -205,13 +206,9 @@ class JinjaAutoModuleDirective(ExtendedSphinxDirective):
         module_path = '/'.join(source_path_str.split('/')[2:])
         source = source_path.read_text(encoding='utf-8')
         source_lines = source.splitlines()
-        env = Environment(
+        env = jinja.environment(
             loader=FileSystemLoader('.'),
-            undefined=StrictUndefined,
-            trim_blocks=True,
-            lstrip_blocks=True,
-            autoescape=True,
-            extensions=['jinja2.ext.i18n'],
+            **jinja.DEFAULT_OPTIONS,
         )
         env.install_gettext_callables(  # type: ignore[attr-defined] # pylint: disable=no-member
             gettext=lambda text: text,
@@ -278,16 +275,12 @@ class JinjaExampleDirective(ExtendedSphinxDirective):
         # Rendering source
         jinja_content = '\n'.join(self.content)
         main_content = f'{{% import \'{module_path}\' as {module} %}}\n{jinja_content}'
-        env = Environment(
+        env = jinja.environment(
             loader=ChoiceLoader([
                 DictLoader({'main': main_content}),
                 FileSystemLoader('django_logikal/templates/'),
             ]),
-            undefined=StrictUndefined,
-            trim_blocks=True,
-            lstrip_blocks=True,
-            autoescape=True,
-            extensions=['jinja2.ext.i18n'],
+            **jinja.DEFAULT_OPTIONS,
         )
         env.install_gettext_callables(  # type: ignore[attr-defined] # pylint: disable=no-member
             gettext=lambda text: text,

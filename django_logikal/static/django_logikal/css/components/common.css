@@ -2,9 +2,9 @@
 @font-face {
   font-family: 'lato';
   src:
-    url('django_logikal/fonts/Lato-Regular.woff2') format('woff2'),
-    url('django_logikal/fonts/Lato-Regular.woff') format('woff'),
-    url('django_logikal/fonts/Lato-Regular.ttf') format('truetype');
+    url('../../../django_logikal/fonts/Lato-Regular.woff2') format('woff2'),
+    url('../../../django_logikal/fonts/Lato-Regular.woff') format('woff'),
+    url('../../../django_logikal/fonts/Lato-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -12,9 +12,9 @@
 @font-face {
   font-family: 'lato';
   src:
-    url('django_logikal/fonts/Lato-Italic.woff2') format('woff2'),
-    url('django_logikal/fonts/Lato-Italic.woff') format('woff'),
-    url('django_logikal/fonts/Lato-Italic.ttf') format('truetype');
+    url('../../../django_logikal/fonts/Lato-Italic.woff2') format('woff2'),
+    url('../../../django_logikal/fonts/Lato-Italic.woff') format('woff'),
+    url('../../../django_logikal/fonts/Lato-Italic.ttf') format('truetype');
   font-weight: normal;
   font-style: italic;
 }
@@ -22,9 +22,9 @@
 @font-face {
   font-family: 'lato';
   src:
-    url('django_logikal/fonts/Lato-Bold.woff2') format('woff2'),
-    url('django_logikal/fonts/Lato-Bold.woff') format('woff'),
-    url('django_logikal/fonts/Lato-Bold.ttf') format('truetype');
+    url('../../../django_logikal/fonts/Lato-Bold.woff2') format('woff2'),
+    url('../../../django_logikal/fonts/Lato-Bold.woff') format('woff'),
+    url('../../../django_logikal/fonts/Lato-Bold.ttf') format('truetype');
   font-weight: bold;
   font-style: normal;
 }
@@ -32,9 +32,9 @@
 @font-face {
   font-family: 'lato';
   src:
-    url('django_logikal/fonts/Lato-BoldItalic.woff2') format('woff2'),
-    url('django_logikal/fonts/Lato-BoldItalic.woff') format('woff'),
-    url('django_logikal/fonts/Lato-BoldItalic.ttf') format('truetype');
+    url('../../../django_logikal/fonts/Lato-BoldItalic.woff2') format('woff2'),
+    url('../../../django_logikal/fonts/Lato-BoldItalic.woff') format('woff'),
+    url('../../../django_logikal/fonts/Lato-BoldItalic.ttf') format('truetype');
   font-weight: bold;
   font-style: italic;
 }

@@ -13,12 +13,12 @@ sys.path.insert(0, '.')
 os.environ['DJANGO_SETTINGS_MODULE'] = tool_config('django_logikal')['DJANGO_SETTINGS_MODULE']
 
 
-def strip_patch(package: str) -> str:
-    return '.'.join(pkg_version(package).split('.')[0:2])  # major.minor (excluding patch)
-
-
 def pkg_version(package_name: str) -> str:
     return importlib.metadata.version(package_name)
+
+
+def strip_patch(package: str) -> str:
+    return '.'.join(pkg_version(package).split('.')[0:2])  # major.minor (excluding patch)
 
 
 extensions = [

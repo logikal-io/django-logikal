@@ -1,5 +1,8 @@
 {% extends 'dynamic_site/base.html.j' %}
-{% import 'django_logikal/components/test.html.j' as test_macros %}
+{% import 'django_logikal/components/test.html.j' as external_macros %}
+{% from 'django_logikal/components/test.html.j' import test_imported, test_aliased as aliased %}
+
+{% import 'dynamic_site/macros.html.j' as local_macros %}
 
 {% block subtitle %}{% trans %}Localization{% endtrans %}{% endblock %}
 {% block body %}
@@ -60,5 +63,8 @@
     <b>Currency (</b><i>GBP</i><b>):</b> {{ fmt.currency(currency, 'GBP') }}
   </p>
   <h2>Components</h2>
-  {{ test_macros.test_localization(text=_('localized')) }}
+  {{ external_macros.test_namespaced(text=_('localized')) }}
+  {{ test_imported(text=_('localized')) }}
+  {{ aliased(text=_('localized')) }}
+  {{ local_macros.test(text=_('localized')) }}
 {% endblock %}

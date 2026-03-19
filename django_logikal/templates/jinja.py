@@ -10,6 +10,25 @@ from jinja2.runtime import StrictUndefined
 
 from django_logikal.templates import filters, functions, tests
 
+DEFAULT_OPTIONS = {
+    'undefined': StrictUndefined,
+    'trim_blocks': True,
+    'lstrip_blocks': True,
+    # See https://github.com/pallets/jinja/issues/178
+    # See https://github.com/pallets/jinja/pull/1456
+    # 'indent_blocks': True,
+    'extensions': [
+        'jinja2.ext.i18n',
+        'django_logikal.templates.extensions.LanguageExtension',
+        'django_logikal.templates.extensions.TimeZoneExtension',
+    ],
+}
+
+CONTEXT_PROCESSORS = [
+    'django_logikal.templates.processors.add_messages',
+    'django_logikal.templates.processors.add_csp_nonce',
+]
+
 
 class JinjaTemplates(Jinja2):
     app_dirname = 'templates'
@@ -19,21 +38,9 @@ class JinjaTemplates(Jinja2):
         self._extension = params['OPTIONS'].pop('match_extension', '.j')
         environment_path = f'{environment.__module__}.{environment.__qualname__}'
         params['OPTIONS'].setdefault('environment', environment_path)
-        params['OPTIONS'].setdefault('undefined', StrictUndefined)
-        params['OPTIONS'].setdefault('trim_blocks', True)
-        params['OPTIONS'].setdefault('lstrip_blocks', True)
-        # See https://github.com/pallets/jinja/issues/178
-        # See https://github.com/pallets/jinja/pull/1456
-        # params['OPTIONS'].setdefault('indent_blocks', True)
-        params['OPTIONS'].setdefault('extensions', [
-            'jinja2.ext.i18n',
-            'django_logikal.templates.extensions.LanguageExtension',
-            'django_logikal.templates.extensions.TimeZoneExtension',
-        ])
-        params['OPTIONS'].setdefault('context_processors', [
-            'django_logikal.templates.processors.add_messages',
-            'django_logikal.templates.processors.add_csp_nonce',
-        ])
+        for option, value in DEFAULT_OPTIONS.items():
+            params['OPTIONS'].setdefault(option, value)
+        params['OPTIONS'].setdefault('context_processors', CONTEXT_PROCESSORS)
         super().__init__(params)
 
     def get_template(self, template_name: str) -> Any:
@@ -44,9 +51,9 @@ class JinjaTemplates(Jinja2):
         raise TemplateDoesNotExist(template_name, tried=[(origin, error)], backend=self)
 
 
-def environment(**options: dict[str, Any]) -> Environment:
+def environment(**options: Any) -> Environment:
     options = {option: value for option, value in options.items() if option != 'autoescape'}
-    env = Environment(**options, autoescape=True)  # type: ignore[arg-type]
+    env = Environment(**options, autoescape=True)
     env.policies.update({'ext.i18n.trimmed': True})
     # Note: we might need to use a different gettext
     # (see https://code.djangoproject.com/ticket/34602)

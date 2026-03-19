@@ -1,9 +1,12 @@
+[extractors]
+jinja2_extended = 'django_logikal.babel.jinja:babel_extract_extended'
+
 [[mappings]]
 method = 'python'
 pattern = '**.py'
 
 [[mappings]]
-method = 'jinja2'
+method = 'jinja2_extended'
 pattern = '**.html.j'
 silent = 'false'
 trimmed = 'true'

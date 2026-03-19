@@ -1,4 +1,4 @@
-/* Sans-serif font | License: url('fonts/Lato-LICENSE.txt') */
+/* Sans-serif font | License: url('../fonts/Lato-LICENSE.txt') */
 @font-face {
   font-family: 'lato';
   src:
@@ -99,7 +99,7 @@
   font-style: italic;
 }
 
-/* Monospace font | License: url('fonts/RobotoMono-LICENSE.txt') */
+/* Monospace font | License: url('../fonts/RobotoMono-LICENSE.txt') */
 @font-face {
   font-family: 'roboto-mono';
   src:
