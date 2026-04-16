@@ -8,28 +8,25 @@
     --sd-color-tabs-underline: #e1e4e5;
     --sd-fontsize-tabs-label: 0.9rem;
 
-    margin-top: 0;
-
-    label {
-      padding: 0.5em 0.75em;
-    }
+    margin: 0 0 12px;
+    label { padding: 0.5em 0.75em; }
   }
 
   margin: 24px 0 12px;
   border: 1px solid #e1e4e5;
   padding: 16px;
 
-  .rst-content & .highlight-jinja {
-    margin-bottom: 12px;
-  }
+  hr { margin: 0.75rem 0; }
 
-  .caption-text {
-    font-weight: bold;
-  }
+  .rst-content & .highlight-jinja { margin-bottom: 12px; }
+  .caption-text { font-weight: bold; }
 
-  .render-block {
-    margin: 12px 0 0;
+  .jinja-render-block {
+    display: inline-block;
+    margin: 0;
     border: 1px solid #e1e4e5;
     padding: 12px;
+    max-width: 100%;
+    overflow: auto;
   }
 }

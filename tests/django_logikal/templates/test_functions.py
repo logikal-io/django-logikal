@@ -4,7 +4,7 @@ from pathlib import Path
 from django.test import RequestFactory
 from django.urls import ResolverMatch
 from django.urls.exceptions import NoReverseMatch
-from pytest import raises
+from pytest import mark, raises
 from pytest_mock import MockerFixture
 from time_machine import Traveller
 
@@ -26,7 +26,7 @@ def test_include_static() -> None:
 
 
 def test_url(rf: RequestFactory) -> None:
-    name = 'dynamic_site:index'
+    name = 'dynamic_site:home'
     params = '?next=test'
     request = rf.get(f'/{params}')
     update_params = {'key': 'value'}
@@ -45,9 +45,9 @@ def test_url_name(rf: RequestFactory) -> None:
 
     request.resolver_match = ResolverMatch(
         func=lambda _: _, args=tuple(), kwargs={},
-        app_names=['dynamic_site'], url_name='index',
+        namespaces=['dynamic_site'], url_name='home',
     )
-    assert f.url_name(request) == 'dynamic_site:index'
+    assert f.url_name(request) == 'dynamic_site:home'
 
 
 def test_language() -> None:
@@ -73,3 +73,9 @@ def test_bibliography() -> None:
     assert 'cite-django-logikal' in bib.cite('django-logikal')
     with raises(RuntimeError, match='Reference .* already been used'):
         bib.cite('django-logikal')
+
+
+@mark.parametrize('run', range(10))  # multiple runs to check consistency
+def test_faker_factory(run: int) -> None:  # pylint: disable=unused-argument
+    faker = f.faker_factory()
+    assert faker.random_digit() == 6

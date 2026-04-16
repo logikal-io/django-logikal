@@ -1,4 +1,5 @@
 import re
+from typing import Any
 
 from django.utils.html import escape
 from django.utils.safestring import SafeString, mark_safe
@@ -80,3 +81,16 @@ def truncate(text: str, length: int, truncation: str = '…') -> str:
         raise ValueError('Truncation string must be shorter than length')
     visible_length = max(0, length - len(truncation))
     return f"{text[:visible_length]}{truncation}"
+
+
+def exclude[T: list[Any] | dict[Any, Any]](iterable: T, *keys: Any) -> T:
+    """
+    Return the given list or dictionary without the specified keys.
+    """
+    if isinstance(iterable, list):
+        return [key for key in iterable if key not in keys]  # type: ignore[return-value]
+    if isinstance(iterable, dict):
+        return {
+            key: value for key, value in iterable.items() if key not in keys
+        }  # type: ignore[return-value]
+    raise ValueError(f'Invalid iterable type "{type(iterable)}"')

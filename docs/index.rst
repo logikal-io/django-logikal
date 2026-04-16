@@ -62,6 +62,16 @@ You may install the library with support for dynamic sites via the ``dynamic`` e
 
     pip install django-logikal[dynamic]
 
+htmx
+~~~~
+If you are using `htmx <https://htmx.org/>`_ you should also install the ``htmx`` extra:
+
+.. code-block:: shell
+
+    pip install django-logikal[dynamic,htmx]
+
+This will install and configure `django-htmx <https://django-htmx.readthedocs.io/en/latest/>`_.
+
 REST API
 ~~~~~~~~
 You can install the library with support for `Django REST framework
@@ -99,11 +109,11 @@ services to your project's ``compose.yml`` file:
 
     services:
       validator:
-        image: ghcr.io/validator/validator:23.4.11
+        image: ghcr.io/validator/validator@sha256:9449eb55d574144ea7a794a5d7e90c01f7d3f7196873171c2034df296478949a
         ports: [{target: 8888}]
 
       postgres:
-        image: postgres:14.4
+        image: postgres:18.1
         environment:
           POSTGRES_DB: dev
           POSTGRES_USER: dev
@@ -112,7 +122,7 @@ services to your project's ``compose.yml`` file:
         volumes:
           - type: volume
             source: postgres_data
-            target: /var/lib/postgresql/data
+            target: /var/lib/postgresql
         healthcheck:
           test: pg_isready --username local --host 127.0.0.1
           interval: 3s

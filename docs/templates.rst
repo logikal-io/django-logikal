@@ -9,6 +9,24 @@ built-in Jinja template backend.
 .. note:: The :ref:`jinja2.ext.i18n <i18n-extension>` extension is added to the list of
     extensions by default.
 
+Partials
+--------
+You can render a single block of a template by appending the name of the block to the template file
+name with a ``#`` prefix:
+
+.. code-block:: python
+
+    from django.http import HttpRequest, HttpResponse
+    from django.shortcuts import render
+
+
+    def view_partial(request: HttpRequest) -> HttpResponse:
+        return render(
+            request=request,
+            template_name='main/template.html.j#block_name',
+            context={'some_variable': 'some_data'},
+        )
+
 Bases
 -----
 Standard HTML
@@ -139,7 +157,8 @@ Filters
 -------
 The following Python built-in objects are exposed as filters:
 
-- Functions: :func:`dir`, :func:`getattr`, :func:`hasattr`, :func:`repr`, :func:`type`
+- Functions: :func:`dir`, :func:`getattr`, :func:`hasattr`, :func:`isinstance`, :func:`repr`,
+  :func:`type`
 - Types: :obj:`str`
 
 .. automodule:: django_logikal.templates.filters

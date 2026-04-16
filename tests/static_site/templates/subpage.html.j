@@ -1,7 +1,11 @@
 {% extends 'base.html.j' %}
 
-{% block subtitle %}Test Subpage{% endblock %}
-{% block body %}
-  <h1>Static Test Subpage</h1>
-  <p>Hello.</p>
+{% block subtitle %}Subpage{% endblock %}
+{% block main %}
+  <div class="spotlight">
+    <section class="text">
+      <h1>Static Site Subpage</h1>
+      <p>Hello.</p>
+    </section>
+  </div>
 {% endblock %}

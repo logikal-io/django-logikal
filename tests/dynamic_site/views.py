@@ -5,7 +5,7 @@ from django.http import HttpRequest, HttpResponse
 from django.views.generic import ListView, TemplateView
 
 from django_logikal.email import Email
-from django_logikal.views import PublicViewMixin
+from django_logikal.views import HTMXTemplateView, PublicViewMixin
 from tests.dynamic_site.models import Project
 
 
@@ -24,3 +24,13 @@ class EmailView(PublicViewMixin, TemplateView):
         email.attach_file(Path(__file__).parent / 'attachment.txt')
         email.send(sender='testing@django-logikal.org', to=['success@simulator.amazonses.com'])
         return super().get(request, *args, **kwargs)
+
+
+class PartialsView(PublicViewMixin, HTMXTemplateView):
+    template_name = 'dynamic_site/partials.html.j'
+
+    def get_context_data(self, *args: Any, **kwargs: Any) -> dict[str, Any]:
+        return {'content': 'Initial content.', **super().get_context_data(*args, **kwargs)}
+
+    def post(self, request: HttpRequest) -> HttpResponse:
+        return self.render_block('container', context={'content': 'Updated content.'})

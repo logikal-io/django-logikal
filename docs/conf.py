@@ -1,8 +1,10 @@
 import importlib
 import os
 import sys
+from pathlib import Path
 
 from docutils import nodes
+from logikal_utils import node
 from logikal_utils.project import tool_config
 from sphinx import addnodes
 from sphinx.application import Sphinx
@@ -38,6 +40,7 @@ intersphinx_mapping = {
     'django-robots': ('https://django-robots.readthedocs.io/en/latest/', None),
     'django-anymail': (f'https://anymail.dev/en/v{pkg_version('django-anymail')}/', None),
     'factory-boy': (f'https://factoryboy.readthedocs.io/en/{pkg_version('factory-boy')}/', None),
+    'Faker': ('https://faker.readthedocs.io/en/stable/', None),
     'stormware': (f'https://docs.logikal.io/stormware/{pkg_version('stormware')}/', None),
     'pytest-logikal': (
         f'https://docs.logikal.io/pytest-logikal/{pkg_version('pytest-logikal')}/', None,
@@ -47,22 +50,23 @@ intersphinx_mapping = {
 nitpick_ignore = [
     ('py:func', 'type'),
     ('ref', 'jinja2.ext.i18n'),
+    ('py:class', 'T'),  # type vars do not seem to work quite very well
     ('py:class', 'django.conf.LazySettings'),
+    ('py:class', 'django.core.management.base.CommandParser'),
+    ('py:class', 'django.db.models.base.Model'),
     ('py:class', 'django.http.request.HttpRequest'),
     ('py:class', 'django.http.response.HttpResponse'),
     ('py:class', 'django.http.response.HttpResponseBase'),
     ('py:class', 'django.http.response.HttpResponseNotFound'),
     ('py:class', 'django.http.response.HttpResponseServerError'),
-    ('py:class', 'django.urls.resolvers.URLResolver'),
     ('py:class', 'django.urls.resolvers.URLPattern'),
-    ('py:class', 'django.core.management.base.CommandParser'),
+    ('py:class', 'django.urls.resolvers.URLResolver'),
+    ('py:class', 'faker.Faker'),
+    ('py:class', 'faker.proxy.Faker'),
 ]
 
-html_static_path = ['static']
-
-napoleon_custom_sections = [
-    ('CSS variables', 'params_style'),
-]
+html_static_path = ['static', '../django_logikal/static']
+napoleon_custom_sections = [('CSS variables', 'params_style')]
 
 
 def strip_modules(
@@ -84,3 +88,4 @@ def setup(app: Sphinx) -> None:
     app.add_domain(JinjaDomain)
     app.add_css_file('css/jinja.css')
     app.add_css_file('css/copybutton.css')
+    node.install_packages(prefix=Path(__file__).parent)

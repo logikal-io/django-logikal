@@ -56,3 +56,19 @@ def test_truncate() -> None:
     # Non-positive length raises ValueError
     with pytest.raises(ValueError):
         f.truncate('hello world', 0)
+
+
+def test_exclude() -> None:
+    # Lists
+    assert f.exclude([], 'spam') == []
+    assert f.exclude(['hello', 'world'], 'hello') == ['world']
+    assert f.exclude(['hello', 'world'], 'spam') == ['hello', 'world']
+
+    # Dictionaries
+    assert f.exclude({}, 'spam') == {}
+    assert f.exclude({'hello': 'world', 1: 2}, 1) == {'hello': 'world'}
+    assert f.exclude({'hello': 'world', 1: 2}, 'spam') == {'hello': 'world', 1: 2}
+
+    # Errors
+    with pytest.raises(ValueError):
+        f.exclude('invalid type')  # type: ignore[type-var]

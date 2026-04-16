@@ -7,10 +7,14 @@ Public Views
     :show-inheritance:
     :no-inherited-members:
     :members:
+.. autoclass:: django_logikal.views.HTMXTemplateView
+    :show-inheritance:
+    :no-inherited-members:
+    :members:
 
 .. autofunction:: django_logikal.views.public
 
 Utilities
 ---------
 .. automodule:: django_logikal.views
-    :exclude-members: PublicView, PublicViewMixin, public
+    :exclude-members: PublicView, PublicViewMixin, HTMXTemplateView, public

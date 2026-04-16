@@ -19,6 +19,7 @@ extras:
 - dynamic
 - rest
 - static
+- htmx
 jupyter: false
 keywords:
 - python

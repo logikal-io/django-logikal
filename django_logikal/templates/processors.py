@@ -1,6 +1,6 @@
 from django.contrib.messages import get_messages
 from django.contrib.messages.storage.base import BaseStorage, Message
-from django.http.request import HttpRequest
+from django.http import HttpRequest
 from django.middleware.csp import get_nonce
 
 

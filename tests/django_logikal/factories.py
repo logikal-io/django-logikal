@@ -8,9 +8,13 @@ from factory.faker import Faker
 from factory.helpers import post_generation
 from faker import Faker as FakerFactory
 
-from tests.dynamic_site.models import Project, User
+from tests.dynamic_site.models import SITE, Project, User
 
 faker = FakerFactory()
+
+
+def site_factory() -> Site:  # note that the site is cleared for each test by pytest-django
+    return Site.objects.update_or_create(id=1, defaults=SITE)[0]
 
 
 class UserFactory(DjangoModelFactory[User]):

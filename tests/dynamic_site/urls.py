@@ -18,11 +18,14 @@ from tests.dynamic_site import models, views
 class TemplateWithContext(Template):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         request = self.request  # type: ignore[attr-defined] # pylint: disable=no-member
-        return {'get_context_data': 'context', 'get_context_data_request': request}
+        return {
+            'class_get_context_data': 'class',
+            'class_get_context_data_request': request,
+        }
 
 
 app_name = 'dynamic_site'
-template = TemplateWithContext(app=app_name, extra_context={'extra_template_data': 'template'})
+template = TemplateWithContext(app=app_name, extra_context={'template_extra_context': 'template'})
 template_localized = Template(app=f'{app_name}_localized')
 
 handler400 = ERROR_HANDLERS[400]
@@ -36,15 +39,16 @@ api_router.register('projects', models.ProjectViewSet)
 urlpatterns = [
     # Non-localized URLs
     path('', template.include([
-        template.path('', name='index', public=True, priority='1'),
+        template.path('', name='home', public=True, priority='1'),
         path('models/', views.ListProjects.as_view(), name='models'),
         template.path(
-            'jinja/', name='jinja', public=True, priority='0.5',
-            extra_context={'extra_view_data': 'view'},
+            'templates/<arg>/', name='templates', public=True,
+            extra_context={'template_path_extra_context': 'template.path'},
         ),
+        path('partials/', views.PartialsView.as_view(), name='partials'),
         template.path('internal/', name='internal'),
         template.path('invalid-html/', name='invalid-html', public=True),
-        path('redirect/', public(redirect_to('dynamic_site:index')), name='redirect'),
+        path('redirect/', public(redirect_to('dynamic_site:home')), name='redirect'),
         path('email/', views.EmailView.as_view(), name='email'),
     ])),
     # Localized URLs

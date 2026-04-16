@@ -1,30 +1,47 @@
-.. role:: css(code)
-    :language: css
-
 Components
 ==========
-We provide a standard set of styled components via macros. A macro module can be imported as
+The ``django-logikal`` package provides a comprehensive library of styled components. You can
+simply add the style sheets of the relevant component modules to the ``<head>`` element of the
+given page template via the :func:`~django_logikal.templates.functions.component_styles` function:
+
+.. code-block:: jinja
+
+    {% block component_styles %}
+      {{ component_styles('commons', 'auth') }}
+    {% endblock %}
+
+Many of the components are implemented via Jinja macros, which can be imported via their module as
 follows:
 
 .. code-block:: jinja
 
+    {% import 'django_logikal/components/commons.html.j' as commons %}
     {% import 'django_logikal/components/auth.html.j' as auth %}
+    ...
 
-You must also import the relevant style sheets:
+.. raw:: html
 
-.. code-block:: html
+    <hr>
 
-    <link rel="stylesheet" href="{{ static('django_logikal/css/components/common.css') }}">
-    <link rel="stylesheet" href="{{ static('django_logikal/css/components/auth.css') }}">
+.. toctree::
+    :caption: Introduction
+    :glob:
+    :maxdepth: 1
 
-Style System
-------------
-You may configure the general component style system using the following CSS variables (either
-globally on ``:root`` or on the specific object's level):
+    style_system
 
-.. jinja:autocssvars:: django_logikal/static/django_logikal/css/components/common.css :root
+.. raw:: html
 
+    <hr>
 
-Authentication
---------------
-.. jinja:automodule:: django_logikal/templates/django_logikal/components/auth.html.j
+.. toctree::
+    :caption: Component Categories
+    :glob:
+    :maxdepth: 1
+
+    components/commons
+    components/*
+
+.. raw:: html
+
+    <hr>

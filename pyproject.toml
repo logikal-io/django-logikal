@@ -40,6 +40,7 @@ dependencies = {file = 'requirements/core.txt'}
 [tool.setuptools.dynamic.optional-dependencies]
 static = {file = 'requirements/extras/static.txt'}
 dynamic = {file = 'requirements/extras/dynamic.txt'}
+htmx = {file = 'requirements/extras/htmx.txt'}
 rest = {file = 'requirements/extras/rest.txt'}
 bibliography = {file = 'requirements/extras/bibliography.txt'}
 
@@ -68,7 +69,10 @@ packages = [
 [tool.setuptools_scm]
 
 [tool.pytest]
-addopts = ['--ignore=static']
+addopts = ['--ignore=static', '--ignore=docs/static/components', '--no-docs']
+norecursedirs = ['*.egg', '.*', 'build', 'dist', 'node_modules']
+frozen_time = '2025-01-25 14:30:55'
+
 DJANGO_SETTINGS_MODULE = 'tests.dynamic_site.settings.testing'
 
 [tool.django_logikal]
@@ -117,7 +121,7 @@ module = [
 patch = ['subprocess']
 
 [tool.coverage.report]
-omit = ['docs/*.py']
+omit = ['docs/*.py', 'docs/jinja/*.py']
 
 [tool.pylint.BASIC]
 good-names = ['rf', 'to', 'cc']

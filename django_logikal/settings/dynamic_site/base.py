@@ -1,6 +1,7 @@
 from typing import Any
 
 from django.utils.csp import CSP
+from logikal_utils.imports import installed
 from stormware.amazon.auth import AWSAuth
 
 from django_logikal.settings import Settings
@@ -71,3 +72,6 @@ class BaseSettings(CommonBaseSettings):
             'django.contrib.sessions',  # required by Django admin
             'anymail',
         ])
+        if installed('django_htmx'):
+            cls.append(settings['INSTALLED_APPS'], 'django_htmx')
+            cls.append(settings['MIDDLEWARE'], 'django_htmx.middleware.HtmxMiddleware')

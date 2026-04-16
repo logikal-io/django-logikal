@@ -11,6 +11,7 @@ django-simple-history~=3.11
 # Databases
 psycopg~=3.3
 factory-boy~=3.3
+Faker~=40.11
 
 # Other utilities
 babel~=2.18
@@ -18,7 +19,8 @@ black~=26.3  # used for migration formatting
 termcolor~=3.3
 google-cloud-logging~=3.14
 Jinja2~=3.1
+tinycss2~=1.5
 
 # Development utilities
-logikal-utils[docker]~=1.6
+logikal-utils[docker]~=1.8
 Pygments~=2.19

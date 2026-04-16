@@ -1,22 +1,32 @@
 import re
-from pathlib import Path
 
 from docutils import nodes
+from docutils.statemachine import StringList
 from sphinx import addnodes
 from sphinx.directives import ObjectDescription
 from sphinx.util.docfields import TypedField
 
 
-class JinjaModule(ObjectDescription[str]):
+class JinjaComponentModule(ObjectDescription[str]):
     has_content = True
+    required_arguments = 1
 
     def handle_signature(self, sig: str, signode: addnodes.desc_signature) -> str:
-        module_path = Path(re.sub('.*\'([^\']+)\'.*', r'\1', sig))
-        signode += addnodes.desc_annotation('', 'import ')
-        signode += addnodes.desc_name(sig, f'\'{sig}\'')
-        signode += addnodes.literal_emphasis('', ' as ')
-        signode += addnodes.desc_addname('', module_path.stem.split('.')[0])
+        signode += addnodes.desc_annotation('', 'module ')
+        signode += addnodes.desc_name(sig, sig)
         return sig
+
+    def run(self) -> list[nodes.Node]:
+        module = self.arguments[0]
+        component_styles = f'{{{{ component_styles(\'{module}\') }}}}'
+        self.content = StringList([
+            '**Usage:**',
+            '',
+            '.. code-block:: jinja',
+            '',
+            f'  {{% block component_styles %}}{component_styles}{{% endblock %}}',
+        ])
+        return super().run()
 
 
 class JinjaMacro(ObjectDescription[str]):
@@ -30,6 +40,9 @@ class JinjaMacro(ObjectDescription[str]):
             can_collapse=True,
         ),
     ]
+
+    def _toc_entry_name(self, sig_node: addnodes.desc_signature) -> str:
+        return sig_node.children[1].astext()
 
     def handle_signature(self, sig: str, signode: addnodes.desc_signature) -> str:
         if not (match := re.match(r'([^\(]+)\((.*)\)', sig)):
@@ -58,19 +71,11 @@ class JinjaMacro(ObjectDescription[str]):
         return name
 
     def add_target_and_index(self, name: str, sig: str, signode: addnodes.desc_signature) -> None:
-        if (target := f'jinja-macro-{name}') not in self.state.document.ids:
-            signode['names'].append(target)
-            signode['ids'].append(target)
-            signode['first'] = not self.names
+        macro = name.replace('.', '-')
+        if (target_id := f'jinja-macro-{macro}') not in self.state.document.ids:
+            signode['names'].append(target_id)
+            signode['ids'].append(target_id)
             self.state.document.note_explicit_target(signode)
 
-            objects = self.env.domaindata['jinja'].setdefault('objects', {})
-            if name in objects:
-                raise RuntimeError(
-                    f'Duplicate jinja macro description of {name}'
-                    f' (other instance in "{self.env.doc2path(objects[name][0])}"'
-                    f' at {self.lineno})'
-                )
-            objects[name] = (self.env.docname, 'macro')
-
-        self.indexnode['entries'].append(('single', f'{name} (jinja macro)', target, '', None))
+            domain = self.env.get_domain('jinja')
+            domain.note_object(name, self.objtype, target_id)  # type: ignore[attr-defined]

@@ -28,6 +28,6 @@ Lists
 
 Elements
 --------
-Link: [Index](<https://logikal.io/>)
+Link: [Home](<https://logikal.io/>)
 
 Image: ![Logikal icon](<cid:1.img@inline>)

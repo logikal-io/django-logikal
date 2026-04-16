@@ -1,22 +1,32 @@
 import os
 import re
+from collections.abc import Callable
 from datetime import datetime, tzinfo as tzinfo_class
+from functools import cache
 from pathlib import Path
 from typing import Any
 
 from babel import Locale
 from babel.support import Format
 from django.contrib.staticfiles import finders
-from django.http.request import HttpRequest
+from django.http import HttpRequest
 from django.templatetags.static import static as django_static
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.safestring import SafeString, mark_safe
 from django.utils.translation import get_language
+from faker import Faker
 from jinja2.runtime import Context
 from jinja2.utils import pass_context
 
 import django_logikal  # for type checking
+from django_logikal.templates.stylesheet import COMPONENTS_CSS_PATH, component_style_files
+
+THEMES_CSS_PATH = COMPONENTS_CSS_PATH / 'themes'
+THEMES = {
+    'standard-light': None,  # always loads (also as a fallback)
+    'standard-dark': 'prefers-color-scheme: dark',
+}
 
 
 @pass_context
@@ -46,7 +56,10 @@ def static_path(path: str) -> Path:
     return Path(file_path)
 
 
-def include_static(path: str) -> SafeString:
+def include_static(
+    path: str,
+    static_path_function: Callable[[str], Path] = static_path,
+) -> SafeString:
     """
     Insert the contents of the given static file into the template.
 
@@ -58,7 +71,7 @@ def include_static(path: str) -> SafeString:
         or content that can be in any way influenced by users.
 
     """
-    file_path = static_path(path)
+    file_path = static_path_function(path)
     content = file_path.read_text(encoding='utf-8').lstrip()
     if file_path.suffix == '.svg':
         content = re.sub(r'^<\?xml [^>]*\?>', '', content).lstrip()
@@ -91,7 +104,7 @@ def url_name(request: HttpRequest) -> str:
     """
     if not (url_match := request.resolver_match):
         raise RuntimeError('URL resolving has not taken place yet')
-    return f'{url_match.app_name or ''}:{url_match.url_name or ''}'
+    return url_match.view_name
 
 
 def language() -> str:
@@ -189,3 +202,48 @@ def bibliography(name: str) -> 'django_logikal.bibliography.Bibliography':
     from django_logikal.bibliography import Bibliography  # pylint: disable=import-outside-toplevel
 
     return Bibliography(name=name)
+
+
+def faker_factory(seed: int = 0) -> Faker:
+    """
+    Return a seeded :class:`faker.Faker` instance.
+
+    Args:
+        seed: The instance seed to use.
+
+    """
+    faker = Faker()
+    faker.seed_instance(seed)
+    return faker
+
+
+@cache
+def component_styles(*modules: str, use_standard_theme: bool = True) -> SafeString:
+    """
+    Return the relevant ``<link>`` stylesheet elements for a given set of component modules.
+
+    Args:
+        *modules: The component modules to use.
+        use_standard_theme: Whether to use the standard light and dark theme.
+
+    """
+    links = []
+
+    if use_standard_theme:
+        theme_files = {
+            static(str((THEMES_CSS_PATH / theme).with_suffix('.css'))): media
+            for theme, media in THEMES.items()
+        }
+        theme_links = [
+            f'<link rel="stylesheet" href="{file}"'
+            + (f'\n      media="({media})"' if media else '')
+            + '>'
+            for file, media in theme_files.items()
+        ]
+        links.extend(['<!-- Theme styles -->', *theme_links, '<!-- End of theme styles -->', ''])
+
+    style_files = component_style_files(modules)
+    style_links = [f'<link rel="stylesheet" href="{static(str(file))}">' for file in style_files]
+    links.extend(['<!-- Component styles -->', *style_links, '<!-- End of component styles -->'])
+
+    return mark_safe('\n'.join(links) + '\n')  # nosec: component links are safe
