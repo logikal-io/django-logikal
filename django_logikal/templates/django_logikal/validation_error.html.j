@@ -4,7 +4,7 @@
 {% block title %}HTML Validation Error{% endblock %}
 {% block description %}HTML Validation Error{% endblock %}
 
-{% block component_styles %}{{ component_styles('fonts', 'commons') }}{% endblock %}
+{% block component_head %}{{ component_head('fonts', 'commons') }}{% endblock %}
 
 {% block head %}
   <style nonce="{{ csp_nonce }}">

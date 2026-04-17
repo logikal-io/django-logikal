@@ -1,13 +1,14 @@
 Components
 ==========
 The ``django-logikal`` package provides a comprehensive library of styled components. You can
-simply add the style sheets of the relevant component modules to the ``<head>`` element of the
-given page template via the :func:`~django_logikal.templates.functions.component_styles` function:
+simply add the style sheets and JavaScript logic of the relevant component modules to the
+``<head>`` element of the given page template via the
+:func:`~django_logikal.templates.functions.component_head` function:
 
 .. code-block:: jinja
 
-    {% block component_styles %}
-      {{ component_styles('commons', 'auth') }}
+    {% block component_head %}
+      {{ component_head('commons', 'auth') }}
     {% endblock %}
 
 Many of the components are implemented via Jinja macros, which can be imported via their module as

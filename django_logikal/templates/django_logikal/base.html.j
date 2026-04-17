@@ -19,7 +19,7 @@
       })|tojson }}'>
       {{ htmx_script(nonce=csp_nonce) }}
     {% endif %}
-    {% block component_styles %}{% endblock %}
+    {% block component_head %}{% endblock %}
     {% block head %}{% endblock %}
   </head>
   <body

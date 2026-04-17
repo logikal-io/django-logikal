@@ -6,6 +6,7 @@ from logikal_utils.operators import unique
 
 STATIC_PATH = Path(__file__).parents[1] / 'static'
 COMPONENTS_CSS_PATH = Path('django_logikal/css')
+COMPONENTS_JS_PATH = Path('django_logikal/js')
 
 
 @cache
@@ -62,13 +63,22 @@ def _component_style_dependencies() -> dict[str, list[str]]:
 
 
 @cache
-def component_style_files(modules: list[str]) -> list[Path]:
+def component_head_files(modules: list[str]) -> dict[str, list[Path]]:
     dependencies = _component_style_dependencies()
     for module in modules:
         if module not in dependencies:
             raise ValueError(f'Invalid module "{module}"')
-    return list(unique(
+
+    css_paths = list(unique(
         Path(dependency)
         for module in modules
         for dependency in dependencies[module]
     ))
+
+    js_paths = []
+    for path in css_paths:
+        js_path = COMPONENTS_JS_PATH / path.relative_to(COMPONENTS_CSS_PATH).with_suffix('.js')
+        if (STATIC_PATH / js_path).exists():
+            js_paths.append(js_path)
+
+    return {'css': css_paths, 'js': js_paths}

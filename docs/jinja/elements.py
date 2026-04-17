@@ -18,13 +18,13 @@ class JinjaComponentModule(ObjectDescription[str]):
 
     def run(self) -> list[nodes.Node]:
         module = self.arguments[0]
-        component_styles = f'{{{{ component_styles(\'{module}\') }}}}'
+        component_head = f'{{{{ component_head(\'{module}\') }}}}'
         self.content = StringList([
             '**Usage:**',
             '',
             '.. code-block:: jinja',
             '',
-            f'  {{% block component_styles %}}{component_styles}{{% endblock %}}',
+            f'  {{% block component_head %}}{component_head}{{% endblock %}}',
         ])
         return super().run()
 

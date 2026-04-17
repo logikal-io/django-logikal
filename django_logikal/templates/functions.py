@@ -20,7 +20,7 @@ from jinja2.runtime import Context
 from jinja2.utils import pass_context
 
 import django_logikal  # for type checking
-from django_logikal.templates.stylesheet import COMPONENTS_CSS_PATH, component_style_files
+from django_logikal.templates.components import COMPONENTS_CSS_PATH, component_head_files
 
 THEMES_CSS_PATH = COMPONENTS_CSS_PATH / 'themes'
 THEMES = {
@@ -218,9 +218,9 @@ def faker_factory(seed: int = 0) -> Faker:
 
 
 @cache
-def component_styles(*modules: str, use_standard_theme: bool = True) -> SafeString:
+def component_head(*modules: str, use_standard_theme: bool = True) -> SafeString:
     """
-    Return the relevant ``<link>`` stylesheet elements for a given set of component modules.
+    Return the relevant ``<link>`` and ``<script>`` elements for a given set of component modules.
 
     Args:
         *modules: The component modules to use.
@@ -242,8 +242,19 @@ def component_styles(*modules: str, use_standard_theme: bool = True) -> SafeStri
         ]
         links.extend(['<!-- Theme styles -->', *theme_links, '<!-- End of theme styles -->', ''])
 
-    style_files = component_style_files(modules)
-    style_links = [f'<link rel="stylesheet" href="{static(str(file))}">' for file in style_files]
+    head_files = component_head_files(modules)
+    style_links = [
+        f'<link rel="stylesheet" href="{static(str(file))}">'
+        for file in head_files['css']
+    ]
     links.extend(['<!-- Component styles -->', *style_links, '<!-- End of component styles -->'])
+
+    if scripts := [
+        f'<script defer src="{static(str(file))}"></script>'
+        for file in head_files['js']
+    ]:
+        links.extend(
+            ['', '<!-- Component scripts -->', *scripts, '<!-- End of component scripts -->']
+        )
 
     return mark_safe('\n'.join(links) + '\n')  # nosec: component links are safe

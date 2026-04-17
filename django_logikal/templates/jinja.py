@@ -143,7 +143,7 @@ def environment(**options: Any) -> Environment:
         'now': functions.now,
         'bibliography': functions.bibliography,
         'faker_factory': functions.faker_factory,
-        'component_styles': functions.component_styles,
+        'component_head': functions.component_head,
     })
     if installed('django_htmx'):
         from django_htmx.jinja import django_htmx_script, htmx_script

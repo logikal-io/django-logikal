@@ -4,7 +4,7 @@
 Style System
 ============
 The ``django-logikal`` component system comes with a standard light and dark color theme, which is
-automatically included when using the :func:`~django_logikal.templates.functions.component_styles`
+automatically included when using the :func:`~django_logikal.templates.functions.component_head`
 function.
 
 You may override the standard color theme or define your own custom color theme using the following

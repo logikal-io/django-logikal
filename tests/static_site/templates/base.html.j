@@ -3,7 +3,7 @@
 
 {% block title %}{% block subtitle required %}{% endblock %} | Logikal{% endblock %}
 {% block description %}Static Test Site{% endblock %}
-{% block component_styles %}{{ component_styles('commons') }}{% endblock %}
+{% block component_head %}{{ component_head('commons') }}{% endblock %}
 {% block head %}<link rel="icon" href="{{ static('favicon.png') }}">{% endblock %}
 
 {% block body %}

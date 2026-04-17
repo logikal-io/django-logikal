@@ -16,13 +16,14 @@ from sphinx.directives import ObjectDescription
 from sphinx.ext.napoleon.docstring import GoogleDocstring
 from sphinx.util.docutils import SphinxDirective
 
-from django_logikal.templates import functions, jinja, stylesheet
+from django_logikal.templates import components, functions, jinja
 from docs.jinja.format import format_html
 
-COMPONENTS_CSS_STATIC_PATH = Path('django_logikal/static') / stylesheet.COMPONENTS_CSS_PATH
+COMPONENTS_CSS_STATIC_PATH = Path('django_logikal/static') / components.COMPONENTS_CSS_PATH
 
 DOCS_STATIC_ROOT = Path(__file__).parents[1] / 'build/_static'
-DOCS_COMPONENTS_CSS_PATH = Path('../_static') / stylesheet.COMPONENTS_CSS_PATH
+DOCS_COMPONENTS_CSS_PATH = Path('../_static') / components.COMPONENTS_CSS_PATH
+DOCS_COMPONENTS_JS_PATH = Path('../_static') / components.COMPONENTS_JS_PATH
 DOCS_THEMES_CSS_PATH = DOCS_COMPONENTS_CSS_PATH / 'themes'
 
 THEME_MODES = ['light', 'dark']
@@ -286,14 +287,14 @@ class JinjaAutoModuleDirective(ObjectDescription[str], JinjaSphinxDirective):
         self.state.document.settings.env.note_dependency(str(source_path.absolute()))
 
         # Build module documentation
-        component_styles = f'{{{{ component_styles(\'{module}\') }}}}'
+        component_head = f'{{{{ component_head(\'{module}\') }}}}'
         blocks = [
             '  **Usage:**',
             '',
             '  .. code-block:: jinja',
             '',
             f'    {{% import \'{self._import_path(source_path)}\' as {module} %}}',
-            f'    {{% block component_styles %}}{component_styles}{{% endblock %}}',
+            f'    {{% block component_head %}}{component_head}{{% endblock %}}',
             '',
             '  **Components:**',
         ]
@@ -356,12 +357,12 @@ class JinjaExampleDirective(JinjaSphinxDirective):
             raise RuntimeError(f'Validation errors on "{source_path}":\n{error_str}')
 
     @staticmethod
-    def _render_html(styles: str, rendered: str, container: nodes.Element) -> None:
+    def _render_html(head: str, rendered: str, container: nodes.Element) -> None:
         for index, mode in enumerate(THEME_MODES):
             rendered_block = f"""
                 <template shadowrootmode="open">
                     <link rel="stylesheet" href="{DOCS_THEMES_CSS_PATH / f'standard-{mode}.css'}">
-                    {styles}
+                    {head}
                     {rendered}
                 </template>
             """
@@ -370,6 +371,14 @@ class JinjaExampleDirective(JinjaSphinxDirective):
             if index > 0:
                 container += nodes.raw('', '<hr>', format='html')
             container += rendered_node
+
+    @staticmethod
+    def _docs_css_path(path: Path) -> Path:
+        return DOCS_COMPONENTS_CSS_PATH / path.relative_to(components.COMPONENTS_CSS_PATH)
+
+    @staticmethod
+    def _docs_js_path(path: Path) -> Path:
+        return DOCS_COMPONENTS_JS_PATH / path.relative_to(components.COMPONENTS_JS_PATH)
 
     def run(self) -> list[nodes.Element]:
         if not (source_path := self.state.document.current_source):
@@ -421,9 +430,15 @@ class JinjaExampleDirective(JinjaSphinxDirective):
         self.parse_rst_blocks(blocks=blocks, source=source_path, node=container)
 
         # Rendering HTML
-        component_styles = '\n'.join(
-            f'<link rel="stylesheet" href="{DOCS_COMPONENTS_CSS_PATH / file.name}">'
-            for file in stylesheet.component_style_files((css_module or module or 'commons',))
+        component_files = components.component_head_files((css_module or module or 'commons',))
+        component_head = '\n'.join(
+            f'<link rel="stylesheet" href="{self._docs_css_path(file)}">'
+            for file in component_files['css']
         )
-        self._render_html(styles=component_styles, rendered=rendered, container=container)
+        if component_files['js']:
+            component_head += '\n' + '\n'.join(
+                f'<script defer src="{self._docs_js_path(file)}"></script>'
+                for file in component_files['js']
+            )
+        self._render_html(head=component_head, rendered=rendered, container=container)
         return [container]
