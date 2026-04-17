@@ -1,4 +1,4 @@
-{% import'django_logikal/components/commons.html.j' as commons %}
+{% import 'django_logikal/components/commons.html.j' as commons %}
 
 {% macro login_form_username(header, provider_login_urls=none) %}
   {#
