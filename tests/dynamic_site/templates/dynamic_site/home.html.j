@@ -1,7 +1,5 @@
 {% extends 'dynamic_site/base.html.j' %}
 
-{% block component_head %}{{ component_head('commons') }}{% endblock %}
-
 {% block subtitle %}Home Page{% endblock %}
 {% block main %}
   <article>
