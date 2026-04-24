@@ -19,13 +19,7 @@
         {{ include_static('logikal_logo.svg') }}
       </a>
       {# djlint:off T001 #} {# TODO: show a list of options for the error pages #}
-      {{ commons.menu({
-        'Home': 'dynamic_site:home',
-        'Errors': 'error:404',
-        'Templates': {'view_name': 'dynamic_site:templates', 'kwargs': {'arg': 'extensions'}},
-        'Partials': 'dynamic_site:partials',
-        'API': 'api-root',
-      }, request=request|default(none)) }}
+      {{ commons.menu(menu_items, request=request|default(none)) }}
       {# djlint:on #}
       <aside>
         <a href="{{ url('dynamic_site_localized:localization') }}"

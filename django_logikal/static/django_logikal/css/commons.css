@@ -97,6 +97,48 @@ a {
   &:not(.button) :is(img, svg) { padding: var(--length-gap-element); }
 }
 
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dropdown-arrow {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+  background-image: url(../icons/arrow.svg);
+  background-size: 10px;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  @supports (mask-image: url()) {
+    background-color: currentColor;
+    mask-image: url(../icons/arrow.svg);
+    mask-size: 10px;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    background-image: none;
+  }
+}
+
+.nav-item.menu-open .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
 /* Headers */
 h1 {
   text-align: center;
