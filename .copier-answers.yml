@@ -15,11 +15,12 @@ classifiers:
 cloud: true
 description: Django utilities used at Logikal
 extras:
-- bibliography
-- dynamic
-- rest
 - static
+- dynamic
+- auth
 - htmx
+- rest
+- bibliography
 jupyter: false
 keywords:
 - python

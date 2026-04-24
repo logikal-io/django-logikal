@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from django.utils.translation import gettext_lazy as _
 
 from django_logikal.settings import Settings, SettingsUpdate
@@ -15,7 +17,6 @@ class AppSettings(SettingsUpdate):
 
     # Authentication
     AUTH_USER_MODEL = 'dynamic_site.User'
-    LOGOUT_REDIRECT_URL = 'dynamic_site:index'
 
     # Email
     EMAIL_SUBJECT_PREFIX = '[Dynamic Site]'
@@ -27,3 +28,4 @@ class AppSettings(SettingsUpdate):
     def apply(cls, settings: Settings) -> None:
         cls.extend(settings['INSTALLED_APPS'], ['rest_framework', 'tests.dynamic_site'])
         settings['ANYMAIL']['AMAZON_SES_SESSION_PARAMS']['region_name'] = 'eu-central-1'
+        settings['TEMPLATES'][1]['DIRS'] = [str(Path(__file__).parents[1] / 'templates')]

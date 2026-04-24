@@ -2,7 +2,7 @@ from typing import Any
 
 import robots
 from django.contrib.sites.models import Site
-from factory.declarations import LazyFunction
+from factory.declarations import LazyAttribute, LazyFunction
 from factory.django import DjangoModelFactory, Password
 from factory.faker import Faker
 from factory.helpers import post_generation
@@ -10,6 +10,7 @@ from faker import Faker as FakerFactory
 
 from tests.dynamic_site.models import SITE, Project, User
 
+DOMAIN = 'django-logikal.org'
 faker = FakerFactory()
 
 
@@ -18,23 +19,22 @@ def site_factory() -> Site:  # note that the site is cleared for each test by py
 
 
 class UserFactory(DjangoModelFactory[User]):
-    username = 'user'
+    email = LazyAttribute(lambda obj: f'{obj.name.replace(' ', '.').lower()}@{DOMAIN}')
     password = Password('local')
-    first_name = Faker('first_name')
-    last_name = Faker('last_name')
-    email = Faker('email')
+    name = Faker('name')
+    nickname = LazyAttribute(lambda obj: obj.name.split(' ')[0])
 
     class Meta:
         model = User
 
 
-class StaffUserFactory(UserFactory):
-    username = 'staff_user'
-    is_staff = True
+class AdminUserFactory(UserFactory):
+    email = f'admin-user@{DOMAIN}'
+    is_admin = True
 
 
-class SuperUserFactory(StaffUserFactory):
-    username = 'super_user'
+class SuperUserFactory(AdminUserFactory):
+    email = f'super-user@{DOMAIN}'
     is_superuser = True
 
 
@@ -72,7 +72,6 @@ class RobotsRuleFactory(DjangoModelFactory[robots.models.Rule]):
 
 
 class ProjectFactory(DjangoModelFactory[Project]):
-    id = Faker('uuid4')
     name = LazyFunction(lambda: faker.bs().title())
 
     class Meta:

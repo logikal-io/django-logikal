@@ -100,6 +100,9 @@
     var(--length-edge) solid
     var(--theme-color-neutral-highlight-outline);
   --theme-outline-neutral-hit: var(--length-edge) solid var(--theme-color-neutral-hit-outline);
+  --theme-outline-neutral-disabled:
+    var(--length-edge) solid
+    var(--theme-color-neutral-disabled-outline);
   --theme-outline-neutral-error: var(--length-edge) solid var(--theme-color-neutral-error-outline);
   --theme-outline-neutral-error-highlight:
     var(--length-edge) solid

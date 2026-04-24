@@ -2,6 +2,7 @@
 -r core.txt
 -r extras/static.txt
 -r extras/dynamic.txt
+-r extras/auth.txt
 -r extras/htmx.txt
 -r extras/rest.txt
 -r extras/bibliography.txt

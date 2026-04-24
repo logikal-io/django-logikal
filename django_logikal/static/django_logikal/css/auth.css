@@ -1,20 +1,26 @@
 @import url('commons.css');
 
-.login-form-sign-up {
+.login-form {
   display: flex;
   flex-direction: column;
   align-items: stretch;
   gap: var(--length-gap-group);
-  max-width: var(--length-form);
 
-  h1 { margin-block-end: var(--length-gap-group); }
-  p { text-align: center; }
-  input { width: 100%; }
-
-  .external-login {
+  & > form {
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    gap: var(--length-gap-group);
+    max-width: var(--length-form);
+  }
+
+  h1 { margin-block-end: var(--length-gap-group); }
+  p { text-align: center; }
+  input, button { width: 100%; }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
     gap: var(--length-gap-subelement);
   }
 

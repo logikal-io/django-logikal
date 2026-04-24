@@ -61,4 +61,15 @@ def check_settings(*_args: Any, **_kwargs: Any) -> list[Error]:
             id='django_logikal.E003'
         ))
 
+    # Check
+    if (
+        'allauth' in getattr(settings, 'INSTALLED_APPS', [])
+        and getattr(settings, 'ACCOUNT_TEMPLATE_EXTENSION', None) == 'html'
+        and not settings.DEBUG
+    ):
+        errors.append(Error(
+            msg='You should not use the built-in account templates outside of debug mode',
+            obj=str(settings), id='django_logikal.E00$'
+        ))
+
     return errors
