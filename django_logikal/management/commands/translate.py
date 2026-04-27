@@ -13,7 +13,7 @@ from typing import Any, cast
 import django
 from babel.messages.frontend import CommandLineInterface
 from django.core.management.base import BaseCommand, CommandError, CommandParser
-from logikal_utils.project import PYPROJECT, tool_config
+from logikal_utils.project import project_name, tool_config
 
 TEMPLATE_HEADER = f"""
 # Translation template for project "PROJECT"
@@ -114,7 +114,7 @@ class Command(BaseCommand):
             for keyword in KEYWORDS.get(domain, []):
                 args.extend(['--keyword', keyword])
             try:
-                version = metadata.version(PYPROJECT['project']['name'])
+                version = metadata.version(project_name())
                 args.extend(['--version', f'v{version}'])
             except metadata.PackageNotFoundError:  # pragma: no cover
                 pass  # pragma: no cover, ignore missing version data
