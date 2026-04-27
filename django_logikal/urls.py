@@ -43,7 +43,7 @@ def debug_toolbar_urls() -> IncludeType:  # pragma: no cover, tested in subproce
     """
     Return URLs for the Django debug toolbar.
     """
-    urls = list(debug_toolbar.toolbar.DebugToolbar.get_urls())
+    urls = list(debug_toolbar.toolbar.DebugToolbar.get_urls())  # type: ignore[attr-defined]
     for url in urls:
         for url_item in getattr(url, 'url_patterns', [url]):
             url_item.callback = public(url_item.callback)
