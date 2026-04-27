@@ -3,6 +3,7 @@ import re
 from collections.abc import Callable, Iterator
 from logging import getLogger
 from subprocess import PIPE, STDOUT, Popen, run
+from typing import Any
 
 from django.urls import reverse
 from pytest import fixture
@@ -23,8 +24,8 @@ def app_url(name: str) -> str:
 
 @fixture
 def live_app_url(live_url: LiveURL) -> Callable[[str], str]:
-    def live_app_url_path(name: str) -> str:
-        return live_url(name=app_name(name))
+    def live_app_url_path(name: str, **kwargs: Any) -> str:
+        return live_url(name=app_name(name), **kwargs)
     return live_app_url_path
 
 

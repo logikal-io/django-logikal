@@ -1,0 +1,32 @@
+.jinja-example-block {
+  .sd-tab-set {
+    --sd-color-tabs-underline-active: #6ab0de;
+    --sd-color-tabs-underline-hover: #6ab0de55;
+    --sd-color-tabs-label-active: #555555;
+    --sd-color-tabs-label-hover: #555555;
+    --sd-color-tabs-overline: #e1e4e5;
+    --sd-color-tabs-underline: #e1e4e5;
+    --sd-fontsize-tabs-label: 0.9rem;
+
+    margin: 0 0 12px;
+    label { padding: 0.5em 0.75em; }
+  }
+
+  margin: 24px 0 12px;
+  border: 1px solid #e1e4e5;
+  padding: 16px;
+
+  hr { margin: 0.75rem 0; }
+
+  .rst-content & .highlight-jinja { margin-bottom: 12px; }
+  .caption-text { font-weight: bold; }
+
+  .jinja-render-block {
+    display: inline-block;
+    margin: 0;
+    border: 1px solid #e1e4e5;
+    padding: 12px;
+    max-width: 100%;
+    overflow: auto;
+  }
+}

@@ -6,8 +6,26 @@ built-in Jinja template backend.
 .. note:: The extended Jinja backend uses ``.j`` as a file extension by default, therefore you
     should make sure to name your template files accordingly.
 
-.. note:: The :ref:`jinja2.ext.i18n <i18n-extension>` extension is added to the list of extensions
-    by default.
+.. note:: The :ref:`jinja2.ext.i18n <i18n-extension>` extension is added to the list of
+    extensions by default.
+
+Partials
+--------
+You can render a single block of a template by appending the name of the block to the template file
+name with a ``#`` prefix:
+
+.. code-block:: python
+
+    from django.http import HttpRequest, HttpResponse
+    from django.shortcuts import render
+
+
+    def view_partial(request: HttpRequest) -> HttpResponse:
+        return render(
+            request=request,
+            template_name='main/template.html.j#block_name',
+            context={'some_variable': 'some_data'},
+        )
 
 Bases
 -----
@@ -118,13 +136,13 @@ Objects
 
 .. py:data:: filters
     :noindexentry:
-    :type: typing.Dict[str, typing.Any]
+    :type: dict[str, typing.Any]
 
     The currently available filters.
 
 .. py:data:: tests
     :noindexentry:
-    :type: typing.Dict[str, typing.Any]
+    :type: dict[str, typing.Any]
 
     The currently available tests.
 
@@ -139,7 +157,8 @@ Filters
 -------
 The following Python built-in objects are exposed as filters:
 
-- Functions: :func:`dir`, :func:`getattr`, :func:`hasattr`, :func:`repr`, :func:`type`
+- Functions: :func:`dir`, :func:`getattr`, :func:`hasattr`, :func:`isinstance`, :func:`repr`,
+  :func:`type`
 - Types: :obj:`str`
 
 .. automodule:: django_logikal.templates.filters

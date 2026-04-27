@@ -1,0 +1,3 @@
+[[mappings]]
+method = 'javascript'
+pattern = '**.js'

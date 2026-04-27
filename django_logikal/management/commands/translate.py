@@ -13,7 +13,7 @@ from typing import Any, cast
 import django
 from babel.messages.frontend import CommandLineInterface
 from django.core.management.base import BaseCommand, CommandError, CommandParser
-from logikal_utils.project import PYPROJECT, tool_config
+from logikal_utils.project import project_name, tool_config
 
 TEMPLATE_HEADER = f"""
 # Translation template for project "PROJECT"
@@ -86,14 +86,19 @@ class Command(BaseCommand):
         raise CommandError('An action must be provided')
 
     def _extract(self, app: App, output: Path | None) -> None:
-        self.stdout.write()
         locale_path = (output or app.path) / 'locale'
         locale_path.mkdir(parents=True, exist_ok=True)
         for domain in DOMAINS:
+            mapping_file = Path(__file__).parents[2] / f'babel/{domain}.toml'
+            self.stdout.write(
+                self.style.MIGRATE_HEADING('\nUpdating PO template file for ')
+                + self.style.WARNING(domain)
+                + self.style.MIGRATE_HEADING(':')
+            )
             args = [
                 sys.argv[0], 'extract',
                 # Configuration
-                '--mapping-file', str(Path(__file__).parents[2] / f'babel/{domain}.ini'),
+                '--mapping-file', str(mapping_file),
                 '--width', DEFAULT_WIDTH,
                 '--sort-by-file',
                 '--add-comments', 'Translators:',
@@ -109,7 +114,7 @@ class Command(BaseCommand):
             for keyword in KEYWORDS.get(domain, []):
                 args.extend(['--keyword', keyword])
             try:
-                version = metadata.version(PYPROJECT['project']['name'])
+                version = metadata.version(project_name())
                 args.extend(['--version', f'v{version}'])
             except metadata.PackageNotFoundError:  # pragma: no cover
                 pass  # pragma: no cover, ignore missing version data
@@ -165,9 +170,11 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('\nMessage catalog successfully created'))
 
     def action_update(self, apps: Sequence[App], output: Path | None) -> None:
-        for app in apps:
-            self.stdout.write(f'Updating catalogs for {self.style.ERROR(app.name)}\n')
+        for index, app in enumerate(apps):
+            prefix = '\n' if index > 0 else ''
+            self.stdout.write(f'{prefix}Updating catalogs for {self.style.ERROR(app.name)}')
             self._extract(app=app, output=output)
+            self.stdout.write(self.style.MIGRATE_HEADING(f'{prefix}Updating catalog files:'))
             for domain in DOMAINS:
                 CommandLineInterface().run([  # type: ignore[no-untyped-call]
                     sys.argv[0], 'update',

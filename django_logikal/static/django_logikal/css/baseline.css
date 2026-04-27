@@ -1,0 +1,99 @@
+@import url('variables.css');
+
+/* stylelint-disable @stylistic/max-line-length */
+
+/* Baseline
+
+   Inspired by:
+   - https://github.com/jensimmons/cssremedy/blob/master/css/remedy.css
+   - https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/preflight.css
+
+   User agent style sheets:
+   - Chrome: https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/html/resources/html.css
+   - Safari: https://github.com/WebKit/WebKit/blob/main/Source/WebCore/css/html.css
+   - Firefox: https://searchfox.org/firefox-main/source/layout/style/res/html.css */
+
+/* stylelint-enable */
+
+/** Layout **/
+*, ::before, ::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+
+[hidden] { display: none; }
+
+body {
+  font-variant-numeric: lining-nums;
+  font-feature-settings: 'liga', 'kern';
+  tab-size: 4;
+  -webkit-tap-highlight-color: transparent;
+}
+
+img, svg, video, canvas, audio, iframe, embed, object {
+  display: block;
+  vertical-align: middle;
+  max-width: 100%;
+  height: auto;
+}
+
+audio { width: 100%; }
+picture { display: contents; }
+source { display: none; }
+
+a { overflow-wrap: break-word; } /* break up long links (e.g. URLs) if necessary to keep layout */
+
+/** Forms **/
+button, input, select, optgroup, textarea, ::file-selector-button {
+  font: inherit;
+  font-feature-settings: inherit;
+  font-variation-settings: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  border-radius: 0;
+  background-color: transparent;
+  opacity: 1;
+}
+
+::placeholder { opacity: 1; } /* see https://github.com/tailwindlabs/tailwindcss/issues/3300 */
+
+textarea { resize: vertical; }
+progress { vertical-align: baseline; }
+
+/*** Chrome and Safari form elements ***/
+::-webkit-date-and-time-value { min-height: 1lh; text-align: inherit; }
+::-webkit-datetime-edit { display: inline-flex; }
+::-webkit-datetime-edit-fields-wrapper { padding: 0; }
+
+::-webkit-datetime-edit,
+::-webkit-datetime-edit-year-field,
+::-webkit-datetime-edit-month-field,
+::-webkit-datetime-edit-day-field,
+::-webkit-datetime-edit-hour-field,
+::-webkit-datetime-edit-minute-field,
+::-webkit-datetime-edit-second-field,
+::-webkit-datetime-edit-millisecond-field,
+::-webkit-datetime-edit-meridiem-field { padding-block: 0; }
+
+::-webkit-calendar-picker-indicator { line-height: 1; }
+::-webkit-inner-spin-button, ::-webkit-outer-spin-button { height: auto; }
+
+/** Text **/
+ol, ul, menu { list-style: none; }
+ol, ul, h1, h2, h3, h4, h5, h6, hgroup, hgroup p, figcaption, blockquote { text-wrap: balance; }
+code, kbd, samp, pre { overflow: auto; font-variant-numeric: lining-nums; }
+
+hr {
+  overflow: visible;
+  height: 0;
+  color: inherit;
+  border-style: solid;
+  border-width: 1px 0 0;
+}
+
+table {
+  border-collapse: collapse;
+  border-color: inherit; /* see https://issues.chromium.org/issues/40615503 */
+}

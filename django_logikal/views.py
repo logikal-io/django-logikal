@@ -2,9 +2,12 @@ from collections.abc import Callable
 from functools import wraps
 from typing import Any
 
-from django.http import HttpResponseBase
-from django.http.response import HttpResponseNotFound, HttpResponseServerError
+from django.http import (
+    HttpResponse, HttpResponseBase, HttpResponseNotFound, HttpResponseServerError,
+)
+from django.shortcuts import render
 from django.views import View, defaults, generic
+from django.views.generic import TemplateView
 
 ViewFunction = Callable[..., HttpResponseBase]
 
@@ -22,6 +25,28 @@ class PublicView(PublicViewMixin, View):
         Represent a public view.
         """
         super().__init__(*args, **kwargs)  # pragma: no cover
+
+
+class HTMXTemplateView(TemplateView):
+    # Note: we re-define init to override the inherited class docstring
+    def __init__(self, *args: Any, **kwargs: Any):  # pylint: disable=useless-parent-delegation
+        """
+        Represent a htmx-enabled template view.
+        """
+        super().__init__(*args, **kwargs)  # pragma: no cover
+
+    def render_block(self, name: str, context: dict[str, Any] | None = None) -> HttpResponse:
+        """
+        Render a given block of the template.
+        """
+        return render(
+            request=self.request,
+            template_name=f'{self.get_template_names()[0]}#{name}',
+            context=context,
+        )
+
+    def get_context_data(self, *args: Any, **kwargs: Any) -> dict[str, Any]:
+        return {'htmx': True, **super().get_context_data(*args, **kwargs)}
 
 
 def public(view: ViewFunction) -> ViewFunction:

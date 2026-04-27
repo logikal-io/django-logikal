@@ -1,0 +1,61 @@
+/* Sans-serif font */
+
+/* License: url('../fonts/Lato-LICENSE.txt') */
+@font-face {
+  font-family: 'lato';
+  src: url('../fonts/Lato-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'lato';
+  src: url('../fonts/Lato-Italic.woff2') format('woff2');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'lato';
+  src: url('../fonts/Lato-Bold.woff2') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'lato';
+  src: url('../fonts/Lato-BoldItalic.woff2') format('woff2');
+  font-weight: bold;
+  font-style: italic;
+}
+
+/* Monospace font */
+
+/* License: url('../fonts/RobotoMono-LICENSE.txt') */
+@font-face {
+  font-family: 'roboto-mono';
+  src: url('../fonts/RobotoMono-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'roboto-mono';
+  src: url('../fonts/RobotoMono-Italic.woff2') format('woff2');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'roboto-mono';
+  src: url('../fonts/RobotoMono-Bold.woff2') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'roboto-mono';
+  src: url('../fonts/RobotoMono-BoldItalic.woff2') format('woff2');
+  font-weight: bold;
+  font-style: italic;
+}

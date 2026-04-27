@@ -3,29 +3,55 @@
 {% block language %}en-us{% endblock %}
 {% block title %}HTML Validation Error{% endblock %}
 {% block description %}HTML Validation Error{% endblock %}
+
+{% block component_head %}{{ component_head('fonts', 'commons') }}{% endblock %}
+
 {% block head %}
-  <link rel="stylesheet" href="{{ static('django_logikal/fonts.css') }}">
-  <link rel="stylesheet" href="{{ static('django_logikal/validation_error.css') }}">
   <style nonce="{{ csp_nonce }}">
-    {{ code_styles }}
+    @media (prefers-color-scheme: light) {
+      {{ code_styles['light'] }}
+    }
+    @media (prefers-color-scheme: dark) {
+      {{ code_styles['dark'] }}
+    }
   </style>
 {% endblock %}
 
 {% block body %}
-  <h1>HTML Validation Error at {{ request.path }}</h1>
-  <ol>
-    {% for error in errors %}
-      <li>
-        <b>{{ error.severity.title() }}:</b> {{ error.message }}<br>
-        {% if error.first_line %}
-          <em>Line {{ error.first_line }}{%
-            if error.last_line != error.first_line
-          %} to {{ error.last_line }}{% endif %}:</em><br>
-        <pre>{{ error.extract }}</pre>
-      {% endif %}
-      </li>
-    {% endfor %}
-  </ol>
-  <h2>Page Source:</h2>
-  {{ source }}
+  <header>
+    <hgroup>
+      <h1>HTML Validation Error</h1>
+      <p>at {{ request.path }}</p>
+    </hgroup>
+  </header>
+
+  <main class="validation-errors">
+    <div class="split">
+      <aside>
+        <section class="text box">
+          <h2>Validation Errors</h2>
+          <ol>
+            {% for error in errors %}
+              <li>
+                <b class="error">{{ error.severity.title() }}:</b> {{ error.message }}<br>
+                {% if error.first_line %}
+                  <b>Line {{ error.first_line }}
+                    {%- if error.last_line != error.first_line %} to {{ error.last_line }}
+                    {%- endif %}:</b>
+                  <pre><code>{{ error.extract }}</code></pre>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ol>
+        </section>
+      </aside>
+
+      <section class="text box">
+        <h2>Page Source</h2>
+        <div class="code">
+          {{ source }}
+        </div>
+      </section>
+    </div>
+  </main>
 {% endblock %}
