@@ -107,8 +107,13 @@ h3 { font-size: var(--font-size-sans-serif-small); }
 p, ul, ol { margin: 1em 0; }
 ul, ol { padding-inline-start: 2em; }
 ul { list-style-type: square; margin-left: 0; }
-a { color: var(--theme-accent); text-decoration: none; }
-a:active { color: var(--theme-text); }
+
+a {
+  color: var(--theme-accent);
+  text-decoration: none;
+
+  &:active { color: var(--theme-text); }
+}
 
 /* Tables */
 table {
@@ -116,22 +121,27 @@ table {
   border-collapse: collapse;
   border-bottom: var(--length-edge) solid var(--theme-edge-light);
   text-align: left;
-}
 
-table thead {
-  font-family: var(--font-sans-serif);
-  font-weight: var(--font-weight-sans-serif-bold);
-  border-bottom: var(--length-edge) solid var(--theme-edge-light);
-}
+  thead {
+    font-family: var(--font-sans-serif);
+    font-weight: var(--font-weight-sans-serif-bold);
+    border-bottom: var(--length-edge) solid var(--theme-edge-light);
+  }
 
-table th, table td { padding: 0.3125rem 0.625rem; }
+  th, td { padding: 0.3125rem 0.625rem; }
+}
 
 /* References */
-.cite { text-decoration: none; color: var(--theme-text); }
-.cite.up { padding: 0 0.375rem 0 0; }
-.cite span, .cite.up { color: var(--theme-accent); }
-.cite:active span, .cite.up:active { color: var(--theme-text); }
+.cite {
+  text-decoration: none;
+  color: var(--theme-text);
+  &.up { padding: 0 0.375rem 0 0; }
+  span, &.up { color: var(--theme-accent); }
+  &:active span, &.up:active { color: var(--theme-text); }
+}
 
-.references li { padding: 0.625rem; }
-.references li:target { border: var(--length-edge) solid var(--theme-edge-light); }
-.references li a { overflow-wrap: break-word; }
+.references li {
+  padding: 0.625rem;
+  &:target { border: var(--length-edge) solid var(--theme-edge-light); }
+  a { overflow-wrap: break-word; }
+}
