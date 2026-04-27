@@ -19,7 +19,7 @@ class PublicViewMixin:
 
 
 class PublicView(PublicViewMixin, View):
-    # Note: we re-define init to override the inherited class docstring
+    # Note: we redefine init to override the inherited class docstring
     def __init__(self, *args: Any, **kwargs: Any):  # pylint: disable=useless-parent-delegation
         """
         Represent a public view.
@@ -28,7 +28,7 @@ class PublicView(PublicViewMixin, View):
 
 
 class HTMXTemplateView(TemplateView):
-    # Note: we re-define init to override the inherited class docstring
+    # Note: we redefine init to override the inherited class docstring
     def __init__(self, *args: Any, **kwargs: Any):  # pylint: disable=useless-parent-delegation
         """
         Represent a htmx-enabled template view.

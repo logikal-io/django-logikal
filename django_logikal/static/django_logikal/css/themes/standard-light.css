@@ -11,6 +11,7 @@
   --color-surface-palegray: #f9f9f9; /* H0 S0 L0.98 */
   --color-surface-lightgray: #f4f4f4; /* H0 S0 L0.96 */
   --color-surface-gray: #eeeeee; /* H0 S0 L0.94 */
+  --color-surface-deepgray: #e2e2e2; /* H0 S0 L0.9 */
   --color-surface-lightpurple: #6642e7; /* H285 S0.9 L0.45 */
   --color-surface-purple: #5b33d6; /* H285 S0.9 L0.4 */
   --color-surface-deeppurple: #4f29bf; /* H285 S0.9 L0.35 */
@@ -23,6 +24,7 @@
 
   /** Text **/
   --color-text-gray: #ababab; /* H0 S0 L0.7 */
+  --color-text-deepgray: #848484; /* H0 S0 L0.55 */
   --color-text-lightpurple: #7155f1; /* H285 S0.9 L0.5 */
   --color-text-purple: #5b33d6; /* H285 S0.9 L0.4 */
   --color-text-deeppurple: #38198e; /* H285 S0.9 L0.25 */
@@ -72,6 +74,10 @@
   --theme-color-neutral-hit: transparent;
   --theme-color-neutral-hit-content: var(--color-black);
   --theme-color-neutral-hit-outline: var(--color-surface-deeppurple);
+
+  --theme-color-neutral-disabled: transparent;
+  --theme-color-neutral-disabled-content: var(--color-text-deepgray);
+  --theme-color-neutral-disabled-outline: var(--color-surface-deepgray);
 
   --theme-color-neutral-error: transparent;
   --theme-color-neutral-error-content: var(--color-black);

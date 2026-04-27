@@ -7,13 +7,13 @@ resource "google_project_service" "logging" {
   service = "logging.googleapis.com"
 }
 
-# Website secrets
-resource "random_password" "website_secret_key" {
+# Secrets
+resource "random_password" "secret_key" {
   length = 50
 }
 
-resource "google_secret_manager_secret" "website_secret_key" {
-  secret_id = "django-logikal-website-secret-key"
+resource "google_secret_manager_secret" "secret_key" {
+  secret_id = "django-logikal-secret-key"
   replication {
     auto {}
   }
@@ -21,9 +21,24 @@ resource "google_secret_manager_secret" "website_secret_key" {
   depends_on = [google_project_service.secret_manager]
 }
 
-resource "google_secret_manager_secret_version" "website_secret_key" {
-  secret = google_secret_manager_secret.website_secret_key.id
-  secret_data = random_password.website_secret_key.result
+resource "google_secret_manager_secret_version" "secret_key" {
+  secret = google_secret_manager_secret.secret_key.id
+  secret_data = random_password.secret_key.result
+}
+
+locals {
+  providers = ["google", "apple", "microsoft"]
+}
+
+resource "google_secret_manager_secret" "auth_secret" {
+  for_each = toset(local.providers)
+
+  secret_id = "django-logikal-auth-secret-${each.value}"
+  replication {
+    auto {}
+  }
+
+  depends_on = [google_project_service.secret_manager]
 }
 
 # Emailing

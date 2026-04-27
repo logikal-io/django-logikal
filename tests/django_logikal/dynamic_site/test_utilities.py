@@ -3,7 +3,7 @@ from django.test import Client
 from pytest_factoryboy import register
 from pytest_logikal import Browser, LiveURL, set_browser
 
-from django_logikal.views import ERROR_HANDLERS
+from django_logikal.views.generic import ERROR_HANDLERS
 from tests.django_logikal import factories, scenarios
 from tests.dynamic_site.models import User
 

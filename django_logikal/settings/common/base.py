@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 
 from django.utils.translation import gettext_lazy
+from logikal_utils.project import PYPROJECT
 
 from django_logikal.settings import Settings, SettingsUpdate
 
@@ -10,8 +11,8 @@ from django_logikal.settings import Settings, SettingsUpdate
 class CommonBaseSettings(SettingsUpdate):
     ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '[::1]']  # variants of localhost
     INSTALLED_APPS = [
-        'django.contrib.auth',  # required by sites, Django admin and the auth framework
-        'django.contrib.contenttypes',  # required by sites, Django admin and the auth framework
+        'django.contrib.auth',  # required by sites, Django admin and allauth
+        'django.contrib.contenttypes',  # required by sites and Django admin
         'django.contrib.sites',  # needed for the sitemap and the robots application
         'django.contrib.sitemaps',
         'django.contrib.staticfiles',
@@ -31,10 +32,10 @@ class CommonBaseSettings(SettingsUpdate):
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.request',  # required by Django admin
+                'django.template.context_processors.request',  # needed for Django admin
                 'django.template.context_processors.csp',  # needed for Django admin overrides
-                'django.contrib.auth.context_processors.auth',  # required by Django admin
-                'django.contrib.messages.context_processors.messages',  # required by Django admin
+                'django.contrib.auth.context_processors.auth',  # needed for Django admin & allauth
+                'django.contrib.messages.context_processors.messages',  # needed for Django admin
             ],
         },
     }]
@@ -49,6 +50,9 @@ class CommonBaseSettings(SettingsUpdate):
     LANGUAGES = [('en-us', gettext_lazy('English (United States)'))]
     LANGUAGE_CODE = 'en-us'
     TIME_ZONE = 'Europe/Zurich'
+
+    # Secrets
+    SECRET_PATH_PREFIX = PYPROJECT['project']['name']
 
     @staticmethod
     def apply(settings: Settings) -> None:

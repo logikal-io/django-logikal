@@ -11,7 +11,7 @@ from rest_framework.routers import DefaultRouter as APIRouter
 from django_logikal.sitemap import StaticSitemap
 from django_logikal.templates import Template
 from django_logikal.urls import utility_paths
-from django_logikal.views import ERROR_HANDLERS, public, redirect_to
+from django_logikal.views.generic import ERROR_HANDLERS, public, redirect_to
 from tests.dynamic_site import models, views
 
 
@@ -46,7 +46,6 @@ urlpatterns = [
             extra_context={'template_path_extra_context': 'template.path'},
         ),
         path('partials/', views.PartialsView.as_view(), name='partials'),
-        template.path('internal/', name='internal'),
         template.path('invalid-html/', name='invalid-html', public=True),
         path('redirect/', public(redirect_to('dynamic_site:home')), name='redirect'),
         path('email/', views.EmailView.as_view(), name='email'),

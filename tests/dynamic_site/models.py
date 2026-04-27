@@ -8,16 +8,16 @@ from django.db.models.functions import Lower
 from rest_framework import serializers, viewsets
 from simple_history.models import HistoricalRecords
 
-from django_logikal.models import OrderedTextChoices
+from django_logikal.models.base import BaseModel, BaseUser, HistorizedBaseModel
+from django_logikal.models.text_choices import OrderedTextChoices
 
 SITE = {'domain': 'logikal.io', 'name': 'logikal.io'}
 
 
-class User(AbstractUser):
+class User(HistorizedBaseModel, BaseUser):
     """
     Model representing users.
     """
-    history = HistoricalRecords()
 
 
 class Status(OrderedTextChoices):
@@ -27,8 +27,7 @@ class Status(OrderedTextChoices):
     CANCELED = ('canceled', 'canceled')
 
 
-class Project(models.Model):
-    id = UUIDField(primary_key=True, default=uuid4, editable=False)
+class Project(BaseModel):
     name = CharField(max_length=150)
     start_date = DateField()
     end_date = DateField(null=True, blank=True)

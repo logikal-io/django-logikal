@@ -6,16 +6,16 @@ from django.http import HttpRequest
 from logikal_utils.imports import try_import
 
 from django_logikal.middleware import Middleware
-from django_logikal.views import PublicViewMixin
+from django_logikal.views.generic import PublicViewMixin
 
 
 class LoginRequiredByDefaultMiddleware(Middleware):
     """
     Require login on all views by default.
 
-    Public views must be marked explicitly via the :func:`~django_logikal.views.public` decorator
-    or by inheriting from :class:`~django_logikal.views.PublicView` or
-    :class:`~django_logikal.views.PublicViewMixin`.
+    Public views must be marked explicitly via the :func:`~django_logikal.views.generic.public`
+    decorator or by inheriting from :class:`~django_logikal.views.generic.PublicView` or
+    :class:`~django_logikal.views.generic.PublicViewMixin`.
 
     .. warning:: When this middleware is used, you must mark all public views explicitly, including
         views included from applications like :mod:`django.contrib.admin`. You may use the

@@ -33,7 +33,9 @@
 {% endmacro %}
 
 {% macro input_field(
-  name, label, type='text', id=none, required=false, placeholder=none, error_text=none
+  name, label, type='text', value=none, id=none, required=false, disabled=false, read_only=false,
+  placeholder=none, error_text=none, min_length=none, max_length=none, autocomplete=none,
+  spellcheck=none
 ) %}
   {#
   Render an input field.
@@ -42,10 +44,17 @@
     name (str): The name to use.
     label (str): The label text to use.
     type (str): The input type to use.
+    value (str): The initial values to use.
     id (str): The input ID to use. Defaults to the name.
     required (bool): Whether the input field is required.
+    disabled (bool): Whether the input element is disabled.
+    read_only (bool): Whether the input element is editable or not.
     placeholder (str): The placeholder string to use.
     error_text (str): The error message to show.
+    min_length (int): The minimum length to use.
+    max_length (int): The maximum length to use.
+    autocomplete (str): The autocomplete attributes to use.
+    spellcheck (bool): Whether the input element should be checked for spelling errors.
 
   .. jinja:example::
 
@@ -58,24 +67,31 @@
   <div class="input-field">
     <label for="{{ id or name }}">{{ label or name|title }}</label>
     <input id="{{ id or name }}" name="{{ name }}" type="{{ type }}"
-      {% if placeholder %} placeholder="{{ placeholder }}"{% endif %}
-      {% if required %} required{% endif %}>
+      {%- if value %} value="{{ value }}"{% endif -%}
+      {%- if placeholder %} placeholder="{{ placeholder }}"{% endif -%}
+      {%- if required %} required{% endif -%}
+      {%- if min_length %} minlength="{{ min_length }}"{% endif -%}
+      {%- if max_length %} maxlength="{{ max_length }}"{% endif -%}
+      {%- if autocomplete %} autocomplete="{{ autocomplete }}"{% endif -%}
+      {%- if spellcheck is not none %} spellcheck="{{ spellcheck|str|lower }}"{% endif -%}
+      {%- if disabled %} disabled{% endif -%}
+      {%- if read_only %} readonly{% endif -%}
+    >
     {% if error_text %}<p class="error">{{ error_text }}</p>{% endif %}
   </div>
 {% endmacro %}
 
-{% macro link_icon_button(text, href, icon, classes=none) %}
+{% macro icon_button(text, icon, classes=none) %}
   {#
   Render a link button with an icon.
 
   Args:
     text (str): The text to use.
-    href (str): The link target to use.
     icon (str): The path for the icon to include.
     classes (str): The classes to use.
 
   #}
-  <a href="{{ href }}" class="button icon{% if classes %} {{ classes }}{% endif %}">
+  <button class="icon{% if classes %} {{ classes }}{% endif %}">
     {{- include_static(icon) -}}
-    <span>{{- text -}}</span><span class="counterweight"></span></a>
+    <span>{{- text -}}</span><span class="counterweight"></span></button>
 {% endmacro %}

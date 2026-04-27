@@ -13,9 +13,6 @@ class CommonProductionSettings(SettingsUpdate):
     CONN_HEALTH_CHECKS = True
 
     # Security
-    SECRET_KEY_PATH = 'website-secret-key'  # nosec: this is a path
-    DATABASE_SECRETS_PATH = 'website-database-access'
-
     CSRF_COOKIE_SECURE = True
     LANGUAGE_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
@@ -27,6 +24,13 @@ class CommonProductionSettings(SettingsUpdate):
     @staticmethod
     def apply(settings: Settings) -> None:
         settings['LOGGING'] = logging_config(console=False, cloud=True)
+
+        # Secrets
+        settings.setdefault('SECRET_KEY_PATH', f'{settings['SECRET_PATH_PREFIX']}-secret-key')
+        settings.setdefault(
+            'DATABASE_SECRETS_PATH',
+            f'{settings['SECRET_PATH_PREFIX']}-database-access',
+        )
 
         with SecretManager() as secrets:
             settings['SECRET_KEY'] = secrets[settings['SECRET_KEY_PATH']]
