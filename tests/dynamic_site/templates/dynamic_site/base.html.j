@@ -19,6 +19,21 @@
         {{ include_static('logikal_logo.svg') }}
       </a>
       {# djlint:off T001 #} {# TODO: show a list of options for the error pages #}
+      {% set menu_items = [
+              MenuItem(title='Home', view_name='dynamic_site:home'),
+              MenuItem(title='Errors',
+                       submenu=[
+                           MenuItem(title='400', view_name='error:400'),
+                           MenuItem(title='403', view_name='error:403'),
+                           MenuItem(title='404', view_name='error:404'),
+                           MenuItem(title='500', view_name='error:500'),
+                       ]
+                       ),
+              MenuItem(title='Templates', view_name='dynamic_site:templates',
+                       view_kwargs={'arg': 'extensions'}),
+              MenuItem(title='API', view_name='api-root'),
+          ]
+      %}
       {{ commons.menu(menu_items, request=request|default(none)) }}
       {# djlint:on #}
       <aside>

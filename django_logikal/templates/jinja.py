@@ -12,7 +12,7 @@ from jinja2.runtime import StrictUndefined
 from logikal_utils.imports import installed
 
 from django_logikal.templates import filters, functions, tests
-from django_logikal.templates.menu import menu_items
+from tests.dynamic_site.menu import MenuItem
 
 DEFAULT_OPTIONS = {
     'undefined': StrictUndefined,
@@ -145,7 +145,7 @@ def environment(**options: Any) -> Environment:
         'bibliography': functions.bibliography,
         'faker_factory': functions.faker_factory,
         'component_head': functions.component_head,
-        'menu_items': menu_items,
+        'MenuItem': MenuItem,
     })
     if installed('django_htmx'):
         from django_htmx.jinja import django_htmx_script, htmx_script
