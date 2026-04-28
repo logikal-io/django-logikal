@@ -147,6 +147,40 @@ menu, nav aside {
   gap: var(--length-gap-group);
 }
 
+menu {
+  .dropdown-arrow {
+    display: inline-block;
+    width: var(--length-button-icon);
+    height: var(--length-button-icon);
+    cursor: pointer;
+    background-size: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: black;
+
+    @supports (mask-image: url()) {
+      background-color: black;
+      mask-size: 10px;
+      mask-repeat: no-repeat;
+      mask-position: center;
+      background-image: none;
+    }
+  }
+
+  .menu:has(menu.open) .dropdown-arrow {
+    transform: rotate(180deg);
+  }
+
+  .menu {
+    display: none;
+    position: absolute;
+  }
+
+  .menu.open {
+    display: block;
+  }
+}
+
 article {
   margin: 0 auto;
 

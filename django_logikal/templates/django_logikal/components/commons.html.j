@@ -1,4 +1,4 @@
-{% macro menu(item_urls, request) %}
+{% macro menu(items, request, icon='arrow.svg') %}
   {#
   Render a menu bar.
 
@@ -16,13 +16,34 @@
 
   #}
   <menu role="menu" class="tabs">
-    {% for item_title, item in item_urls.items() %}
-      {% set view_name = item['view_name'] if item|isinstance(dict) else item %}
-      {% set url_args = item|exclude('view_name') if item|isinstance(dict) else {} %}
-      {% set active = (view_name == url_name(request)) if request else none %}
-      <li role="none"{% if active %} class="active"{% endif %}><a role="menuitem"
-        {%- if not active %} href="{{ url(viewname=view_name, **url_args) }}"{% endif -%}
-        >{{ item_title }}</a></li>
+    {% for item in items %}
+      {% set active = (item.view_name == url_name(request)) if request else none %}
+      <li role="none"{% if active %} class="active"{% endif %}>
+        <a role="menuitem"
+           {%- if not active and not item.submenu %}
+            href="{{ url(viewname=item.view_name, kwargs=item.view_kwargs) }}"
+           {% endif -%}>
+          {{ item.title }}
+          {% if item.submenu %}
+            {{ include_static(icon) }}
+          {% endif %}
+        </a>
+        {%- if item.submenu -%}
+          <ul role="menu" class="menu group">
+            {% for sub in item.submenu %}
+            {% set sub_active = (sub.view_name in url_name(request)) if request else none %}
+            <li role="none" {% if sub_active %} class="active"{% endif %}>
+              <a role="menuitem"
+                 {%- if not sub_active %}
+                  href="{{ url(viewname=sub.view_name, kwargs=sub.view_kwargs) }}"
+                 {% endif -%}>
+                {{ sub.title }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        {%- endif -%}
+      </li>
     {% endfor %}
   </menu>
 {% endmacro %}
