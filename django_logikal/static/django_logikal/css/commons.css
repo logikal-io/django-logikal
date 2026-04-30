@@ -148,25 +148,6 @@ menu, nav aside {
 }
 
 menu {
-  & .dropdown-arrow {
-    display: inline-block;
-    width: var(--length-button-icon);
-    height: var(--length-button-icon);
-    cursor: pointer;
-    mask-size: 10px;
-    mask-repeat: no-repeat;
-    mask-position: center;
-    fill: var(--theme-font-body-normal);
-
-    @supports (mask-image: url()) {
-      fill: var(--theme-font-body-normal);
-      mask-size: 10px;
-      mask-repeat: no-repeat;
-      mask-position: center;
-      background-image: none;
-    }
-  }
-
   & .menu:has(menu.open) .dropdown-arrow {
     transform: rotate(180deg);
   }
@@ -426,7 +407,9 @@ button, .button {
 /* Generic elements */
 .tabs li {
   a {
-    display: block;
+    display: inline-flex;
+    flex-flow: nowrap;
+    width: calc(var(--length-button) + var(--length-button-icon));
     cursor: pointer;
     padding: var(--length-gap-element);
     font: var(--theme-font-body-normal-emphasis);
@@ -434,6 +417,9 @@ button, .button {
 
     &:hover { color: var(--theme-color-text-highlight); }
     &:active { color: var(--theme-color-text-hit); }
+    & > svg {
+      vertical-align: middle;
+    }
   }
 
   &.active a {
