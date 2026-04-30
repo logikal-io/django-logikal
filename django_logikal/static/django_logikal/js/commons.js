@@ -6,7 +6,13 @@ menuItem.forEach(item => {
     const subMenu = this.querySelector('ul');
     console.log(subMenu)
     if (subMenu) {
-      subMenu.classList.toggle('open');
+      const isOpen = subMenu.classList.toggle('open');
+      if (isOpen) {
+        item.querySelector('svg').style.transform = 'rotate(180deg)';
+      }
+      else {
+        item.querySelector('svg').style.transform = 'rotate(0deg)';
+      }
     }
   });
 });

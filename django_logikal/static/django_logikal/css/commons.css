@@ -148,18 +148,18 @@ menu, nav aside {
 }
 
 menu {
-  .dropdown-arrow {
+  & .dropdown-arrow {
     display: inline-block;
     width: var(--length-button-icon);
     height: var(--length-button-icon);
     cursor: pointer;
-    background-size: 10px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-color: black;
+    mask-size: 10px;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    fill: var(--theme-font-body-normal);
 
     @supports (mask-image: url()) {
-      background-color: black;
+      fill: var(--theme-font-body-normal);
       mask-size: 10px;
       mask-repeat: no-repeat;
       mask-position: center;
@@ -167,16 +167,16 @@ menu {
     }
   }
 
-  .menu:has(menu.open) .dropdown-arrow {
+  & .menu:has(menu.open) .dropdown-arrow {
     transform: rotate(180deg);
   }
 
-  .menu {
+  & .menu {
     display: none;
     position: absolute;
   }
 
-  .menu.open {
+  & .menu.open {
     display: block;
   }
 }

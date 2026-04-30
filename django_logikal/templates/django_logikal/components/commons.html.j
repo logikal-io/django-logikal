@@ -31,8 +31,8 @@
         {%- if item.submenu -%}
           <ul role="menu" class="menu group">
             {% for sub in item.submenu %}
-            {% set sub_active = (sub.view_name in url_name(request)) if request else none %}
-            <li role="none" {% if sub_active %} class="active"{% endif %}>
+            {% set sub_active = (sub.view_name == url_name(request)) if request else none %}
+            <li role="none"{% if sub_active %} class="active"{% endif %}>
               <a role="menuitem"
                  {%- if not sub_active %}
                   href="{{ url(viewname=sub.view_name, kwargs=sub.view_kwargs) }}"
