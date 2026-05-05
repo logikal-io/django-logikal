@@ -8,11 +8,17 @@
 
   .. jinja:example::
 
-    {{ commons.menu({
-      'About': 'main:about',
-      'Components': 'main:components',
-      'Blog': {'view_name': 'main:blog', 'kwargs': {'year': '2000'}},
-    }, request=request) }}
+    {{ commons.menu([
+      MenuItem(title='About', view_name='main:about'),
+      MenuItem(title='Components', view_name='main:components'),
+      MenuItem(
+        title='Blog',
+        view_kwargs={'year': '2000'},
+        submenu=[
+          MenuItem(title='Blog Post', view_name='main:blog_post')
+        ]
+      ),
+    ], request=request, icon='django_logikal/icons/arrow.svg') }}
 
   #}
   <menu role="menu" class="tabs">
