@@ -14,3 +14,7 @@ menuItem.forEach(item => {
     }
   });
 });
+
+document.querySelector('.menu-icon').addEventListener('click', () => {
+  document.querySelector('.mobile-menu-dropdown').classList.toggle('open');
+});
