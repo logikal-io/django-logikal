@@ -156,11 +156,6 @@ nav {
       flex-direction: column;
       gap: var(--length-gap-group);
 
-      button {
-        background: none;
-        border: none;
-      }
-
       .mobile-header {
         display: flex;
         flex-direction: row;
@@ -172,14 +167,6 @@ nav {
         display: flex;
         flex-direction: row;
         gap: var(--length-gap-element);
-      }
-
-      .mobile-menu-dropdown {
-        display: none;
-
-        &.open {
-          display: block;
-        }
       }
     }
   }
@@ -203,6 +190,61 @@ menu {
 
   & .menu.open {
     display: block;
+  }
+}
+
+.mobile-menu-dropdown {
+  display: none;
+}
+
+@media only screen and (max-width: 30em) {
+  header {
+    position: relative;
+  }
+
+  .mobile-menu-dropdown {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background-color: var(--theme-color-group);
+    box-shadow: var(--theme-shadow-group);
+
+    &.open {
+      display: block;
+    }
+  }
+
+  menu.tabs {
+    flex-direction: column;
+    width: 100%;
+
+    li {
+      width: 100%;
+
+      a {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+
+        svg {
+          width: calc(var(--length-button-icon) * 2);
+          height: calc(var(--length-button-icon) * 2);
+          margin-top: 0;
+        }
+      }
+    }
+
+    ul.menu {
+      position: static;
+      display: none;
+      box-shadow: none;
+      width: 100%;
+
+      &.open {
+        display: block;
+      }
+    }
   }
 }
 

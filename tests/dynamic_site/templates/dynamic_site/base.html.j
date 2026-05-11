@@ -56,12 +56,12 @@
           <button class="menu-icon" aria-label="Menu">
             {{ include_static('menu.svg') }}
           </button>
-          <div class="mobile-menu-dropdown">
-            {{ commons.menu(menu_items, request=request|default(none)) }}
-          </div>
         </aside>
       </div>
     </nav>
+    <div class="mobile-menu-dropdown">
+      {{ commons.menu(menu_items, request=request|default(none)) }}
+    </div>
   </header>
   <main>
     {% block main %}{% endblock %}
