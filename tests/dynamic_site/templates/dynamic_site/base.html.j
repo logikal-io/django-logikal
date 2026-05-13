@@ -14,7 +14,7 @@
 
 {% block body %}
   <header>
-    <nav class="desktop">
+    <nav>
       <a href="{{ url('dynamic_site:home') }}" class="logo" aria-label="Go to home page">
         {{ include_static('logikal_logo.svg') }}
       </a>
@@ -42,26 +42,6 @@
         <a href="{{ url('admin:index') }}" class="button">Admin</a>
       </aside>
     </nav>
-    <nav class="mobile">
-      <a href="{{ url('dynamic_site:home') }}" class="logo" aria-label="Go to home page">
-        {{ include_static('logikal_logo.svg') }}
-      </a>
-      <div class="mobile-header">
-        <div class="mobile-header-buttons">
-          <a href="{{ url('dynamic_site_localized:localization') }}"
-             class="button neutral">Localization</a>
-          <a href="{{ url('admin:index') }}" class="button">Admin</a>
-        </div>
-        <aside>
-          <button class="menu-icon" aria-label="Menu">
-            {{ include_static('menu.svg') }}
-          </button>
-        </aside>
-      </div>
-    </nav>
-    <div class="mobile-menu-dropdown">
-      {{ commons.menu(menu_items, request=request|default(none)) }}
-    </div>
   </header>
   <main>
     {% block main %}{% endblock %}
