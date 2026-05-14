@@ -10,14 +10,14 @@ document.querySelectorAll('.desktop-menu li').forEach(item => {
   }
 });
 
-const toggle = document.querySelector('.mobile-menu-toggle');
+const menu = document.querySelector('.mobile-menu-icon');
 const dropdown = document.querySelector('.mobile-menu-dropdown');
 
-if (toggle && dropdown) {
-  toggle.addEventListener('click', (e) => {
+if (menu && dropdown) {
+  menu.addEventListener('click', (e) => {
     e.stopPropagation();
-    const expanded = toggle.getAttribute('aria-expanded') === 'true';
-    toggle.setAttribute('aria-expanded', !expanded);
+    const expanded = menu.getAttribute('aria-expanded') === 'true';
+    menu.setAttribute('aria-expanded', !expanded);
     dropdown.classList.toggle('open');
   });
 
@@ -34,8 +34,8 @@ if (toggle && dropdown) {
   });
 
   document.addEventListener('click', (e) => {
-    if (!toggle.contains(e.target) && !dropdown.contains(e.target)) {
-      toggle.setAttribute('aria-expanded', 'false');
+    if (!menu.contains(e.target) && !dropdown.contains(e.target)) {
+      menu.setAttribute('aria-expanded', 'false');
       dropdown.classList.remove('open');
     }
   });

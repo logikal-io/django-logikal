@@ -178,14 +178,16 @@ menu {
   display: flex;
 }
 
-.mobile-menu-toggle,
 .mobile-menu-dropdown {
   display: none;
+  max-height: var(--length-text);
+  overflow-y: auto;
 }
 
-.mobile-menu-toggle {
+.mobile-menu-icon {
   order: 2;
   margin-left: auto;
+  display: none;
 }
 
 .mobile-menu {
@@ -233,7 +235,7 @@ menu {
     display: none;
   }
 
-  .mobile-menu-toggle {
+  .mobile-menu-icon {
     display: block;
   }
 }
