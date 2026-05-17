@@ -11,7 +11,7 @@ document.querySelectorAll('.desktop-menu li').forEach(item => {
 });
 
 const menu = document.querySelector('.mobile-menu-icon');
-const dropdown = document.querySelector('.mobile-menu-dropdown');
+const dropdown = document.querySelector('.mobile-menu');
 
 if (menu && dropdown) {
   menu.addEventListener('click', (e) => {

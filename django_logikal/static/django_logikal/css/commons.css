@@ -170,7 +170,7 @@ menu {
   }
 }
 
-.mobile-menu-dropdown.open {
+.mobile-menu.open {
   display: block;
 }
 
@@ -178,10 +178,8 @@ menu {
   display: flex;
 }
 
-.mobile-menu-dropdown {
+.mobile-menu {
   display: none;
-  max-height: var(--length-text);
-  overflow-y: auto;
 }
 
 .mobile-menu-icon {
@@ -198,6 +196,8 @@ menu {
   top: 100%;
   background-color: var(--theme-color-group);
   box-shadow: var(--theme-shadow-group);
+  max-height: var(--length-text);
+  overflow-y: auto;
 
   .tabs {
     li {

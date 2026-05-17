@@ -21,73 +21,43 @@
     ], request=request) }}
 
   #}
-  <menu role="menu" class="tabs desktop-menu">
-    {% for item in items %}
-      {% set active = (item.view_name == url_name(request)) if request else none %}
-      <li role="none"{% if active %} class="active"{% endif %}>
-        <a role="menuitem"
-           {%- if not active and not item.submenu %}
-            href="{{ url(viewname=item.view_name, kwargs=item.view_kwargs) }}"
-           {% endif -%}>
-          {{ item.title }}
-          {% if item.submenu %}
-            {{ include_static(arrow) }}
-          {% endif %}
-        </a>
-        {%- if item.submenu -%}
-          <ul role="menu" class="menu group">
-            {% for sub in item.submenu %}
-              {% set sub_active = (sub.view_name == url_name(request)) if request else none %}
-              <li role="none"{% if sub_active %} class="active"{% endif %}>
-                <a role="menuitem"
-                   {%- if not sub_active %}
-                    href="{{ url(viewname=sub.view_name, kwargs=sub.view_kwargs) }}"
-                   {% endif -%}>
-                  {{ sub.title }}
-                </a>
-              </li>
-            {% endfor %}
-          </ul>
-        {%- endif -%}
-      </li>
-    {% endfor %}
-  </menu>
+  {% for type in ['desktop', 'mobile'] %}
+    <menu role="menu" class="tabs {{ type }}-menu">
+      {% for item in items %}
+        {% set active = (item.view_name == url_name(request)) if request else none %}
+        <li role="none"{% if active %} class="active"{% endif %}>
+          <a role="menuitem"
+             {%- if not active and not item.submenu %}
+              href="{{ url(viewname=item.view_name, kwargs=item.view_kwargs) }}"
+             {% endif -%}>
+            {{ item.title }}
+            {% if item.submenu %}
+              {{ include_static(arrow) }}
+            {% endif %}
+          </a>
+          {%- if item.submenu -%}
+            <ul role="menu" class="menu group">
+              {% for sub in item.submenu %}
+                {% set sub_active = (sub.view_name == url_name(request)) if request else none %}
+                <li role="none"{% if sub_active %} class="active"{% endif %}>
+                  <a role="menuitem"
+                     {%- if not sub_active %}
+                      href="{{ url(viewname=sub.view_name, kwargs=sub.view_kwargs) }}"
+                     {% endif -%}>
+                    {{ sub.title }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          {%- endif -%}
+        </li>
+      {% endfor %}
+    </menu>
+  {% endfor %}
 
   <button class="mobile-menu-icon" aria-label="Menu" aria-expanded="false">
     {{ include_static(menu_icon) }}
   </button>
-
-  <menu role="menu" class="tabs mobile-menu-dropdown mobile-menu">
-    {% for item in items %}
-    {% set active = (item.view_name == url_name(request)) if request else none %}
-      <li role="none" {% if active %} class="active"{% endif %}>
-        <a role="menuitem"
-           {%- if not active and not item.submenu %}
-            href="{{ url(viewname=item.view_name, kwargs=item.view_kwargs) }}"
-           {% endif -%}>
-          {{ item.title }}
-          {% if item.submenu %}
-            {{ include_static(arrow) }}
-          {% endif %}
-        </a>
-        {%- if item.submenu -%}
-          <ul role="menu" class="menu group">
-            {% for sub in item.submenu %}
-              {% set sub_active = (sub.view_name == url_name(request)) if request else none %}
-              <li role="none" {% if sub_active %} class="active"{% endif %}>
-                <a role="menuitem"
-                   {%- if not sub_active %}
-                    href="{{ url(viewname=sub.view_name, kwargs=sub.view_kwargs) }}"
-                   {% endif -%}>
-                  {{ sub.title }}
-                </a>
-              </li>
-            {% endfor %}
-          </ul>
-        {%- endif -%}
-      </li>
-    {% endfor %}
-  </menu>
 {% endmacro %}
 
 {% macro paragraph(faker, sentences=5) %}
