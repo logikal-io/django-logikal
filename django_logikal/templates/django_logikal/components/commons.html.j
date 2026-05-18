@@ -1,4 +1,4 @@
-{% macro menu(item_urls, request) %}
+{% macro menu(items, request, arrow='django_logikal/icons/arrow.svg', menu_icon='django_logikal/icons/menu_icon.svg') %}
   {#
   Render a menu bar.
 
@@ -8,23 +8,50 @@
 
   .. jinja:example::
 
-    {{ commons.menu({
-      'About': 'main:about',
-      'Components': 'main:components',
-      'Blog': {'view_name': 'main:blog', 'kwargs': {'year': '2000'}},
-    }, request=request) }}
+    {{ commons.menu([
+      MenuItem(title='About', view_name='main:about'),
+      MenuItem(title='Components', view_name='main:components'),
+      MenuItem(
+        title='Blog',
+        view_kwargs={'year': '2000'},
+        submenu=[
+          MenuItem(title='Blog Post', view_name='main:blog_post')
+        ]
+      ),
+    ], request=request) }}
 
   #}
-  <menu role="menu" class="tabs">
-    {% for item_title, item in item_urls.items() %}
-      {% set view_name = item['view_name'] if item|isinstance(dict) else item %}
-      {% set url_args = item|exclude('view_name') if item|isinstance(dict) else {} %}
-      {% set active = (view_name == url_name(request)) if request else none %}
-      <li role="none"{% if active %} class="active"{% endif %}><a role="menuitem"
-        {%- if not active %} href="{{ url(viewname=view_name, **url_args) }}"{% endif -%}
-        >{{ item_title }}</a></li>
+  {% macro render_menu_items(items, request, arrow='arrow.svg') %}
+    {% for item in items %}
+      {% set active = (item.view_name == url_name(request)) if request else none %}
+      <li role="none"{% if active %} class="active"{% endif %}>
+        <a role="menuitem"
+           {%- if not active and not item.submenu %}
+            href="{{ url(viewname=item.view_name, kwargs=item.view_kwargs) }}"
+           {% endif -%}>
+          {{ item.title }}
+          {% if item.submenu %}
+            {{ include_static(arrow) }}
+          {% endif %}
+        </a>
+        {%- if item.submenu -%}
+          <ul role="menu" class="menu group">
+            {{ render_menu_items(item.submenu, request, arrow) }}
+          </ul>
+        {%- endif -%}
+      </li>
     {% endfor %}
-  </menu>
+  {% endmacro %}
+
+  {% for type in ['desktop', 'mobile'] %}
+    <menu role="menu" class="tabs {{ type }}-menu">
+      {{ render_menu_items(items, request, arrow) }}
+    </menu>
+  {% endfor %}
+
+  <button class="mobile-menu-icon" aria-label="Menu" aria-expanded="false">
+    {{ include_static(menu_icon) }}
+  </button>
 {% endmacro %}
 
 {% macro paragraph(faker, sentences=5) %}

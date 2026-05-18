@@ -7,6 +7,10 @@ body, :host {
   color: var(--theme-color-body-content);
 }
 
+header {
+  position: relative;
+}
+
 body {
   min-height: 100vh;
   display: grid;
@@ -68,6 +72,10 @@ body {
       'footer footer' auto
       / var(--split-golden-ratio);
   }
+}
+
+body.no-scroll {
+  overflow: hidden;
 }
 
 /* Content groups */
@@ -145,6 +153,113 @@ menu, nav aside {
   display: flex;
   flex-flow: row nowrap;
   gap: var(--length-gap-group);
+}
+
+menu {
+  .menu:has(menu.open) .dropdown-arrow {
+    transform: rotate(180deg);
+  }
+
+  .menu {
+    display: none;
+    position: absolute;
+  }
+
+  .menu.open {
+    display: block;
+  }
+
+  li:has(.menu.open) > a svg {
+    transform: rotate(180deg);
+  }
+}
+
+.mobile-menu.open {
+  display: block;
+}
+
+.desktop-menu {
+  display: flex;
+
+  ul.menu svg {
+    width: calc(var(--length-button-icon) * 2);
+    height: calc(var(--length-button-icon) * 2);
+    flex-shrink: 0;
+  }
+
+  & > li > ul.menu {
+    max-height: var(--length-text);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  ul.menu ul.menu {
+    position: relative;
+    box-shadow: none;
+    border: none;
+  }
+}
+
+.mobile-menu {
+  display: none;
+}
+
+.mobile-menu-icon {
+  order: 2;
+  margin-left: auto;
+  display: none;
+}
+
+.mobile-menu {
+  flex-direction: column;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background-color: var(--theme-color-group);
+  box-shadow: var(--theme-shadow-group);
+  max-height: var(--length-text);
+  overflow-y: auto;
+
+  ul.menu svg {
+    width: calc(var(--length-button-icon) * 2);
+    height: calc(var(--length-button-icon) * 2);
+    flex-shrink: 0;
+  }
+
+  .tabs {
+    li {
+      width: 100%;
+
+      a {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+      }
+    }
+  }
+
+  ul.menu {
+    position: static;
+    display: none;
+    box-shadow: none;
+    width: 100%;
+
+    &.open {
+      display: block;
+    }
+  }
+}
+
+@media (max-width: 30rem) {
+  .desktop-menu {
+    display: none;
+  }
+
+  .mobile-menu-icon {
+    display: block;
+  }
 }
 
 article {
@@ -392,7 +507,9 @@ button, .button {
 /* Generic elements */
 .tabs li {
   a {
-    display: block;
+    display: inline-flex;
+    flex-flow: nowrap;
+    width: calc(var(--length-button) + var(--length-button-icon));
     cursor: pointer;
     padding: var(--length-gap-element);
     font: var(--theme-font-body-normal-emphasis);
@@ -400,6 +517,10 @@ button, .button {
 
     &:hover { color: var(--theme-color-text-highlight); }
     &:active { color: var(--theme-color-text-hit); }
+    & > svg {
+      vertical-align: middle;
+      margin-top: calc(0.4rem * -1);
+    }
   }
 
   &.active a {
