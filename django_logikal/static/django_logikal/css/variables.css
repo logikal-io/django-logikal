@@ -62,7 +62,6 @@
    *        width wider and closer to the readability limit (~80). */
   --length-logo-height: 1em; /* 16px with 16px font size */
   --length-button-icon: 1.25em; /* 20px with 16px font size */
-  --length-button: 4.75em; /* 76px with 16px font size */
   --length-element: 15rem; /* 240px */
   --length-form: 18.75rem; /* 300px */
   --length-card-normal: 22rem; /* 352px */

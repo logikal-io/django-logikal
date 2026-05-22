@@ -1,4 +1,4 @@
-{% macro menu(items, request, arrow='django_logikal/icons/arrow.svg', menu_icon='django_logikal/icons/menu_icon.svg') %}
+{% macro menu(items, request, arrow_icon='django_logikal/icons/arrow.svg', menu_icon='django_logikal/icons/menu_icon.svg') %}
   {#
   Render a menu bar.
 
@@ -21,7 +21,7 @@
     ], request=request) }}
 
   #}
-  {% macro render_menu_items(items, request, arrow='arrow.svg') %}
+  {% macro render_menu_items(items, request) %}
     {% for item in items %}
       {% set active = (item.view_name == url_name(request)) if request else none %}
       <li role="none"{% if active %} class="active"{% endif %}>
@@ -31,12 +31,12 @@
            {% endif -%}>
           {{ item.title }}
           {% if item.submenu %}
-            {{ include_static(arrow) }}
+            {{ include_static(arrow_icon) }}
           {% endif %}
         </a>
         {%- if item.submenu -%}
           <ul role="menu" class="menu group">
-            {{ render_menu_items(item.submenu, request, arrow) }}
+            {{ render_menu_items(item.submenu, request) }}
           </ul>
         {%- endif -%}
       </li>
@@ -44,8 +44,8 @@
   {% endmacro %}
 
   {% for type in ['desktop', 'mobile'] %}
-    <menu role="menu" class="tabs {{ type }}-menu">
-      {{ render_menu_items(items, request, arrow) }}
+    <menu role="menu" class="tabs {{ type }}">
+      {{ render_menu_items(items, request) }}
     </menu>
   {% endfor %}
 
