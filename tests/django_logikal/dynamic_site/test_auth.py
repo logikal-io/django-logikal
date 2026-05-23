@@ -1,6 +1,6 @@
 import json
 import re
-from time import time, sleep
+from time import sleep, time
 
 import jwt
 from anymail.message import AnymailMessage
@@ -20,7 +20,8 @@ TEST_USER_NEW_PASSWORD = 'test_user_new_password'  # nosec: only used for testin
 
 SOCIAL_AUTH_SECRETS = {
     'stormware-google-oauth-client-secrets': json.dumps({
-        'client_id': 'client-id', 'client_secret': 'client-secret',
+        'client_id': 'client-id',
+        'client_secret': 'client-secret',  # nosec: only used for testing
     }),
 }
 
