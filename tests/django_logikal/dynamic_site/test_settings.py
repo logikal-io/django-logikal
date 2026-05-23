@@ -5,7 +5,7 @@ from logikal_utils.project import PYPROJECT
 from pytest import raises
 from pytest_mock import MockerFixture
 
-AUTH_SECRETS = {
+DYNAMIC_SITE_BASE_SECRETS = {
     'django-logikal-auth-secret-google': json.dumps({}),
     'django-logikal-auth-secret-microsoft': json.dumps({}),
 }
@@ -18,10 +18,8 @@ DATABASE_SECRETS = {
     'password': 'test_password',  # nosec: only used for testing
 }
 
-SECRET_KEY = 'secret-key'  # nosec: only used for testing
-
-APP_SECRETS = {
-    'django-logikal-secret-key': SECRET_KEY,
+COMMON_PRODUCTION_SECRETS = {
+    'django-logikal-secret-key': 'secret-key',  # nosec: only used for testing
     'django-logikal-database-access': json.dumps(DATABASE_SECRETS),
 }
 
@@ -46,10 +44,10 @@ def test_production_settings(mocker: MockerFixture) -> None:
     mocker.patch('stormware.google.auth.GCPAuth')
     cloud_logging_client = mocker.patch('django_logikal.logging.cloud_logging.Client')
     secret_manager = mocker.patch('django_logikal.settings.common.production.SecretManager')
-    secret_manager.return_value.__enter__.return_value = APP_SECRETS
+    secret_manager.return_value.__enter__.return_value = COMMON_PRODUCTION_SECRETS
     secret_manager = mocker.patch('django_logikal.settings.dynamic_site.base.SecretManager')
-    secret_manager.return_value.__enter__.return_value = AUTH_SECRETS
+    secret_manager.return_value.__enter__.return_value = DYNAMIC_SITE_BASE_SECRETS
     production = import_module('tests.dynamic_site.settings.production')
-    assert production.SECRET_KEY == SECRET_KEY
+    assert production.SECRET_KEY == COMMON_PRODUCTION_SECRETS['django-logikal-secret-key']
     assert production.DATABASES['default']['HOST'] == DATABASE_SECRETS['hostname']
     assert cloud_logging_client.called

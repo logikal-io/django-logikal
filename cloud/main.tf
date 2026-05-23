@@ -51,6 +51,15 @@ resource "google_secret_manager_secret" "auth_secret" {
   depends_on = [google_project_service.secret_manager]
 }
 
+# Permissions
+resource "google_secret_manager_secret_iam_member" "auth_secret_viewer" {
+  for_each = toset(local.providers)
+
+  secret_id = google_secret_manager_secret.auth_secret[each.value].id
+  role = "roles/secretmanager.viewer"
+  member = "serviceAccount:${module.gcp_github_auth.service_account_emails["testing"]}"
+}
+
 # Emailing
 resource "aws_ses_domain_identity" "django_logikal_org" {
   domain = "django-logikal.org"
