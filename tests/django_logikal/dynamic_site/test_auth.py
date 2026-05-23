@@ -1,4 +1,3 @@
-import json
 import re
 from time import sleep, time
 
@@ -17,13 +16,6 @@ from tests.dynamic_site.models import User
 
 TEST_USER = 'test-user-temporary@django-logikal.org'
 TEST_USER_NEW_PASSWORD = 'test_user_new_password'  # nosec: only used for testing
-
-SOCIAL_AUTH_SECRETS = {
-    'stormware-google-oauth-client-secrets': json.dumps({
-        'client_id': 'client-id',
-        'client_secret': 'client-secret',  # nosec: only used for testing
-    }),
-}
 
 
 def login(live_url: LiveURL, browser: Browser, user: User, password: str) -> None:
@@ -207,10 +199,6 @@ def social_login(  # pylint: disable=too-many-arguments
     last_name: str | None = None,
 ) -> None:
     factories.site_factory()
-
-    mocker.patch('stormware.google.auth.GCPAuth')
-    secret_manager = mocker.patch('django_logikal.settings.common.production.SecretManager')
-    secret_manager.return_value.__enter__.return_value = SOCIAL_AUTH_SECRETS
 
     # Generate a valid ID token
     providers = settings.SOCIALACCOUNT_PROVIDERS  # type: ignore[misc]

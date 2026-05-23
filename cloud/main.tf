@@ -7,6 +7,16 @@ resource "google_project_service" "logging" {
   service = "logging.googleapis.com"
 }
 
+# GitHub Actions
+module "gcp_github_auth" {
+  source = "github.com/logikal-io/terraform-modules//gcp/github-auth"
+
+  github_organization = var.organization_id
+  service_account_accesses = {
+    testing = ["logikal-io/django-logikal"]
+  }
+}
+
 # Secrets
 resource "random_password" "secret_key" {
   length = 50
