@@ -10,7 +10,9 @@ from faker import Faker as FakerFactory
 
 from tests.dynamic_site.models import SITE, Project, User
 
-DOMAIN = 'django-logikal.org'
+USER_DOMAIN = 'django-logikal.org'
+USER_PASSWORD = 'local_password'  # nosec: only used for local testing
+
 faker = FakerFactory()
 
 
@@ -19,8 +21,8 @@ def site_factory() -> Site:  # note that the site is cleared for each test by py
 
 
 class UserFactory(DjangoModelFactory[User]):
-    email = LazyAttribute(lambda obj: f'{obj.name.replace(' ', '.').lower()}@{DOMAIN}')
-    password = Password('local')
+    email = LazyAttribute(lambda obj: f'{obj.name.replace(' ', '.').lower()}@{USER_DOMAIN}')
+    password = Password(USER_PASSWORD)
     name = Faker('name')
     nickname = LazyAttribute(lambda obj: obj.name.split(' ')[0])
 
@@ -29,12 +31,12 @@ class UserFactory(DjangoModelFactory[User]):
 
 
 class AdminUserFactory(UserFactory):
-    email = f'admin-user@{DOMAIN}'
+    email = f'admin-user@{USER_DOMAIN}'  # type: ignore[assignment]
     is_admin = True
 
 
 class SuperUserFactory(AdminUserFactory):
-    email = f'super-user@{DOMAIN}'
+    email = f'super-user@{USER_DOMAIN}'
     is_superuser = True
 
 

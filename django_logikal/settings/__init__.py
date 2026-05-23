@@ -59,7 +59,7 @@ class Settings:
     def __contains__(self, item: str) -> bool:
         return item in self._settings
 
-    def setdefault(self, key, default=None) -> Any:
+    def setdefault(self, key: str, default: Any = None) -> Any:
         return self._settings.setdefault(key, default)
 
     def update(self, settings_update: type[SettingsUpdate]) -> 'Settings':

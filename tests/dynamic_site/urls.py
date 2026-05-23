@@ -46,6 +46,7 @@ urlpatterns = [
             extra_context={'template_path_extra_context': 'template.path'},
         ),
         path('partials/', views.PartialsView.as_view(), name='partials'),
+        template.path('internal/', name='internal'),
         template.path('invalid-html/', name='invalid-html', public=True),
         path('redirect/', public(redirect_to('dynamic_site:home')), name='redirect'),
         path('email/', views.EmailView.as_view(), name='email'),

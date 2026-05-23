@@ -1,21 +1,16 @@
-from typing import Any
+from django.utils.translation import gettext_lazy as _
 
-import allauth
-
-
-class SetPasswordForm(allauth.account.forms.SetPasswordForm):
-    def clean(self) -> dict[str, Any] | None:
-        if self.data:
-            data = self.data.copy()
-            data['password2'] = data.get('password1')
-            self.data = data
-        return super().clean()
+from django_logikal.forms import fields
+from django_logikal.forms.generic import Form, FormMeta
 
 
-class ChangePasswordForm(allauth.account.forms.ChangePasswordForm):
-    def clean(self) -> dict[str, Any] | None:
-        if self.data:
-            data = self.data.copy()
-            data['password2'] = data.get('password1')
-            self.data = data
-        return super().clean()
+class AuthForm(Form):
+    email = fields.EmailField(
+        required=True, label=_('Email address'), placeholder=_('email@example.com'),
+        autocomplete='username', spellcheck=False,
+    )
+
+    class Meta(FormMeta):
+        id = 'auth'
+        action_url_name = 'account_auth'
+        action_button_text = _('Next')

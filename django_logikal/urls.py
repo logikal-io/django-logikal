@@ -1,3 +1,4 @@
+# pylint: disable=import-outside-toplevel
 from collections.abc import Sequence
 from importlib import import_module
 from typing import Any
@@ -7,10 +8,10 @@ from django.conf import settings
 from django.contrib import admin as django_admin
 from django.contrib.sitemaps import Sitemap
 from django.contrib.sitemaps.views import sitemap
-from django.urls import URLPattern, URLResolver, include, path
+from django.urls import URLPattern, URLResolver, include, path, re_path
+from django.views.i18n import JavaScriptCatalog
 
 from django_logikal.env import is_dev_env, is_testing_env, option_is_set
-from django_logikal.views.account import AccountView, AuthView
 from django_logikal.views.generic import ERROR_HANDLERS, public
 
 URLType = URLResolver | URLPattern
@@ -19,17 +20,22 @@ IncludeType = tuple[Sequence[URLType], str | None, str | None]
 
 def auth_urls() -> IncludeType:
     """
-    Return URLs for the :mod:`allauth` app.
+    Return URLs for the :std:doc:`allauth <allauth:index>` app.
     """
-    from allauth import urls  # pylint: disable=import-outside-toplevel
+    from allauth import urls
+
+    from django_logikal.views import account, allauth
 
     public_view_names = [
         # Login flow
-        'account_login', 'account_logout', 'account_signup',
+        'account_logout',
         # Email validation flow
-        'account_email_verification_sent', 'account_confirm_email',
+        'account_email_verification_sent',
+        'account_confirm_email',
+        # Password management flows
+        'account_reset_password_done',
     ]
-    for provider in settings.ALLAUTH_SOCIAL_PROVIDERS:
+    for provider in settings.ALLAUTH_SOCIAL_PROVIDERS:  # type: ignore[misc]
         provider_module = provider.lower()
         public_view_names.extend([f'{provider_module}_login', f'{provider_module}_callback'])
 
@@ -40,10 +46,24 @@ def auth_urls() -> IncludeType:
                 url_item.callback = public(url_item.callback)
 
     # Views for the improved flow
-    urls.urlpatterns.extend([
-        path('', AccountView.as_view(), name='account'),
-        path('auth/', AuthView.as_view(), name='account_auth'),
-    ])
+    urls.urlpatterns = [
+        *[
+            path('', account.AccountView.as_view(), name='account'),
+            path('auth/', account.AuthView.as_view(), name='account_auth'),
+            path('signup/', allauth.SignupView.as_view(), name='account_signup'),
+            path('login/', allauth.LoginView.as_view(), name='account_login'),
+            path('password/reset/', allauth.PasswordResetView.as_view(),
+                 name='account_reset_password'),
+            re_path(r'^password/reset/key/(?P<uidb36>[0-9A-Za-z]+)-(?P<key>.+)/$',
+                    allauth.PasswordResetFromKeyView.as_view(),
+                    name='account_reset_password_from_key'),
+            path('password/set/', allauth.PasswordSetView.as_view(),
+                 name='account_set_password'),
+            path('password/change/', allauth.PasswordChangeView.as_view(),
+                 name='account_change_password'),
+        ],
+        *urls.urlpatterns,
+    ]
     return include(urls)
 
 
@@ -56,10 +76,10 @@ def admin_urls(admin_site: django_admin.AdminSite, use_allauth: bool) -> Include
         if getattr(url, 'name', None) == 'login' and url.callback:
             if use_allauth:
                 from allauth.account.decorators import (  # pylint: disable=import-outside-toplevel
-                    secure_admin_login
+                    secure_admin_login,
                 )
                 url.callback = secure_admin_login(url.callback)
-            else:
+            else:  # pragma: no cover, fallback for legacy implementations
                 url.callback = public(url.callback)
             break
     return urls
@@ -80,32 +100,35 @@ def debug_toolbar_urls() -> IncludeType:  # pragma: no cover, tested in subproce
     """
     Return URLs for the Django debug toolbar.
     """
-    urls = debug_toolbar.toolbar.DebugToolbar.get_urls()
-    for url in urls:
+    urls = debug_toolbar.toolbar.DebugToolbar.get_urls()  # type: ignore[attr-defined]
+    for url in urls:  # pylint: disable=not-an-iterable
         for url_item in getattr(url, 'url_patterns', [url]):
             url_item.callback = public(url_item.callback)
     return include((urls, debug_toolbar.APP_NAME))
 
 
-def utility_paths(
+def utility_paths(  # pylint: disable=too-many-arguments
+    *,
     sitemaps: dict[str, Sitemap[Any] | type[Sitemap[Any]]] | None = None,
     auth: bool = True,
     admin: bool = True,
     admin_site: django_admin.AdminSite | None = None,
-    static: bool = False,
+    js_i18n_catalog: bool = True,
+    static_site: bool = False,
 ) -> list[URLType]:
     """
     Return the common utility paths.
 
-    Includes the admin paths, auth paths, sitemap and robots paths and the Django debug toolbar
-    paths (when appropriate). Also includes the standard error paths when running locally.
+    Includes the auth paths, admin paths, JavaScript internationalization catalog path, sitemap and
+    robots paths and the Django debug toolbar paths (when appropriate). Also includes the standard
+    error paths when running locally.
     """
     # Note: we have to import late for documentation building to succeed
     from robots.views import rules_list  # pylint: disable=import-outside-toplevel
 
     paths: list[URLType] = []
     universal_path = path  # included for both static and dynamic sites
-    if static:
+    if static_site:
         from django_distill import distill_path  # pylint: disable=import-outside-toplevel
 
         universal_path = distill_path
@@ -115,6 +138,10 @@ def utility_paths(
         if admin:
             admin_site = admin_site if admin_site is not None else django_admin.site
             paths.append(path('admin/', admin_urls(admin_site=admin_site, use_allauth=auth)))
+        if js_i18n_catalog:
+            paths.append(path(
+                'js-i18n-catalog/', public(JavaScriptCatalog.as_view()), name='js-i18n-catalog',
+            ))
     if is_dev_env() or is_testing_env():
         paths.append(path('error/', error_urls()))
     if option_is_set('toolbar'):  # pragma: no cover, tested in subprocess

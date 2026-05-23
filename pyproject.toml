@@ -99,9 +99,6 @@ copyright = 'Logikal GmbH'
 google = 'Google'
 microsoft = 'Microsoft'
 
-[tool.django_logikal.validate]
-skipped_routes = ['account/.*']  # TODO: remove
-
 [tool.docs]
 parallel = false  # parallel builds do not work with automatic docker compose service starting
 
@@ -115,11 +112,9 @@ untyped_calls_exclude = ['factory', 'tests.django_logikal.factories']
 [[tool.mypy.overrides]]
 ignore_missing_imports = true
 module = [
+  'allauth.*',  # see https://codeberg.org/allauth/django-allauth/issues/4368
   'antimarkdown.*',
   'anymail.message',
-  'debug_toolbar',
-  'django.middleware.csp',  # see https://github.com/typeddjango/django-stubs/issues/2944
-  'django.utils.csp',  # see https://github.com/typeddjango/django-stubs/issues/2944
   'django_distill',
   'django_migration_linter',
   'docker.*',

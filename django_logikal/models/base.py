@@ -39,23 +39,23 @@ class BaseUser(BaseModel, AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.email
 
     @property
-    def is_staff(self):
+    def is_staff(self) -> bool:
         return self.is_admin
 
-    def has_perm(self, perm: Any, obj: Any = None):
+    def has_perm(self, perm: Any, obj: Any = None) -> bool:
         return True
 
-    def has_module_perms(self, app_label: Any):
+    def has_module_perms(self, app_label: Any) -> bool:
         return True
 
-    def get_full_name(self):
+    def get_full_name(self) -> str | None:
         return self.name
 
-    def get_short_name(self):
+    def get_short_name(self) -> str | None:
         return self.nickname
 
     class Meta:

@@ -13,9 +13,12 @@ def test_check_settings(settings: SettingsWrapper) -> None:
     settings.ROOT_URLCONF = None
     settings.AUTH_USER_MODEL = global_settings.AUTH_USER_MODEL
     settings.EMAIL_SUBJECT_PREFIX = global_settings.EMAIL_SUBJECT_PREFIX
+    settings.DEBUG = False
+    settings.ACCOUNT_TEMPLATE_EXTENSION = 'html'
     errors = check_settings()
     for index, error in enumerate(errors, start=1):
         assert error.id == f'django_logikal.E{index:03d}'
     assert message_in_errors('ROOT_URLCONF', errors)
     assert message_in_errors('AUTH_USER_MODEL', errors)
     assert message_in_errors('EMAIL_SUBJECT_PREFIX', errors)
+    assert message_in_errors('You should not use the built-in account templates', errors)

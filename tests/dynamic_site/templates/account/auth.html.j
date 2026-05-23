@@ -7,9 +7,9 @@
 {% block main %}
   <div class="spotlight">
     <section>
-      {{ auth.login_form(
+      {{ auth.auth_form(
         csrf_input=csrf_input,
-        action_url=url('account_auth', request=request),
+        form=form,
         header=_('Continue to access all content'),
         provider_login_urls=provider_login_urls,
       ) }}

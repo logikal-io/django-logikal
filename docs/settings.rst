@@ -23,7 +23,8 @@ All settings modules include the following:
 - An :ref:`improved Jinja template backend <templates:Templates>`
 - :ref:`HTML validation <middleware:HTML Validation>` support (via `v.Nu
   <https://validator.github.io/validator/>`_)
-- Authentication support (via :mod:`django.contrib.auth`)
+- Authentication support (via :mod:`django.contrib.auth` or `allauth
+  <https://docs.allauth.org/en/latest/>`_)
 - Sitemap support (via :mod:`django.contrib.sitemaps`)
 - Robots exclusion support (via :doc:`django-robots <django-robots:index>`)
 - The improved :ref:`migration writer <migrations:Migrations>`

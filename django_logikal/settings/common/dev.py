@@ -35,7 +35,7 @@ class CommonDevSettings(SettingsUpdate):
     }
 
     # Migration linter
-    MIGRATION_LINTER_OPTIONS = {'exclude_apps': ['sites', 'robots']}
+    MIGRATION_LINTER_OPTIONS = {'exclude_apps': ['sites', 'robots', 'account', 'socialaccount']}
     MIGRATION_LINTER_OVERRIDE_MAKEMIGRATIONS = True
 
     @classmethod
@@ -78,3 +78,7 @@ class CommonDevSettings(SettingsUpdate):
                     'debug_toolbar.panels.profiling.ProfilingPanel',
                 },
             }
+            if 'EMAIL_BACKEND' in settings:
+                cls.append(settings['INSTALLED_APPS'], 'mail_panel')
+                cls.prepend(settings['DEBUG_TOOLBAR_PANELS'], 'mail_panel.panels.MailToolbarPanel')
+                settings['EMAIL_BACKEND'] = 'mail_panel.backend.MailToolbarBackend'

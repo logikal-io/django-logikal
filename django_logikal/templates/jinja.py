@@ -51,8 +51,8 @@ class JinjaTemplate(Template):
             if self._block_name not in self.template.blocks:
                 error = f'Block "{self._block_name}" not found in "{self.template.name}"'
                 raise RuntimeError(error)
-            context = self.template.new_context(context)
-            blocks = self.template.blocks[self._block_name](context)
+            template_context = self.template.new_context(context)
+            blocks = self.template.blocks[self._block_name](template_context)
             return ''.join(block for block in blocks)
 
         return super().render(context=context, request=request)
@@ -81,7 +81,7 @@ class JinjaTemplates(Jinja2):
                 block_name=block_name,
             )
 
-        origin = Origin(name=template_name, loader=self.env.loader)
+        origin = Origin(name=template_name, loader=self.env.loader)  # type: ignore[arg-type]
         error = f'Skipping template search as the template extension is not "{self._extension}"'
         raise TemplateDoesNotExist(template_name, tried=[(origin, error)], backend=self)
 

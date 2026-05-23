@@ -19,7 +19,7 @@ from tests.dynamic_site.models import User
 @mark.django_db
 def test_local_data() -> None:
     local_data.UserData.insert()
-    assert User.objects.filter(username='user').exists()
+    assert User.objects.filter(email='admin-user@django-logikal.org').exists()
 
 
 def test_home_head(live_server: LiveServer, client: Client) -> None:
@@ -52,10 +52,18 @@ def test_templates(live_app_url: LiveURL, browser: Browser) -> None:
     browser.check()
 
 
-def test_internal(live_app_url: LiveURL, client: Client) -> None:
+@set_browser(scenarios.desktop)
+def test_internal(live_app_url: LiveURL, browser: Browser, client: Client, user: User) -> None:
     response = client.get(live_app_url('internal'))
     assert response.status_code == 302
-    assert response.url == f'{reverse("admin:login")}?next={app_url("internal")}'  # type: ignore
+    assert response.url == f'{reverse('account_auth')}?next={app_url('internal')}'  # type: ignore
+
+    browser.get(live_app_url('internal'))
+    browser.check('before_login')
+
+    browser.login(user)
+    browser.get(live_app_url('internal'))
+    browser.check('after_login')
 
 
 @set_browser(scenarios.desktop)

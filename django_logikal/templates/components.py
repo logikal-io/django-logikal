@@ -77,7 +77,7 @@ def component_head_files(modules: list[str]) -> dict[str, list[Path]]:
 
     js_paths = []
     for path in css_paths:
-        js_path = COMPONENTS_JS_PATH / path.relative_to(COMPONENTS_CSS_PATH).with_suffix('.js')
+        js_path = COMPONENTS_JS_PATH / path.relative_to(COMPONENTS_CSS_PATH).with_suffix('.mjs')
         if (STATIC_PATH / js_path).exists():
             js_paths.append(js_path)
 
