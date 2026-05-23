@@ -1,6 +1,6 @@
+import json
 import re
-import time
-from time import sleep
+from time import time, sleep
 
 import jwt
 from anymail.message import AnymailMessage
@@ -17,6 +17,12 @@ from tests.dynamic_site.models import User
 
 TEST_USER = 'test-user-temporary@django-logikal.org'
 TEST_USER_NEW_PASSWORD = 'test_user_new_password'  # nosec: only used for testing
+
+SOCIAL_AUTH_SECRETS = {
+    'stormware-google-oauth-client-secrets': json.dumps({
+        'client_id': 'client-id', 'client_secret': 'client-secret',
+    }),
+}
 
 
 def login(live_url: LiveURL, browser: Browser, user: User, password: str) -> None:
@@ -201,13 +207,17 @@ def social_login(  # pylint: disable=too-many-arguments
 ) -> None:
     factories.site_factory()
 
+    mocker.patch('stormware.google.auth.GCPAuth')
+    secret_manager = mocker.patch('django_logikal.settings.common.production.SecretManager')
+    secret_manager.return_value.__enter__.return_value = SOCIAL_AUTH_SECRETS
+
     # Generate a valid ID token
     providers = settings.SOCIALACCOUNT_PROVIDERS  # type: ignore[misc]
     client_id = providers['google']['APPS'][0]['client_id']
     payload = {
         'iss': 'https://accounts.google.com',
         'aud': client_id,
-        'exp': int(time.time()) + 3600,
+        'exp': int(time()) + 3600,
         'sub': 'mock-google-user-id',
         'email': TEST_USER,
         'email_verified': True,
