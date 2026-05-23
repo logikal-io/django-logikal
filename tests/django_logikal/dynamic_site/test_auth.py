@@ -1,15 +1,22 @@
 import re
+import time
 from time import sleep
 
+import jwt
 from anymail.message import AnymailMessage
+from django.conf import settings
+from pytest import mark
 from pytest_logikal import Browser, LiveURL, set_browser
+from pytest_mock import MockerFixture
+from requests_mock import Mocker as RequestsMocker
 from selenium.webdriver.common.by import By
 
-from tests.django_logikal import scenarios
+from tests.django_logikal import factories, scenarios
 from tests.django_logikal.factories import USER_PASSWORD, UserFactory
 from tests.dynamic_site.models import User
 
-NEW_USER_PASSWORD = 'new_user_password'  # nosec: only used for testing
+TEST_USER = 'test-user-temporary@django-logikal.org'
+TEST_USER_NEW_PASSWORD = 'test_user_new_password'  # nosec: only used for testing
 
 
 def login(live_url: LiveURL, browser: Browser, user: User, password: str) -> None:
@@ -41,13 +48,13 @@ def reset_password(browser: Browser, user: User, mailoutbox: list[AnymailMessage
 
     # Set new password
     password = browser.find_element(By.ID, 'id_password1')
-    password.send_keys(NEW_USER_PASSWORD)
+    password.send_keys(TEST_USER_NEW_PASSWORD)
     browser.find_element(By.CSS_SELECTOR, '.actions button').click()
     browser.check('reset_password_successful')
 
     # Log in with the new password
     password = browser.find_element(By.ID, 'id_password')
-    password.send_keys(NEW_USER_PASSWORD)
+    password.send_keys(TEST_USER_NEW_PASSWORD)
     browser.find_element(By.CSS_SELECTOR, '.actions button').click()
 
 
@@ -134,7 +141,7 @@ def test_login(live_url: LiveURL, browser: Browser, mailoutbox: list[AnymailMess
 def test_signup(live_url: LiveURL, browser: Browser, mailoutbox: list[AnymailMessage]) -> None:
     browser.get(live_url('account_auth'))
     email_input = browser.find_element(By.ID, 'id_email')
-    email_input.send_keys('test-user-temporary@django-logikal.org')
+    email_input.send_keys(TEST_USER)
     browser.find_element(By.ID, 'id_form_auth').find_element(By.TAG_NAME, 'button').click()
     browser.get(live_url('account_signup'))
 
@@ -170,7 +177,7 @@ def test_password_change(live_url: LiveURL, browser: Browser) -> None:
     old_password.clear()
     old_password.send_keys(USER_PASSWORD)
     new_password = browser.find_element(By.ID, 'id_password1')
-    new_password.send_keys(NEW_USER_PASSWORD)
+    new_password.send_keys(TEST_USER_NEW_PASSWORD)
     sleep(2)
     browser.check('change_password_valid')
 
@@ -179,10 +186,120 @@ def test_password_change(live_url: LiveURL, browser: Browser) -> None:
 
     # Log out and log in again with the new password
     browser.find_element(By.CSS_SELECTOR, 'form button').click()
-    login(live_url=live_url, browser=browser, user=user, password=NEW_USER_PASSWORD)
+    login(live_url=live_url, browser=browser, user=user, password=TEST_USER_NEW_PASSWORD)
     browser.check('after_login_with_new')
 
 
+def social_login(  # pylint: disable=too-many-arguments
+    *,
+    mocker: MockerFixture,
+    requests_mock: RequestsMocker,
+    live_url: LiveURL,
+    browser: Browser,
+    first_name: str,
+    last_name: str | None = None,
+) -> None:
+    factories.site_factory()
+
+    # Generate a valid ID token
+    providers = settings.SOCIALACCOUNT_PROVIDERS  # type: ignore[misc]
+    client_id = providers['google']['APPS'][0]['client_id']
+    payload = {
+        'iss': 'https://accounts.google.com',
+        'aud': client_id,
+        'exp': int(time.time()) + 3600,
+        'sub': 'mock-google-user-id',
+        'email': TEST_USER,
+        'email_verified': True,
+    }
+    if first_name:
+        payload['given_name'] = first_name
+    if last_name:
+        payload['family_name'] = last_name
+
+    id_token_key = 'django-logikal-secret-key-32-bytes'  # nosec: only used for testing
+    id_token = jwt.encode(payload, key=id_token_key, algorithm='HS256')
+
+    # Bypass state check
+    mocker.patch(
+        'allauth.socialaccount.providers.oauth2.views.statekit.unstash_state',
+        return_value={'next': live_url('account')},
+    )
+
+    # Intercept Google token request
+    requests_mock.real_http = True
+    requests_mock.post(
+        'https://oauth2.googleapis.com/token',
+        json={
+            'access_token': 'mock-access-token',  # nosec: only used for testing
+            'id_token': id_token,
+            'expires_in': 3600,
+        },
+        headers={'content-type': 'application/json'},
+    )
+
+    # Trigger OAuth callback
+    browser.get(live_url('google_callback') + '?code=mock_code&state=mock_state')
+
+
+@mark.parametrize(
+    ['first_name', 'last_name', 'expected_name'],
+    [['Mock', 'User', 'Mock User'], ['Mock', None, 'Mock']],
+)
 @set_browser(scenarios.desktop)
-def test_social_auth(live_url: LiveURL, browser: Browser) -> None:
-    browser.get(live_url('account_auth'))
+def test_social_auth(  # pylint: disable=too-many-arguments
+    *,
+    live_url: LiveURL,
+    browser: Browser,
+    mocker: MockerFixture,
+    requests_mock: RequestsMocker,
+    first_name: str,
+    last_name: str | None,
+    expected_name: str,
+) -> None:
+    social_login(
+        mocker=mocker,
+        requests_mock=requests_mock,
+        live_url=live_url,
+        browser=browser,
+        first_name=first_name,
+        last_name=last_name,
+    )
+    user = User.objects.get(email=TEST_USER)
+    assert user.name == expected_name
+
+
+@set_browser(scenarios.desktop)
+def test_set_password(
+    live_url: LiveURL,
+    browser: Browser,
+    mocker: MockerFixture,
+    requests_mock: RequestsMocker,
+) -> None:
+    # Go through the social login flow
+    social_login(
+        mocker=mocker,
+        requests_mock=requests_mock,
+        live_url=live_url,
+        browser=browser,
+        first_name='Test',
+    )
+    browser.check('after_login')
+
+    # Set new password
+    browser.find_element(By.CSS_SELECTOR, 'p a.button').click()
+    browser.check('set_password')
+
+    new_password = browser.find_element(By.ID, 'id_password1')
+    new_password.send_keys(TEST_USER_NEW_PASSWORD)
+    sleep(2)
+    browser.check('set_password_valid')
+
+    browser.find_element(By.CSS_SELECTOR, '.actions button').click()
+    browser.check('after_set_password')
+
+    # Log out and log in again with the new password
+    browser.find_element(By.CSS_SELECTOR, 'form:last-of-type button').click()
+    user = User.objects.get(email=TEST_USER)
+    login(live_url=live_url, browser=browser, user=user, password=TEST_USER_NEW_PASSWORD)
+    browser.check('after_login_with_new')
