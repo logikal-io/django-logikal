@@ -114,7 +114,7 @@ class Command(BaseCommand):
             for keyword in KEYWORDS.get(domain, []):
                 args.extend(['--keyword', keyword])
             try:
-                version = metadata.version(PYPROJECT['project']['name'])
+                version = metadata.version(PYPROJECT['project']['name'])  # type: ignore[arg-type]
                 args.extend(['--version', f'v{version}'])
             except metadata.PackageNotFoundError:  # pragma: no cover
                 pass  # pragma: no cover, ignore missing version data

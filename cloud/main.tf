@@ -56,7 +56,7 @@ resource "google_secret_manager_secret_iam_member" "auth_secret_viewer" {
   for_each = toset(local.providers)
 
   secret_id = google_secret_manager_secret.auth_secret[each.value].id
-  role = "roles/secretmanager.viewer"
+  role = "roles/secretmanager.secretAccessor"
   member = "serviceAccount:${module.gcp_github_auth.service_account_emails["testing"]}"
 }
 
