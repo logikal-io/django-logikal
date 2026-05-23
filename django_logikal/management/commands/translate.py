@@ -114,9 +114,11 @@ class Command(BaseCommand):
             for keyword in KEYWORDS.get(domain, []):
                 args.extend(['--keyword', keyword])
             try:
-                version = metadata.version(project_name())
+                version = metadata.version(
+                    project_name(raise_error_on_missing=True)  # type: ignore[arg-type]
+                )
                 args.extend(['--version', f'v{version}'])
-            except metadata.PackageNotFoundError:  # pragma: no cover
+            except (metadata.PackageNotFoundError, RuntimeError):  # pragma: no cover
                 pass  # pragma: no cover, ignore missing version data
             CommandLineInterface().run(args)  # type: ignore[no-untyped-call]
         self.stdout.write()
