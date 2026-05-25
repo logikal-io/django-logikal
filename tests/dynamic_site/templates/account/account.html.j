@@ -19,10 +19,8 @@
         <p><a id="id_set_password_link" class="button inline"
               href="{{ url('account_set_password') }}">Set password</a></p>
       {% else %}
-        <p>
-          <a id="id_change_password_link" class="button inline"
-             href="{{ url('account_change_password') }}">Change password</a>
-        </p>
+        <p><a id="id_change_password_link" class="button inline"
+              href="{{ url('account_change_password') }}">Change password</a></p>
       {% endif %}
 
       <h2>Connected Identities</h2>
