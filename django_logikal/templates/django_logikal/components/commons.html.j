@@ -21,11 +21,11 @@
     ], request=request) }}
 
   #}
-  {% macro render_menu_items(items, request) %}
+  {% macro render_menu_items(items, request, type) %}
     {% for item in items %}
       {% set active = (item.view_name == url_name(request)) if request else none %}
       <li role="none"{% if active %} class="active"{% endif %}>
-        <a role="menuitem"
+        <a role="menuitem" id="{{ type }}_{{ item.id }}"
            {%- if not active and not item.submenu %}
             href="{{ url(viewname=item.view_name, kwargs=item.view_kwargs) }}"
            {% endif -%}>
@@ -36,7 +36,7 @@
         </a>
         {%- if item.submenu -%}
           <ul role="menu" class="menu group">
-            {{ render_menu_items(item.submenu, request) }}
+            {{ render_menu_items(item.submenu, request, type) }}
           </ul>
         {%- endif -%}
       </li>
@@ -45,7 +45,7 @@
 
   {% for type in ['desktop', 'mobile'] %}
     <menu role="menu" class="tabs {{ type }}">
-      {{ render_menu_items(items, request) }}
+      {{ render_menu_items(items, request, type) }}
     </menu>
   {% endfor %}
 
