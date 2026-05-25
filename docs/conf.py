@@ -15,6 +15,7 @@ from docs.jinja.domain import JinjaDomain
 sys.path.insert(0, '.')
 os.environ['DJANGO_SETTINGS_MODULE'] = tool_config('django_logikal')['DJANGO_SETTINGS_MODULE']
 django.setup()
+django.views.View.__init__.__doc__ = None  # we do not want to inherit the generic docstring
 
 
 def pkg_version(package_name: str) -> str:

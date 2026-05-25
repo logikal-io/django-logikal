@@ -12,15 +12,11 @@ from django_logikal.views.generic import HTMXFormView, PublicViewMixin
 
 
 class AuthView(PublicViewMixin, HTMXFormView[AuthForm]):  # pylint: disable=too-many-ancestors
+    """
+    Show the user authentication form.
+    """
     template_name = 'account/auth.html.j'  #: The template to use.
     form_class = AuthForm
-
-    # Note: we redefine init to override the inherited class docstring
-    def __init__(self, *args: Any, **kwargs: Any):  # pylint: disable=useless-parent-delegation
-        """
-        Show the user authentication form.
-        """
-        super().__init__(*args, **kwargs)  # pragma: no cover
 
     def get_context_data(self, *args: Any, **kwargs: Any) -> dict[str, Any]:
         return {
@@ -50,14 +46,10 @@ class AuthView(PublicViewMixin, HTMXFormView[AuthForm]):  # pylint: disable=too-
 
 
 class AccountView(TemplateView):
+    """
+    Show user account information.
+    """
     template_name = 'account/account.html.j'  #: The template to use.
-
-    # Note: we redefine init to override the inherited class docstring
-    def __init__(self, *args: Any, **kwargs: Any):  # pylint: disable=useless-parent-delegation
-        """
-        Show user account information.
-        """
-        super().__init__(*args, **kwargs)  # pragma: no cover
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         """

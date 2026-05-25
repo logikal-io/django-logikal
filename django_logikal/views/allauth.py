@@ -4,18 +4,17 @@ from allauth.account import views
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 
-from django_logikal.forms.allauth import SignupForm
+from django_logikal.forms.allauth import (
+    ChangePasswordForm, LoginForm, ResetPasswordForm,
+    ResetPasswordKeyForm, SetPasswordForm, SignupForm,
+)
 from django_logikal.views.generic import HTMXFormView, PublicViewMixin
 
 
-class SignupView(PublicViewMixin, HTMXFormView[Any], views.SignupView):  # type: ignore[misc]
-    # Note: we redefine init to override the inherited class docstring
-    def __init__(self, *args: Any, **kwargs: Any):  # pylint: disable=useless-parent-delegation
-        """
-        View for signing a user up.
-        """
-        super().__init__(*args, **kwargs)  # pragma: no cover
-
+class SignupView(PublicViewMixin, HTMXFormView[SignupForm], views.SignupView):
+    """
+    View for signing a user up.
+    """
     def get_initial(self) -> dict[str, Any]:  # noqa: D400, D415
         """
         :meta private:
@@ -34,14 +33,10 @@ class SignupView(PublicViewMixin, HTMXFormView[Any], views.SignupView):  # type:
         return super().form_valid(form=form)
 
 
-class LoginView(PublicViewMixin, HTMXFormView[Any], views.LoginView):  # type: ignore[misc]
-    # Note: we redefine init to override the inherited class docstring
-    def __init__(self, *args: Any, **kwargs: Any):  # pylint: disable=useless-parent-delegation
-        """
-        View for logging a user in.
-        """
-        super().__init__(*args, **kwargs)  # pragma: no cover
-
+class LoginView(PublicViewMixin, HTMXFormView[LoginForm], views.LoginView):
+    """
+    View for logging a user in.
+    """
     def get_initial(self) -> dict[str, Any]:  # noqa: D400, D415
         """
         :meta private:
@@ -52,16 +47,10 @@ class LoginView(PublicViewMixin, HTMXFormView[Any], views.LoginView):  # type: i
         return initial
 
 
-class PasswordResetView(
-    PublicViewMixin, HTMXFormView[Any], views.PasswordResetView,  # type: ignore[misc]
-):
-    # Note: we redefine init to override the inherited class docstring
-    def __init__(self, *args: Any, **kwargs: Any):  # pylint: disable=useless-parent-delegation
-        """
-        Show the password reset form.
-        """
-        super().__init__(*args, **kwargs)  # pragma: no cover
-
+class PasswordResetView(PublicViewMixin, HTMXFormView[ResetPasswordForm], views.PasswordResetView):
+    """
+    Show the password reset form.
+    """
     def get_initial(self) -> dict[str, Any]:  # noqa: D400, D415
         """
         :meta private:
@@ -71,7 +60,7 @@ class PasswordResetView(
             initial['email'] = email
         return initial
 
-    def form_valid(self, form: SignupForm) -> HttpResponse:  # noqa: D400, D415
+    def form_valid(self, form: ResetPasswordForm) -> HttpResponse:  # noqa: D400, D415
         """
         :meta private:
         """
@@ -81,16 +70,13 @@ class PasswordResetView(
 
 
 class PasswordResetFromKeyView(
-    PublicViewMixin, HTMXFormView[Any], views.PasswordResetFromKeyView,  # type: ignore[misc]
+    PublicViewMixin,
+    HTMXFormView[ResetPasswordKeyForm], views.PasswordResetFromKeyView,
 ):
+    """
+    View for resetting a user's password.
+    """
     success_url = reverse_lazy('account_login')
-
-    # Note: we redefine init to override the inherited class docstring
-    def __init__(self, *args: Any, **kwargs: Any):  # pylint: disable=useless-parent-delegation
-        """
-        View for resetting a user's password.
-        """
-        super().__init__(*args, **kwargs)  # pragma: no cover
 
     def get_initial(self) -> dict[str, Any]:  # noqa: D400, D415
         """
@@ -110,19 +96,13 @@ class PasswordResetFromKeyView(
         return kwargs
 
 
-class PasswordSetView(HTMXFormView[Any], views.PasswordSetView):  # type: ignore[misc]
-    # Note: we redefine init to override the inherited class docstring
-    def __init__(self, *args: Any, **kwargs: Any):  # pylint: disable=useless-parent-delegation
-        """
-        View for setting the user's password.
-        """
-        super().__init__(*args, **kwargs)  # pragma: no cover
+class PasswordSetView(HTMXFormView[SetPasswordForm], views.PasswordSetView):
+    """
+    View for setting the user's password.
+    """
 
 
-class PasswordChangeView(HTMXFormView[Any], views.PasswordChangeView):  # type: ignore[misc]
-    # Note: we redefine init to override the inherited class docstring
-    def __init__(self, *args: Any, **kwargs: Any):  # pylint: disable=useless-parent-delegation
-        """
-        View for changing the user's password.
-        """
-        super().__init__(*args, **kwargs)  # pragma: no cover
+class PasswordChangeView(HTMXFormView[ChangePasswordForm], views.PasswordChangeView):
+    """
+    View for changing the user's password.
+    """

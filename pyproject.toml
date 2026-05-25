@@ -128,6 +128,12 @@ module = [
   'tinycss2',
 ]
 
+[[tool.mypy.overrides]]
+disallow_subclassing_any = false
+module = [
+  'django_logikal.views.allauth',  # due to https://codeberg.org/allauth/django-allauth/issues/4368
+]
+
 [tool.coverage.run]
 patch = ['subprocess']
 

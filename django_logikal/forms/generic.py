@@ -93,8 +93,10 @@ class Form(forms.Form):
         """
         Return the form with the updated metadata.
         """
-        for attr, value in kwargs.items():
-            setattr(self.Meta, attr, value)
+        self.Meta = type(  # type: ignore[assignment] # pylint: disable=invalid-name
+            'Meta', (self.Meta,), kwargs,  # type: ignore[arg-type]
+        )
+        self.add_htmx_validation()
         return self
 
     def add_htmx_validation(self) -> None:
@@ -108,9 +110,13 @@ class Form(forms.Form):
             return
         for field_name, field in self.fields.items():
             if getattr(field, 'htmx_validate', None):
+                meta = self.Meta
                 field.widget.attrs.update({
-                    'data-hx-post': url(self.Meta.action_url_name, kwargs=self.action_url_kwargs),
-                    'data-hx-trigger': self.Meta.htmx_validation_trigger,
+                    'data-hx-post': url(
+                        meta.action_url_name,  # pylint: disable=no-member
+                        kwargs=self.action_url_kwargs,
+                    ),
+                    'data-hx-trigger': meta.htmx_validation_trigger,  # pylint: disable=no-member
                     'data-hx-target': 'next .errors',
                     'data-hx-swap': 'outerHTML',
                     'data-hx-params': field_name,

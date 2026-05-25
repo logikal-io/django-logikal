@@ -1,5 +1,3 @@
-from typing import Any
-
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -34,6 +32,7 @@ class BaseUser(BaseModel, AbstractBaseUser, PermissionsMixin):
     """
     email = models.EmailField(_('email'), unique=True)
     is_admin = models.BooleanField(_('admin'), default=False)
+    is_active = models.BooleanField(_('active'), default=True)
     name = models.CharField(_('name'), max_length=300, null=True, blank=True)
     nickname = models.CharField(_('nickname'), max_length=150, null=True, blank=True)
 
@@ -45,12 +44,6 @@ class BaseUser(BaseModel, AbstractBaseUser, PermissionsMixin):
     @property
     def is_staff(self) -> bool:
         return self.is_admin
-
-    def has_perm(self, perm: Any, obj: Any = None) -> bool:
-        return True
-
-    def has_module_perms(self, app_label: Any) -> bool:
-        return True
 
     def get_full_name(self) -> str | None:
         return self.name

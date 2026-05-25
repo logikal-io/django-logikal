@@ -20,12 +20,9 @@ class PublicViewMixin:
 
 
 class PublicView(PublicViewMixin, View):
-    # Note: we redefine init to override the inherited class docstring
-    def __init__(self, *args: Any, **kwargs: Any):  # pylint: disable=useless-parent-delegation
-        """
-        Parent class for public views.
-        """
-        super().__init__(*args, **kwargs)  # pragma: no cover
+    """
+    Parent class for public views.
+    """
 
 
 def public(view: ViewFunction) -> ViewFunction:
@@ -40,13 +37,9 @@ def public(view: ViewFunction) -> ViewFunction:
 
 
 class FormView[Form: BaseForm](generic.FormView[Form]):
-    # Note: we redefine init to override the inherited class docstring
-    def __init__(self, *args: Any, **kwargs: Any):  # pylint: disable=useless-parent-delegation
-        """
-        Display an improved form and render a template response.
-        """
-        super().__init__(*args, **kwargs)  # pragma: no cover
-
+    """
+    Display an improved form and render a template response.
+    """
     def get_form_kwargs(self) -> dict[str, Any]:  # noqa: D400, D415
         """
         :meta private:
@@ -60,13 +53,9 @@ class FormView[Form: BaseForm](generic.FormView[Form]):
 
 
 class HTMXTemplateView(generic.TemplateView):
-    # Note: we redefine init to override the inherited class docstring
-    def __init__(self, *args: Any, **kwargs: Any):  # pylint: disable=useless-parent-delegation
-        """
-        Render a htmx-enabled template.
-        """
-        super().__init__(*args, **kwargs)  # pragma: no cover
-
+    """
+    Render a htmx-enabled template.
+    """
     def render_block(self, name: str, context: dict[str, Any] | None = None) -> HttpResponse:
         """
         Render a given block of the template.
@@ -82,13 +71,9 @@ class HTMXTemplateView(generic.TemplateView):
 
 
 class HTMXFormView[Form: BaseForm](HTMXTemplateView, FormView[Form]):
-    # Note: we redefine init to override the inherited class docstring
-    def __init__(self, *args: Any, **kwargs: Any):  # pylint: disable=useless-parent-delegation
-        """
-        Display a htmx-enabled improved form and render a template response.
-        """
-        super().__init__(*args, **kwargs)  # pragma: no cover
-
+    """
+    Display a htmx-enabled improved form and render a template response.
+    """
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         """
         Process the form or validate the given form field.
