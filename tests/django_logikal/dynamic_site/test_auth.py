@@ -243,7 +243,7 @@ def social_login(  # pylint: disable=too-many-arguments
 
 @mark.parametrize(
     ['first_name', 'last_name', 'expected_name'],
-    [['Mock', 'User', 'Mock User'], ['Mock', None, 'Mock']],
+    [['Mock', 'User', 'Mock User'], ['Mock', None, 'Mock'], [None, None, None]],
 )
 @set_browser(scenarios.desktop)
 def test_social_auth(  # pylint: disable=too-many-arguments
