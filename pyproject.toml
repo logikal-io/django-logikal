@@ -131,7 +131,9 @@ module = [
 [[tool.mypy.overrides]]
 disallow_subclassing_any = false
 module = [
-  'django_logikal.views.allauth',  # due to https://codeberg.org/allauth/django-allauth/issues/4368
+  # Due to https://codeberg.org/allauth/django-allauth/issues/4368
+  'django_logikal.auth',
+  'django_logikal.views.allauth',
 ]
 
 [tool.coverage.run]

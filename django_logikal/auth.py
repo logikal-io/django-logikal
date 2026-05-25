@@ -10,14 +10,12 @@ from django.urls import reverse
 from django_logikal.models.base import BaseUser
 
 
-class AccountAdapter(  # pylint: disable=abstract-method
-    DefaultAccountAdapter  # type: ignore[misc]
-):
+class AccountAdapter(DefaultAccountAdapter):  # pylint: disable=abstract-method
     def get_password_change_redirect_url(self, request: HttpRequest) -> str:
         return reverse('account')
 
 
-class SocialAccountAdapter(DefaultSocialAccountAdapter):  # type: ignore[misc]
+class SocialAccountAdapter(DefaultSocialAccountAdapter):
     def populate_user(
         self,
         request: HttpRequest,

@@ -27,9 +27,9 @@ def auth_urls() -> IncludeType:
     from django_logikal.views import account, allauth
 
     public_view_names = [
-        # Login flow
+        # Login flows
         'account_logout',
-        # Email validation flow
+        # Email validation flows
         'account_email_verification_sent',
         'account_confirm_email',
         # Password management flows
