@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 from django.utils.translation import gettext_lazy
-from logikal_utils.project import PYPROJECT
+from logikal_utils.project import project_name
 
 from django_logikal.settings import Settings, SettingsUpdate
 
@@ -52,7 +52,7 @@ class CommonBaseSettings(SettingsUpdate):
     TIME_ZONE = 'Europe/Zurich'
 
     # Secrets
-    SECRET_PATH_PREFIX = PYPROJECT['project']['name']
+    SECRET_PATH_PREFIX = project_name()
 
     @staticmethod
     def apply(settings: Settings) -> None:

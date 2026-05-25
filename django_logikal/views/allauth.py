@@ -70,8 +70,7 @@ class PasswordResetView(PublicViewMixin, HTMXFormView[ResetPasswordForm], views.
 
 
 class PasswordResetFromKeyView(
-    PublicViewMixin,
-    HTMXFormView[ResetPasswordKeyForm], views.PasswordResetFromKeyView,
+    PublicViewMixin, HTMXFormView[ResetPasswordKeyForm], views.PasswordResetFromKeyView,
 ):
     """
     View for resetting a user's password.
