@@ -47,7 +47,8 @@
             <li>{{ message }}</li>
           {% endfor %}
         </ul>
-        <button popovertarget="messages" popovertargetaction="hide">Dismiss</button>
+        <button id="id_messages_dismiss"
+                popovertarget="messages" popovertargetaction="hide">Dismiss</button>
         <script nonce="{{ csp_nonce }}">document.getElementById('messages').showPopover();</script>
       </dialog>
     {% endif %}

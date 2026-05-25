@@ -23,9 +23,12 @@
 {% endif %}
 {% if form.Meta.action_button_text %}
   {% if form.Meta.back_url_name %}<div class="actions">{% endif %}
-  <button>{{ form.Meta.action_button_text }}</button>
+  <button id="{{ form.Meta.id_prefix }}_{{ form.Meta.id }}_action">{{
+    form.Meta.action_button_text
+  }}</button>
   {% if form.Meta.back_url_name %}
     <a href="{{ url(form.Meta.back_url_name, request=request, kwargs=form.back_url_kwargs) }}"
+       id="{{ form.Meta.id_prefix }}_{{ form.Meta.id }}_back"
        class="button neutral">{{ form.Meta.back_url_text }}</a>
   {% endif %}
   {% if form.Meta.back_url_name %}</div>{% endif %}

@@ -16,10 +16,12 @@
           You do not have an account password set currently.<br>
           We recommend setting a password.
         </p>
-        <p><a href="{{ url('account_set_password') }}" class="button inline">Set password</a></p>
+        <p><a id="id_set_password_link" class="button inline"
+              href="{{ url('account_set_password') }}">Set password</a></p>
       {% else %}
         <p>
-          <a href="{{ url('account_change_password') }}" class="button inline">Change password</a>
+          <a id="id_change_password_link" class="button inline"
+             href="{{ url('account_change_password') }}">Change password</a>
         </p>
       {% endif %}
 
@@ -40,7 +42,7 @@
       <h2>Actions</h2>
       <form action="{{ url('account_logout') }}" method="post">
         {{ csrf_input }}
-        <p><button>Log out</button></p>
+        <p><button id="id_logout">Log out</button></p>
       </form>
     </section>
   </div>

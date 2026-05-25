@@ -27,17 +27,19 @@
   </menu>
 {% endmacro %}
 
-{% macro icon_button(text, icon, classes=none) %}
+{% macro icon_button(text, icon, id=none, classes=none) %}
   {#
   Render a link button with an icon.
 
   Args:
     text (str): The text to use.
     icon (str): The path for the icon to include.
+    id (str): The ID to use.
     classes (str): The classes to use.
 
   #}
-  <button class="icon{% if classes %} {{ classes }}{% endif %}">
+  <button
+    {%- if id %} id="{{ id }}"{% endif %} class="icon{% if classes %} {{ classes }}{% endif %}">
     {{- include_static(icon) -}}
     <span>{{- text -}}</span><span class="counterweight"></span></button>
 {% endmacro %}
