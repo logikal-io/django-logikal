@@ -49,7 +49,7 @@
     </menu>
   {% endfor %}
 
-  <button class="mobile-menu-icon" aria-label="Menu" aria-expanded="false">
+  <button class="mobile-menu-icon" id="menu_icon" aria-label="Menu" aria-expanded="false">
     {{ include_static(menu_icon) }}
   </button>
 {% endmacro %}
