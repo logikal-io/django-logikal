@@ -219,9 +219,7 @@ def faker_factory(seed: int = 0) -> Faker:
 
 @cache
 def component_head(
-    *modules: str,
-    use_standard_theme: bool = True,
-    static_site: bool = False,
+    *modules: str, use_standard_theme: bool = True, static_site: bool = False,
 ) -> SafeString:
     """
     Return the relevant ``<link>`` and ``<script>`` elements for a given set of component modules.

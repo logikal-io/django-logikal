@@ -17,10 +17,7 @@ class AccountAdapter(DefaultAccountAdapter):  # pylint: disable=abstract-method
 
 class SocialAccountAdapter(DefaultSocialAccountAdapter):
     def populate_user(
-        self,
-        request: HttpRequest,
-        sociallogin: SocialLogin,
-        data: dict[str, Any],
+        self, request: HttpRequest, sociallogin: SocialLogin, data: dict[str, Any],
     ) -> BaseUser:
         user = super().populate_user(request=request, sociallogin=sociallogin, data=data)
 
