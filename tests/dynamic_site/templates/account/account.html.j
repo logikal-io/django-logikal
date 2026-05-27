@@ -26,11 +26,12 @@
       <h2>Connected Identities</h2>
       {% if social_accounts %}
         {% for account in social_accounts %}
-          <form action="{{ url('socialaccount_connections') }}" method="post">
+          <form action="{{ url('socialaccount_connections') }}" method="post"
+                class="action-tree">
             {{ csrf_input }}
             <input type="hidden" name="account" value="{{ account.id }}">
-            <p>{{ settings.ALLAUTH_SOCIAL_PROVIDERS[account.provider] }}
-              &ensp; <button class="inline neutral">Disconnect</button></p>
+            <div class="left">{{ settings.ALLAUTH_SOCIAL_PROVIDERS[account.provider] }}</div>
+            <button class="inline neutral right">{{ _('Disconnect') }}</button>
           </form>
         {% endfor %}
       {% else %}

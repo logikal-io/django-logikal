@@ -383,6 +383,27 @@ form, .form-group {
     margin-block-start: var(--length-gap-group);
     p + & { margin-block-start: 0; }
   }
+
+  &.action-tree {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--length-gap-group);
+    margin: var(--length-margin-paragraph);
+
+    .left {
+      width: auto;
+      text-align: right;
+      margin: auto;
+      margin-inline-end: 0;
+    }
+
+    .right {
+      width: auto;
+      text-align: left;
+      margin: auto;
+      margin-inline-start: 0;
+    }
+  }
 }
 
 /* Text elements */
