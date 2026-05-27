@@ -2,7 +2,14 @@ from pytest_logikal import Browser, set_browser
 from selenium.webdriver.common.by import By
 
 from tests.django_logikal import scenarios
-from tests.django_logikal.components import docs_url
+from tests.django_logikal.components import docs_url, macro_example
+
+
+@set_browser(scenarios.desktop)
+def test_paragraph(browser: Browser, theme: str) -> None:
+    browser.get(docs_url('text'))
+    example = macro_example(browser, 'text.paragraph', theme=theme)
+    browser.check(theme, element=example)
 
 
 @set_browser(scenarios.desktop)

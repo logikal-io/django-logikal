@@ -10,7 +10,7 @@ class UserData(LocalData):
     @staticmethod
     def insert() -> None:
         factories.UserFactory()
-        factories.StaffUserFactory()
+        factories.AdminUserFactory()
         factories.SuperUserFactory()
 
 

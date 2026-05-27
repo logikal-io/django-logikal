@@ -11,7 +11,7 @@ from rest_framework.routers import DefaultRouter as APIRouter
 from django_logikal.sitemap import StaticSitemap
 from django_logikal.templates import Template
 from django_logikal.urls import utility_paths
-from django_logikal.views import ERROR_HANDLERS, public, redirect_to
+from django_logikal.views.generic import ERROR_HANDLERS, public, redirect_to
 from tests.dynamic_site import models, views
 
 

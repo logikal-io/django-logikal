@@ -114,16 +114,25 @@ class JinjaSphinxDirective(ABC, SphinxDirective):
         return Path(__file__).parents[2] / 'django_logikal/static' / path
 
     def get_environment(self, **kwargs: Any) -> Environment:
+        from django_logikal.forms import (  # pylint: disable=import-outside-toplevel
+            account, allauth,
+        )
+
         request = SimpleNamespace(resolver_match=SimpleNamespace(view_name='main:components'))
+        request.GET = {}
+        render_context = {'request': request, 'csrf_input': ''}
         env = jinja.environment(**kwargs, **jinja.DEFAULT_OPTIONS)
         env.globals.update({
-            'request': request,
+            **render_context,
             'static': self._static,
             'include_static': partial(
                 functions.include_static,
                 static_path_function=self._include_static_path,
             ),
             'url': self._url,
+            # Forms
+            'auth_form': account.AuthForm(render_context=render_context),
+            'login_form': allauth.LoginForm(render_context=render_context),
         })
         env.install_gettext_callables(  # type: ignore[attr-defined] # pylint: disable=no-member
             gettext=lambda text: text,
@@ -354,7 +363,9 @@ class JinjaExampleDirective(JinjaSphinxDirective):
             </html>
         """):
             error_str = '\n'.join(error.message for error in errors)
-            raise RuntimeError(f'Validation errors on "{source_path}":\n{error_str}')
+            raise RuntimeError(
+                f'Validation errors on "{source_path}":\n{error_str} (content: {content})'
+            )
 
     @staticmethod
     def _render_html(head: str, rendered: str, container: nodes.Element) -> None:

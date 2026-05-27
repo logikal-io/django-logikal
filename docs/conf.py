@@ -3,6 +3,7 @@ import os
 import sys
 from pathlib import Path
 
+import django
 from docutils import nodes
 from logikal_utils import node
 from logikal_utils.project import tool_config
@@ -13,6 +14,8 @@ from docs.jinja.domain import JinjaDomain
 
 sys.path.insert(0, '.')
 os.environ['DJANGO_SETTINGS_MODULE'] = tool_config('django_logikal')['DJANGO_SETTINGS_MODULE']
+django.setup()
+django.views.View.__init__.__doc__ = None  # we do not want to inherit the generic docstring
 
 
 def pkg_version(package_name: str) -> str:
@@ -42,6 +45,7 @@ intersphinx_mapping = {
     'factory-boy': (f'https://factoryboy.readthedocs.io/en/{pkg_version('factory-boy')}/', None),
     'Faker': ('https://faker.readthedocs.io/en/stable/', None),
     'stormware': (f'https://docs.logikal.io/stormware/{pkg_version('stormware')}/', None),
+    'allauth': ('https://docs.allauth.org/en/latest/', None),
     'pytest-logikal': (
         f'https://docs.logikal.io/pytest-logikal/{pkg_version('pytest-logikal')}/', None,
     ),
@@ -51,8 +55,10 @@ nitpick_ignore = [
     ('py:func', 'type'),
     ('ref', 'jinja2.ext.i18n'),
     ('py:class', 'T'),  # type vars do not seem to work quite very well
+    # Django
     ('py:class', 'django.conf.LazySettings'),
     ('py:class', 'django.core.management.base.CommandParser'),
+    ('py:class', 'django.contrib.admin.sites.AdminSite'),
     ('py:class', 'django.db.models.base.Model'),
     ('py:class', 'django.http.request.HttpRequest'),
     ('py:class', 'django.http.response.HttpResponse'),
@@ -61,8 +67,18 @@ nitpick_ignore = [
     ('py:class', 'django.http.response.HttpResponseServerError'),
     ('py:class', 'django.urls.resolvers.URLPattern'),
     ('py:class', 'django.urls.resolvers.URLResolver'),
+    ('py:class', 'django.utils.functional.Promise'),
+    ('py:class', 'StrOrPromise'),
+    # Faker
     ('py:class', 'faker.Faker'),
     ('py:class', 'faker.proxy.Faker'),
+    # Allauth
+    ('py:class', 'allauth.account.views.SignupView'),
+    ('py:class', 'allauth.account.views.LoginView'),
+    ('py:class', 'allauth.account.views.PasswordResetView'),
+    ('py:class', 'allauth.account.views.PasswordResetFromKeyView'),
+    ('py:class', 'allauth.account.views.PasswordSetView'),
+    ('py:class', 'allauth.account.views.PasswordChangeView'),
 ]
 
 html_static_path = ['static', '../django_logikal/static']

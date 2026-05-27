@@ -9,6 +9,7 @@ class TestingSettings(CommonTestingSettings, DevSettings):
     """
     @staticmethod
     def apply(settings: Settings) -> None:
+        settings['ACCOUNT_RATE_LIMITS'] = False  # disable allauth rate limiting for tests
         settings['MIDDLEWARE'] = [
             middleware for middleware in settings['MIDDLEWARE']
             if 'WhiteNoiseMiddleware' not in middleware
