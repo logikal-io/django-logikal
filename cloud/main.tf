@@ -52,12 +52,20 @@ resource "google_secret_manager_secret" "auth_secret" {
 }
 
 # Permissions
-resource "google_secret_manager_secret_iam_member" "auth_secret_viewer" {
+resource "google_secret_manager_secret_iam_member" "auth_secret_viewer_testing" {
   for_each = toset(local.providers)
 
   secret_id = google_secret_manager_secret.auth_secret[each.value].id
   role = "roles/secretmanager.secretAccessor"
   member = "serviceAccount:${module.gcp_github_auth.service_account_emails["testing"]}"
+}
+
+resource "google_secret_manager_secret_iam_member" "auth_secret_viewer_docs" {
+  for_each = toset(local.providers)
+
+  secret_id = google_secret_manager_secret.auth_secret[each.value].id
+  role = "roles/secretmanager.secretAccessor"
+  member = "serviceAccount:docs-publisher@docs-logikal-io.iam.gserviceaccount.com"
 }
 
 # Emailing
