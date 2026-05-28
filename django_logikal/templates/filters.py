@@ -1,4 +1,5 @@
 import re
+from typing import Any
 
 from django.utils.html import escape
 from django.utils.safestring import SafeString, mark_safe
@@ -62,21 +63,14 @@ def nowrap(text: str) -> SafeString:
     return mark_safe(escape(text).replace(' ', '&nbsp;'))  # nosec: text is escaped
 
 
-def truncate(text: str, length: int, truncation: str = '…') -> str:
+def exclude[T: list[Any] | dict[Any, Any]](iterable: T, *keys: Any) -> T:
     """
-    Truncate a string to a given length.
-
-    If the original text exceeds the desired length, return a string whose
-    total length is at most `length`, appending the `truncation` string.
-    The `truncation` string is only appended when truncation occurs.
+    Return the given list or dictionary without the specified keys.
     """
-    if len(text) <= length:
-        return text
-    if length <= 0:
-        raise ValueError('Length must be positive')
-    if not truncation:
-        return text[:length]
-    if len(truncation) >= length:
-        raise ValueError('Truncation string must be shorter than length')
-    visible_length = max(0, length - len(truncation))
-    return f"{text[:visible_length]}{truncation}"
+    if isinstance(iterable, list):
+        return [key for key in iterable if key not in keys]  # type: ignore[return-value]
+    if isinstance(iterable, dict):
+        return {
+            key: value for key, value in iterable.items() if key not in keys
+        }  # type: ignore[return-value]
+    raise ValueError(f'Invalid iterable type "{type(iterable)}"')

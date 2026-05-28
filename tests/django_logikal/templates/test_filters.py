@@ -40,19 +40,17 @@ def test_nowrap() -> None:
     assert f.nowrap('hello world') == 'hello&nbsp;world'
 
 
-def test_truncate() -> None:
-    # Appends default ellipsis when truncated
-    assert f.truncate('hello world', 5) == 'hell…'
-    # No truncation when text fits
-    assert f.truncate('hello world', 11) == 'hello world'
-    assert f.truncate('hello world', 12) == 'hello world'
-    # Custom truncation marker (three dots)
-    assert f.truncate('hello world', 4, '...') == 'h...'
-    # Empty truncation string => pure slice
-    assert f.truncate('hello world', 4, '') == 'hell'
-    # Length less or equal to truncation length raises ValueError
+def test_exclude() -> None:
+    # Lists
+    assert f.exclude([], 'spam') == []
+    assert f.exclude(['hello', 'world'], 'hello') == ['world']
+    assert f.exclude(['hello', 'world'], 'spam') == ['hello', 'world']
+
+    # Dictionaries
+    assert f.exclude({}, 'spam') == {}
+    assert f.exclude({'hello': 'world', 1: 2}, 1) == {'hello': 'world'}
+    assert f.exclude({'hello': 'world', 1: 2}, 'spam') == {'hello': 'world', 1: 2}
+
+    # Errors
     with pytest.raises(ValueError):
-        f.truncate('hello world', 3, '...')
-    # Non-positive length raises ValueError
-    with pytest.raises(ValueError):
-        f.truncate('hello world', 0)
+        f.exclude('invalid type')  # type: ignore[type-var]

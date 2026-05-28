@@ -47,7 +47,7 @@
   </ul>
 
   <h2>Elements</h2>
-  <p>Link: <a href='{{ url('dynamic_site:index') }}'>Index</a></p>
+  <p>Link: <a href='{{ url('dynamic_site:home') }}'>Home</a></p>
   <p>
     Image:
     <img alt="Logikal icon" width="100" height="100" border="0"

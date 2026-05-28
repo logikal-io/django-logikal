@@ -12,6 +12,7 @@ def test_skipping(mocker: MockerFixture) -> None:
         content=b'',
         resolver_match=mocker.Mock(app_name='test', route='test/', func=None),
         path='/test/',
+        htmx=False,
     )
 
     # No skipping
@@ -19,10 +20,14 @@ def test_skipping(mocker: MockerFixture) -> None:
     with raises(RuntimeError, match='Empty content'):
         middleware(request=request)
 
+    # Skip htmx request
+    request.htmx = True
+    middleware(request=request)  # does not raise an error
+    request.htmx = False
+
     # Skip API view
     request.resolver_match.func = mocker.Mock()
     request.resolver_match.func.cls = APIView
-    middleware = ValidationMiddleware(get_response=lambda arg: arg)
     middleware(request=request)  # does not raise an error
     request.resolver_match.func = None
 

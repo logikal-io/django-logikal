@@ -7,8 +7,10 @@
     settings
     environment
     templates
+    components
     middleware
     views
+    forms
     urls
     emails
     migrations
@@ -30,11 +32,13 @@ The ``django-logikal`` library provides a highly enhanced Django development exp
 mighty utilities:
 
 - Standard :ref:`settings modules <settings:Settings>`
-- A greatly extended :ref:`Jinja template backend <templates:Templates>`
+- A greatly extended :ref:`Jinja template backend <templates:Templates>` and a standard
+  :ref:`template component library <components:Components>`
 - :ref:`Paranoid mode <middleware:Paranoid Mode>` to ensure private pages don't become public
   accidentally
 - :ref:`HTML validation <middleware:HTML Validation>` during development and testing
-- :ref:`Views <views:Views>`, :ref:`URLs and paths <urls:URLs & Paths>` for common utilities
+- :ref:`Views <views:Views>`, :ref:`Forms <forms:Forms>`, :ref:`URLs and paths <urls:URLs & Paths>`
+  for common utilities
 - Simple :ref:`email sending <emails:Emails>`
 - An improved :ref:`migration writer <migrations:Migrations>` for nicely formatted migration files
 - :ref:`General commands <commands:General Commands>` for invoking management commands and starting
@@ -59,6 +63,35 @@ You may install the library with support for dynamic sites via the ``dynamic`` e
 .. code-block:: shell
 
     pip install django-logikal[dynamic]
+
+auth
+~~~~
+You can also install the library with authentication suport via the ``auth`` extra:
+
+.. code-block:: shell
+
+    pip install django-logikal[dynamic,auth]
+
+This will install and configure `allauth <https://docs.allauth.org/en/latest/>`_.
+
+htmx
+~~~~
+If you are using `htmx <https://htmx.org/>`_ you should also install the ``htmx`` extra:
+
+.. code-block:: shell
+
+    pip install django-logikal[dynamic,htmx]
+
+This will install and configure `django-htmx <https://django-htmx.readthedocs.io/en/latest/>`_.
+
+.. tip::
+
+    For the best user experience we recommend installing both the ``auth`` extra and the ``htmx``
+    extra for dynamic sites:
+
+    .. code-block:: shell
+
+        pip install django-logikal[dynamic,auth,htmx]
 
 REST API
 ~~~~~~~~
@@ -97,11 +130,11 @@ services to your project's ``compose.yml`` file:
 
     services:
       validator:
-        image: ghcr.io/validator/validator:23.4.11
+        image: ghcr.io/validator/validator@sha256:9449eb55d574144ea7a794a5d7e90c01f7d3f7196873171c2034df296478949a
         ports: [{target: 8888}]
 
       postgres:
-        image: postgres:14.4
+        image: postgres:18.1
         environment:
           POSTGRES_DB: dev
           POSTGRES_USER: dev
@@ -110,7 +143,7 @@ services to your project's ``compose.yml`` file:
         volumes:
           - type: volume
             source: postgres_data
-            target: /var/lib/postgresql/data
+            target: /var/lib/postgresql
         healthcheck:
           test: pg_isready --username local --host 127.0.0.1
           interval: 3s

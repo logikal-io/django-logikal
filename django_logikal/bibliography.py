@@ -161,7 +161,7 @@ class Bibliography:
         self._index += 1
         return mark_safe(  # nosec: name is escaped and index is an internal integer
             f'<a href="#ref-{name}" id="cite-{name}" class="cite">'
-            f'[<span>{self._index}</span>]</a>'
+            f'<span>[</span>{self._index}<span>]</span></a>'
         )
 
     def references(self, classes: Sequence[str] = ('references', )) -> SafeString:

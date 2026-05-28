@@ -8,7 +8,7 @@ admin.site.site_title = 'Dynamic Site'
 
 @admin.register(models.User)
 class UserAdmin(admin.ModelAdmin[models.User]):
-    list_display = ['username', 'first_name', 'last_name', 'is_staff', 'is_active', 'is_superuser']
+    list_display = ['email', 'name', 'nickname', 'is_admin', 'is_superuser']
 
 
 @admin.register(models.Project)

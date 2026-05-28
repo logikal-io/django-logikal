@@ -4,6 +4,8 @@ __pycache__
 .mypy_cache/
 .pytest_cache/
 .terragrunt-cache/
+node_modules/
+.antigravitycli/
 
 # Build artifacts
 /build/

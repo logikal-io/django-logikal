@@ -1,0 +1,5 @@
+@import url('commons.css');
+
+form {
+  .apple-login svg { fill: var(--theme-color-neutral-content); }
+}

@@ -50,6 +50,7 @@ class ValidationMiddleware(Middleware):
         )
         if (  # pylint: disable=too-many-boolean-expressions
             not response.headers['Content-Type'].startswith('text/html')
+            or getattr(request, 'htmx', None)
             or (response.status_code != 200 and app_name != 'error')
             or app_name in self._skipped_apps
             or skipped_view_class
@@ -66,10 +67,17 @@ class ValidationMiddleware(Middleware):
                 for error in errors if error.first_line and error.last_line
             ))
             context = {
-                # These are safe strings
-                'code_styles': mark_safe(  # nosec
-                    HtmlFormatter(style='manni').get_style_defs()  # type: ignore[no-untyped-call]
-                ),
+                # These are safe strings, validation errors don't show outside of local environment
+                'code_styles': {
+                    'light': mark_safe(  # nosec
+                        HtmlFormatter(style='manni')
+                        .get_style_defs()  # type: ignore[no-untyped-call]
+                    ),
+                    'dark': mark_safe(  # nosec
+                        HtmlFormatter(style='github-dark')
+                        .get_style_defs()  # type: ignore[no-untyped-call]
+                    ),
+                },
                 'source': mark_safe(highlight(  # nosec
                     code=content,
                     formatter=HtmlFormatter(linenos=True, hl_lines=lines, wrapcode=True),
