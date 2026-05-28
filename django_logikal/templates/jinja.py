@@ -117,7 +117,6 @@ def environment(**options: Any) -> Environment:
         'unslugify': filters.unslugify,
         'wrap': filters.wrap,
         'nowrap': filters.nowrap,
-        'truncate': filters.truncate,
         'exclude': filters.exclude,
     })
     env.tests.update({
