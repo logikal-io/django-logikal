@@ -130,7 +130,7 @@ services to your project's ``compose.yml`` file:
 
     services:
       validator:
-        image: ghcr.io/validator/validator@sha256:9449eb55d574144ea7a794a5d7e90c01f7d3f7196873171c2034df296478949a
+        image: ghcr.io/validator/validator@sha256:1e02132147c89c4d7e9c612a6cefcab35edb3dbc08fd19bab077dbabbb6fbce5
         ports: [{target: 8888}]
 
       postgres:

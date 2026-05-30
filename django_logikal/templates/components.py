@@ -16,7 +16,8 @@ def _style_dependencies(file: Path) -> set[str]:
         if rule.type == 'at-rule' and rule.lower_at_keyword == 'import':
             for token in rule.prelude:
                 if token.type == 'function':
-                    dependencies.add(Path(token.arguments[0].value).stem)
+                    name = token.arguments[0].value  # type: ignore[attr-defined]
+                    dependencies.add(Path(name).stem)
     return dependencies
 
 

@@ -94,7 +94,7 @@ class JinjaSphinxDirective(ABC, SphinxDirective):
             if isinstance(declaration, tinycss2.ast.Comment):
                 value = declaration.value.strip()
                 if not value.startswith('_'):
-                    return value  # type: ignore[no-any-return]
+                    return value
             return None
         return None
 
