@@ -12,7 +12,7 @@ django-simple-history~=3.11
 # Databases
 psycopg~=3.3
 factory-boy~=3.3
-Faker~=40.18
+Faker~=40.19
 
 # Other utilities
 babel~=2.18

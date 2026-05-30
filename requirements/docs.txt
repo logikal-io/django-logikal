@@ -7,7 +7,7 @@
 -r extras/rest.txt
 -r extras/bibliography.txt
 
-logikal-docs==1.2.5
+logikal-docs==1.2.6
 pytest-logikal[django]~=6.4
 sphinx-copybutton==0.5.2
 sphinx_design==0.7.0
