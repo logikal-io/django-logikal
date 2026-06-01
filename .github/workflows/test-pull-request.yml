@@ -5,6 +5,10 @@ jobs:
   run-python-tests:
     name: Run Python tests
     uses: logikal-io/github-workflows/.github/workflows/python-run-tests.yml@v12
+    with:
+      gcp-workload-identity-provider: "projects/318204696898/locations/global/\
+                                       workloadIdentityPools/ci-cd/providers/github-actions"
+      gcp-service-account-email: testing@django-logikal-io.iam.gserviceaccount.com
     permissions:
       contents: read
       id-token: write

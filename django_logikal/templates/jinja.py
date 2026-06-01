@@ -11,6 +11,7 @@ from jinja2.environment import Environment, Template as EnvironmentTemplate
 from jinja2.runtime import StrictUndefined
 from logikal_utils.imports import installed
 
+from django_logikal.env import is_dev_env, is_testing_env
 from django_logikal.templates import filters, functions, tests
 from tests.dynamic_site.menu import MenuItem
 
@@ -52,8 +53,8 @@ class JinjaTemplate(Template):
             if self._block_name not in self.template.blocks:
                 error = f'Block "{self._block_name}" not found in "{self.template.name}"'
                 raise RuntimeError(error)
-            context = self.template.new_context(context)
-            blocks = self.template.blocks[self._block_name](context)
+            template_context = self.template.new_context(context)
+            blocks = self.template.blocks[self._block_name](template_context)
             return ''.join(block for block in blocks)
 
         return super().render(context=context, request=request)
@@ -82,7 +83,7 @@ class JinjaTemplates(Jinja2):
                 block_name=block_name,
             )
 
-        origin = Origin(name=template_name, loader=self.env.loader)
+        origin = Origin(name=template_name, loader=self.env.loader)  # type: ignore[arg-type]
         error = f'Skipping template search as the template extension is not "{self._extension}"'
         raise TemplateDoesNotExist(template_name, tried=[(origin, error)], backend=self)
 
@@ -117,7 +118,6 @@ def environment(**options: Any) -> Environment:
         'unslugify': filters.unslugify,
         'wrap': filters.wrap,
         'nowrap': filters.nowrap,
-        'truncate': filters.truncate,
         'exclude': filters.exclude,
     })
     env.tests.update({
@@ -125,7 +125,6 @@ def environment(**options: Any) -> Environment:
     })
     env.globals.update({
         # Django objects
-        'settings': settings,
         'filters': env.filters,
         'tests': env.tests,
         # Libraries
@@ -147,6 +146,10 @@ def environment(**options: Any) -> Environment:
         'component_head': functions.component_head,
         'MenuItem': MenuItem,
     })
+    if is_dev_env() or is_testing_env():
+        # Add settings only for local development and testing to avoid accidental exposure
+        env.globals.update({'settings': settings})
+
     if installed('django_htmx'):
         from django_htmx.jinja import django_htmx_script, htmx_script
 

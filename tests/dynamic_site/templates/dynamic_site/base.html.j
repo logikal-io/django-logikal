@@ -40,6 +40,8 @@
           ),
           MenuItem(title='Templates', view_name='dynamic_site:templates',
           view_kwargs={'arg': 'extensions'}),
+          MenuItem(title='Partials', view_name='dynamic_site:partials'),
+          MenuItem(title='Admin', view_name='admin:index'),
           MenuItem(title='API', view_name='api-root'),
       ]
       %}
@@ -48,11 +50,27 @@
       <aside>
         <a href="{{ url('dynamic_site_localized:localization') }}"
            class="button neutral">Localization</a>
-        <a href="{{ url('admin:index') }}" class="button">Admin</a>
+        {% if request|default(none) and request.user.is_authenticated %}
+          <a href="{{ url(settings.LOGIN_REDIRECT_URL) }}" class="button">Account</a>
+        {% else %}
+          <a href="{{ url(settings.LOGIN_URL) }}" class="button">Log in</a>
+        {% endif %}
       </aside>
     </nav>
   </header>
   <main>
+    {% if messages|default(none) %}
+      <dialog id="messages" popover>
+        <ul>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+        <button id="id_messages_dismiss"
+                popovertarget="messages" popovertargetaction="hide">Dismiss</button>
+        <script nonce="{{ csp_nonce }}">document.getElementById('messages').showPopover();</script>
+      </dialog>
+    {% endif %}
     {% block main %}{% endblock %}
   </main>
 {% endblock %}

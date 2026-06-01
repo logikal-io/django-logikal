@@ -218,17 +218,21 @@ def faker_factory(seed: int = 0) -> Faker:
 
 
 @cache
-def component_head(*modules: str, use_standard_theme: bool = True) -> SafeString:
+def component_head(
+    *modules: str, use_standard_theme: bool = True, static_site: bool = False,
+) -> SafeString:
     """
     Return the relevant ``<link>`` and ``<script>`` elements for a given set of component modules.
 
     Args:
         *modules: The component modules to use.
         use_standard_theme: Whether to use the standard light and dark theme.
+        static_site: Whether this is a static site.
 
     """
     links = []
 
+    # Add style sheets
     if use_standard_theme:
         theme_files = {
             static(str((THEMES_CSS_PATH / theme).with_suffix('.css'))): media
@@ -249,12 +253,23 @@ def component_head(*modules: str, use_standard_theme: bool = True) -> SafeString
     ]
     links.extend(['<!-- Component styles -->', *style_links, '<!-- End of component styles -->'])
 
+    # Add JavaScript modules
+    js_modules = ['django_logikal/js/gettext.mjs']
+
     if scripts := [
-        f'<script defer src="{static(str(file))}"></script>'
+        f'<script type="module" src="{static(str(file))}"></script>'
         for file in head_files['js']
     ]:
-        links.extend(
-            ['', '<!-- Component scripts -->', *scripts, '<!-- End of component scripts -->']
-        )
+        js_modules = [
+            f'<script type="module" src="{static(str(module))}"></script>'
+            for module in js_modules
+        ]
+        scripts = js_modules + scripts
+        if not static_site:
+            scripts = [f'<script defer src="{reverse('js-i18n-catalog')}"></script>', *scripts]
+
+        links.extend([
+            '', '<!-- Component scripts -->', *scripts, '<!-- End of component scripts -->',
+        ])
 
     return mark_safe('\n'.join(links) + '\n')  # nosec: component links are safe

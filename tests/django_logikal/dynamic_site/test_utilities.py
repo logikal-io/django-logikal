@@ -3,7 +3,7 @@ from django.test import Client
 from pytest_factoryboy import register
 from pytest_logikal import Browser, LiveURL, set_browser
 
-from django_logikal.views import ERROR_HANDLERS
+from django_logikal.views.generic import ERROR_HANDLERS
 from tests.django_logikal import factories, scenarios
 from tests.dynamic_site.models import User
 
@@ -13,7 +13,7 @@ register(factories.RobotsRuleFactory, _name='robots_rule')
 
 @set_browser(scenarios.desktop)
 def test_admin(
-    live_url: LiveURL, browser: Browser, user: User, staff_user: User, super_user: User,
+    live_url: LiveURL, browser: Browser, user: User, admin_user: User, super_user: User,
 ) -> None:
     browser.get(live_url('admin:index'))
     browser.check('before_login')
@@ -22,9 +22,9 @@ def test_admin(
     browser.get(live_url('admin:index'))
     browser.check('no_permission')
 
-    browser.login(staff_user)
+    browser.login(admin_user)
     browser.get(live_url('admin:index'))
-    browser.check('staff_user_after_login')
+    browser.check('admin_user_after_login')
 
     browser.login(super_user)
     browser.get(live_url('admin:index'))

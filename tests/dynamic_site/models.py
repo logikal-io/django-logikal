@@ -1,23 +1,18 @@
 # pylint: disable=too-many-ancestors
-from uuid import uuid4
-
-from django.contrib.auth.models import AbstractUser
-from django.db import models
-from django.db.models import CharField, DateField, F, UUIDField
+from django.db.models import CharField, DateField, F
 from django.db.models.functions import Lower
 from rest_framework import serializers, viewsets
-from simple_history.models import HistoricalRecords
 
-from django_logikal.models import OrderedTextChoices
+from django_logikal.models.base import BaseModel, BaseUser, HistorizedBaseModel
+from django_logikal.models.text_choices import OrderedTextChoices
 
 SITE = {'domain': 'logikal.io', 'name': 'logikal.io'}
 
 
-class User(AbstractUser):
+class User(HistorizedBaseModel, BaseUser):
     """
     Model representing users.
     """
-    history = HistoricalRecords()
 
 
 class Status(OrderedTextChoices):
@@ -27,8 +22,7 @@ class Status(OrderedTextChoices):
     CANCELED = ('canceled', 'canceled')
 
 
-class Project(models.Model):
-    id = UUIDField(primary_key=True, default=uuid4, editable=False)
+class Project(BaseModel):
     name = CharField(max_length=150)
     start_date = DateField()
     end_date = DateField(null=True, blank=True)
@@ -36,7 +30,7 @@ class Project(models.Model):
 
     class Meta:
         ordering = [
-            Status.order('status'), Lower('name'),  # type: ignore[list-item]
+            Status.order('status'), Lower('name'),
             'start_date', F('end_date').asc(nulls_last=True),
         ]
 

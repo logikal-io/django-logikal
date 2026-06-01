@@ -38,9 +38,11 @@ def test_json_api(live_url: LiveURL, client: Client, user: User) -> None:
     local_data.ProjectData.insert()
     response = client.get(root_response['projects'])
     assert response.json()[0] == {
+        'created_at': '2025-01-25T14:30:55+01:00',
         'end_date': '2023-02-10',
-        'name': 'Benchmark Cutting-Edge Paradigms',
+        'name': 'Enhance Global Platforms',
         'start_date': '2023-02-01',
         'status': 'planning',
-        'url': 'http://testserver/api/projects/16419f82-8b9d-4434-a465-e150bd9c66b3/',
+        'url': 'http://testserver/api/projects/1/',
+        'updated_at': '2025-01-25T14:30:55+01:00',
     }

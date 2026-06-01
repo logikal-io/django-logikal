@@ -8,7 +8,7 @@ from django_stubs_ext import StrOrPromise
 
 from django_logikal.sitemap import StaticSitemap
 from django_logikal.urls import URLType
-from django_logikal.views import public as mark_public
+from django_logikal.views.generic import public as mark_public
 
 
 class Template:

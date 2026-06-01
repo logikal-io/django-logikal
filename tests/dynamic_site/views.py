@@ -5,7 +5,7 @@ from django.http import HttpRequest, HttpResponse
 from django.views.generic import ListView, TemplateView
 
 from django_logikal.email import Email
-from django_logikal.views import HTMXTemplateView, PublicViewMixin
+from django_logikal.views.generic import HTMXTemplateView, PublicViewMixin
 from tests.dynamic_site.models import Project
 
 

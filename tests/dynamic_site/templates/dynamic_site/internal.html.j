@@ -4,9 +4,8 @@
 {% block main %}
   <div class="spotlight">
     <section class="text center">
-      <h1>Dynamic Internal Page</h1>
-      <p>Hello {{ request.user.first_name }}.</p>
-      <p><a href="{{ url('admin:logout') }}">Log out</a></p>
+      <h1>Internal Page</h1>
+      <p>Hello {{ request.user.get_full_name() }}.</p>
     </section>
   </div>
 {% endblock %}

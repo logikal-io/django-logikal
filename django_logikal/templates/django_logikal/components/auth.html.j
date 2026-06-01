@@ -1,16 +1,20 @@
 {% import 'django_logikal/components/commons.html.j' as commons %}
 
-{% macro login_form_username(header, provider_login_urls=none) %}
+{% macro auth_form(csrf_input, form, header, provider_login_urls=none) %}
   {#
-  Render a username login form.
+  Render an authentication form.
 
   Args:
+    csrf_input (str): The CSRF input element to use.
+    form (:py:class:`django_logikal.forms.account.AuthForm`): The authentication form to use.
     header (str): The text to use for the header.
-    login_urls (dict): The mapping of provider names to login URLs to use.
+    provider_login_urls (dict): The mapping of provider names to login URLs to use.
 
   .. jinja:example::
 
-    {{ auth.login_form_username(
+    {{ auth.auth_form(
+      csrf_input=csrf_input,
+      form=auth_form,
       header=_('Continue to access all content'),
       provider_login_urls={
         'Google': 'auth/google/',
@@ -20,24 +24,23 @@
     ) }}
 
   #}
-  <form class="login-form-sign-up">
-    <h1>{{ header }}</h1>
-    {{ commons.input_field(
-      name='email', label=_('Email address'), type='email', required=true,
-      placeholder=_('email@example.com'), error_text=_('This email is invalid.'),
-    ) }}
-    <button>Next</button>
+  <div class="form-group">
+    {{ form.with_meta(header=header) }}
     {% if provider_login_urls %}
-      <p>or</p>
-      <div class="external-login">
+      <p>{{ _('or') }}</p>
+      <div class="actions">
         {% for provider, login_url in provider_login_urls.items() %}
-          {{ commons.link_icon_button(
-            text=_('Sign in with %(provider)s', provider=provider), href=login_url,
-            icon='django_logikal/icons/sign_in_with_' + provider|lower + '.svg',
-            classes='neutral ' + provider|lower + '-login',
-          ) }}
+          <form action="{{ login_url }}" method="post">
+            {{ csrf_input }}
+            {{ commons.icon_button(
+              text=_('Continue with %(provider)s', provider=provider),
+              icon='django_logikal/icons/sign_in_with_' + provider|lower + '.svg',
+              id='id_social_login_' + provider|lower,
+              classes='neutral ' + provider|lower + '-login',
+            ) }}
+          </form>
         {% endfor %}
       </div>
     {% endif %}
-  </form>
+  </div>
 {% endmacro %}
