@@ -8,7 +8,7 @@ locals {
       version = "~> 3.8"
     }
     google = {
-      version = "~> 7.22"
+      version = "~> 7.34"
       region = "europe-west6"
     }
     aws = {
@@ -18,6 +18,6 @@ locals {
   }
 
   modules = {
-    "github.com/logikal-io/terraform-modules" = "v5.1.0"
+    "github.com/logikal-io/terraform-modules" = "v5.3.1"
   }
 }
