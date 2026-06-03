@@ -20,3 +20,16 @@ if (menuIcon && mobileMenu) {
     menuIcon.setAttribute('aria-expanded', !expanded);
     mobileMenu.classList.toggle('open');
   });
+
+  mobileMenu.querySelectorAll('li').forEach(item => {
+    const link = item.querySelector('a');
+    const submenu = item.querySelector('ul');
+
+    if (submenu) {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        submenu.classList.toggle('open');
+      });
+    }
+  });
+}
