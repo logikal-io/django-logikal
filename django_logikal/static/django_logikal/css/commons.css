@@ -229,6 +229,7 @@ button, .button {
   box-shadow: var(--theme-shadow-element);
   text-align: center;
 
+  &.wide { width: 100%; }
   &.inline { display: inline-block; }
 
   &:hover {
@@ -261,7 +262,7 @@ button, .button {
     }
   }
 
-  svg, .counterweight { /* stylelint-disable-line no-descending-specificity */
+  svg { /* stylelint-disable-line no-descending-specificity */
     display: block;
     width: var(--length-button-icon);
     height: var(--length-button-icon);
@@ -269,9 +270,13 @@ button, .button {
 
   &.icon {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     gap: var(--length-gap-element);
+
+    &.wide {
+      display: grid;
+      grid-template-columns: var(--length-button-icon) 1fr var(--length-button-icon);
+    }
   }
 
   &.icon-toggle {
@@ -510,6 +515,37 @@ dialog[popover] {
   }
 
   button:not(.icon-toggle) { margin-inline: auto; }
+}
+
+/* Dropdowns */
+.dropdown-form-menu {
+  position: relative;
+
+  form {
+    position: absolute;
+    z-index: 1000;
+    top: 100%;
+    right: 0;
+    border-radius: var(--length-radius-element);
+    padding: var(--length-gap-element);
+    margin-block-start: var(--length-gap-element);
+
+    menu {
+      flex-direction: column;
+      gap: 0;
+
+      button { /* stylelint-disable-line no-descending-specificity */
+        text-align: right;
+        background: none;
+        border: none;
+        box-shadow: none;
+        color: inherit;
+
+        &:hover { color: var(--theme-color-text-highlight); }
+        &:active { color: var(--theme-color-text-hit); }
+      }
+    }
+  }
 }
 
 /* Validation error styles */

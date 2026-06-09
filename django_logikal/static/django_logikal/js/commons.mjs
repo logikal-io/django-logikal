@@ -23,3 +23,16 @@ document.querySelectorAll('.password-input').forEach((container) => {
     }
   });
 });
+
+// Language switcher
+const languageSwitcher = document.getElementById('id_language_switcher');
+if (languageSwitcher) {
+  const toggle = document.getElementById('id_language_switcher_toggle');
+  const menu = document.getElementById('id_form_language_menu');
+
+  toggle.addEventListener('click', () => {
+    const menuHidden = menu.hidden;
+    menu.hidden = !menuHidden;
+    toggle.setAttribute('aria-expanded', menuHidden);
+  });
+}

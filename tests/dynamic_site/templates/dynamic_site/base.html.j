@@ -29,8 +29,15 @@
       }, request=request|default(none)) }}
       {# djlint:on #}
       <aside>
-        <a href="{{ url('dynamic_site_localized:localization') }}"
-           class="button neutral">Localization</a>
+        {% if request|default(none) and
+              request.resolver_match.view_name == 'dynamic_site_localized:localization' %}
+          {{ commons.language_switcher(
+            current_language_code=language(),
+            languages=settings.LANGUAGES,
+            action_url=url('set_language'),
+            csrf_input=csrf_input,
+          ) }}
+        {% endif %}
         {% if request|default(none) and request.user.is_authenticated %}
           <a href="{{ url(settings.LOGIN_REDIRECT_URL) }}" class="button">Account</a>
         {% else %}

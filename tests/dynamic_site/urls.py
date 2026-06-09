@@ -5,6 +5,7 @@ from typing import Any
 from django.conf.urls.i18n import i18n_patterns
 from django.urls import include, path
 from django.utils.translation import gettext_lazy  # not using underscore to test extraction
+from django.views.i18n import set_language
 from rest_framework import urls as rest_framework_auth_urls
 from rest_framework.routers import DefaultRouter as APIRouter
 
@@ -52,6 +53,7 @@ urlpatterns = [
         path('email/', views.EmailView.as_view(), name='email'),
     ])),
     # Localized URLs
+    path('set-language/', public(set_language), name='set_language'),
     *i18n_patterns(
         path('', template_localized.include([
             template_localized.path(
