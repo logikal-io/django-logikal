@@ -244,6 +244,13 @@ button, .button {
     border: var(--theme-outline-active-hit);
   }
 
+  svg { /* stylelint-disable-line no-descending-specificity */
+    display: block;
+    width: var(--length-button-icon);
+    height: var(--length-button-icon);
+    fill: var(--theme-color-active-content);
+  }
+
   &.neutral {
     background-color: var(--theme-color-neutral);
     color: var(--theme-color-neutral-content);
@@ -260,12 +267,8 @@ button, .button {
       color: var(--theme-color-neutral-hit-content);
       border: var(--theme-outline-neutral-hit);
     }
-  }
 
-  svg { /* stylelint-disable-line no-descending-specificity */
-    display: block;
-    width: var(--length-button-icon);
-    height: var(--length-button-icon);
+    svg { fill: var(--theme-color-neutral-content); }
   }
 
   &.icon {
