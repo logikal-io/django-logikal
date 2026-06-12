@@ -12,5 +12,8 @@ class MenuItem:
     id_prefix: str = 'id_menu'
 
     def __post_init__(self):
+        if self.view_kwargs is None:
+            self.view_kwargs = {}
+
         if self.id is None:
             self.id = self.id_prefix + '_' + self.title.lower().replace(' ', '_')
