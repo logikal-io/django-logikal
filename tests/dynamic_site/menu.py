@@ -9,7 +9,8 @@ class MenuItem:
     view_kwargs: dict[str, Any] = None
     submenu: list['MenuItem'] = None
     id: str = None
+    id_prefix: str = 'id_menu'
 
     def __post_init__(self):
         if self.id is None:
-            self.id = self.title.lower().replace(' ', '_')
+            self.id = self.id_prefix + '_' + self.title.lower().replace(' ', '_')

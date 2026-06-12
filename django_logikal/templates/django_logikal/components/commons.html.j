@@ -1,4 +1,4 @@
-{% macro menu(items, request, arrow_icon='django_logikal/icons/arrow.svg', menu_icon='django_logikal/icons/menu_icon.svg') %}
+{% macro menu(items, request, arrow='django_logikal/icons/arrow.svg', menu='django_logikal/icons/menu.svg') %}
   {#
   Render a menu bar.
 
@@ -31,7 +31,7 @@
            {% endif -%}>
           {{ item.title }}
           {% if item.submenu %}
-            {{ include_static(arrow_icon) }}
+            {{ include_static(arrow) }}
           {% endif %}
         </a>
         {%- if item.submenu -%}
@@ -50,7 +50,7 @@
   {% endfor %}
 
   <button class="mobile-menu-icon" id="menu_icon" aria-label="Menu" aria-expanded="false">
-    {{ include_static(menu_icon) }}
+    {{ include_static(menu) }}
   </button>
 {% endmacro %}
 

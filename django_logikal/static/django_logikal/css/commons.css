@@ -9,6 +9,7 @@ body, :host {
 
 header {
   position: relative;
+  z-index: 10;
 }
 
 body {
@@ -154,6 +155,7 @@ menu, nav aside {
 menu {
   &.desktop {
     display: flex;
+    align-items: center;
 
     ul.menu svg {
       width: calc(var(--length-button-icon) * 2);
@@ -163,8 +165,7 @@ menu {
 
     & > li > ul.menu {
       max-height: var(--length-text);
-      overflow-y: auto;
-      overflow-x: hidden;
+      overflow: visible;
     }
 
     ul.menu ul.menu {
@@ -195,10 +196,11 @@ menu {
     max-height: var(--length-text);
     overflow-y: auto;
 
-    ul.menu svg {
+    li a svg {
       width: calc(var(--length-button-icon) * 2);
       height: calc(var(--length-button-icon) * 2);
       flex-shrink: 0;
+      display: inline-block;
     }
 
     .tabs {
@@ -235,7 +237,7 @@ menu {
     display: block;
   }
 
-  menu li:has(.menu.open) > a svg {
+  li:has(> ul.menu.open) > a svg {
     transform: rotate(180deg);
   }
 }
@@ -630,8 +632,6 @@ dialog[popover] {
     &:hover { color: var(--theme-color-text-highlight); }
     &:active { color: var(--theme-color-text-hit); }
     & > svg {
-      width: calc(var(--length-logo-height) + var(--length-button-icon));
-      height: calc(var(--length-logo-height) + var(--length-button-icon));
       padding: var(--length-gap-subelement);
     }
   }
