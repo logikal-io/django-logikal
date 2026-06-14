@@ -19,7 +19,10 @@ body {
   gap: var(--length-gap-group);
 
   /* Grid areas */
-  & > :is(header, main, aside, footer) { padding: var(--length-gap-group); }
+  & > :is(header, main, aside, footer) {
+    padding: var(--length-gap-group);
+    max-width: 100vw;
+  }
   & > header { grid-area: header; padding-block-end: 0; }
   & > main { grid-area: main; position: relative; }
   & > aside { grid-area: aside; padding-inline-start: 0; }

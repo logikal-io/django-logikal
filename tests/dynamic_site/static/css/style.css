@@ -6,4 +6,8 @@
   .mobile-menu-icon {
     display: block;
   }
+
+  nav {
+    gap: var(--length-gap-element);
+  }
 }
