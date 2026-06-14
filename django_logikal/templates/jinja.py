@@ -13,6 +13,7 @@ from logikal_utils.imports import installed
 
 from django_logikal.env import is_dev_env, is_testing_env
 from django_logikal.templates import filters, functions, tests
+from tests.dynamic_site.menu import MenuItem
 
 DEFAULT_OPTIONS = {
     'undefined': StrictUndefined,
@@ -143,6 +144,7 @@ def environment(**options: Any) -> Environment:
         'bibliography': functions.bibliography,
         'faker_factory': functions.faker_factory,
         'component_head': functions.component_head,
+        'MenuItem': MenuItem,
     })
     if is_dev_env() or is_testing_env():
         # Add settings only for local development and testing to avoid accidental exposure

@@ -1,0 +1,13 @@
+@media (max-width: 30rem) {
+  menu.desktop {
+    display: none;
+  }
+
+  .mobile-menu-icon {
+    display: block;
+  }
+
+  nav {
+    gap: var(--length-gap-element);
+  }
+}

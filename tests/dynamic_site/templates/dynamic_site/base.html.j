@@ -10,6 +10,7 @@
 {% block component_head %}{{ component_head('commons') }}{% endblock %}
 {% block head %}
   <link rel="icon" href="{{ static('favicon.png') }}">
+  <link rel="stylesheet" href="{{ static('css/style.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -18,15 +19,33 @@
       <a href="{{ url('dynamic_site:home') }}" class="logo" aria-label="Go to home page">
         {{ include_static('logikal_logo.svg') }}
       </a>
-      {# djlint:off T001 #}
-      {{ commons.menu({
-        'Home': 'dynamic_site:home',
-        'Errors': 'error:404',
-        'Templates': {'view_name': 'dynamic_site:templates', 'kwargs': {'arg': 'extensions'}},
-        'Partials': 'dynamic_site:partials',
-        'Admin': 'admin:index',
-        'API': 'api-root',
-      }, request=request|default(none)) }}
+      {# djlint:off T001 #} {# TODO: show a list of options for the error pages #}
+      {% set menu_items = [
+          MenuItem(title='Home', view_name='dynamic_site:home'),
+          MenuItem(title='Errors',
+            submenu=[
+              MenuItem(title='Server Errors',
+                submenu=[
+                  MenuItem(title='400', view_name='error:400'),
+                  MenuItem(title='500', view_name='error:500')
+                ]
+              ),
+              MenuItem(title='Page Not Found Errors',
+                submenu=[
+                  MenuItem(title='403', view_name='error:403'),
+                  MenuItem(title='404', view_name='error:404')
+                ]
+              ),
+            ]
+          ),
+          MenuItem(title='Templates', view_name='dynamic_site:templates',
+          view_kwargs={'arg': 'extensions'}),
+          MenuItem(title='Partials', view_name='dynamic_site:partials'),
+          MenuItem(title='Admin', view_name='admin:index'),
+          MenuItem(title='API', view_name='api-root'),
+      ]
+      %}
+      {{ commons.menu(menu_items, request=request|default(none)) }}
       {# djlint:on #}
       <aside>
         <a href="{{ url('dynamic_site_localized:localization') }}"

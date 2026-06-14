@@ -40,6 +40,26 @@ def test_home(live_server: LiveServer, browser: Browser) -> None:
     browser.check()
 
 
+@set_browser(scenarios.mobile_l)
+def test_home(live_server: LiveServer, browser: Browser) -> None:
+    browser.get(live_server.url)
+    browser.check()
+
+
+@set_browser(scenarios.desktop)
+def test_dropdown_open(live_server: LiveServer, browser: Browser) -> None:
+    browser.get(live_server.url)
+    browser.find_element(By.ID, 'desktop_errors').click()
+    browser.check()
+
+
+@set_browser(scenarios.mobile_l)
+def test_menu_open(live_server: LiveServer, browser: Browser) -> None:
+    browser.get(live_server.url)
+    browser.execute_script('arguments[0].click();', browser.find_element(By.ID, 'menu_icon'))
+    browser.check()
+
+
 @set_browser(scenarios.desktop_all_languages)
 def test_localization(live_url: LiveURL, browser: Browser) -> None:
     browser.get(live_url('dynamic_site_localized:localization'))
