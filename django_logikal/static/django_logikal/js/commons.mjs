@@ -24,6 +24,34 @@ document.querySelectorAll('.password-input').forEach((container) => {
   });
 });
 
+// Menu
+document.querySelectorAll('nav > menu.desktop').forEach((menu) => {
+  menu.querySelectorAll('li').forEach((item) => {
+    const link = item.querySelector('a');
+    const submenu = item.querySelector('menu');
+    if (submenu) {
+      link.addEventListener('click', () => {
+        item.classList.toggle('open');
+
+        // Close all other menus (except parents)
+        menu.querySelectorAll('li.open').forEach((menuItem) => {
+          if (!(menuItem === item || menuItem.contains(item))) {
+            menuItem.classList.remove('open');
+          }
+        });
+      });
+    }
+  });
+});
+
+document.addEventListener('click', (event) => {
+  document.querySelectorAll('nav > menu.desktop li.open').forEach((item) => {
+    if (!item.contains(event.target)) {
+      item.classList.remove('open');
+    }
+  });
+});
+
 // Language switcher
 const languageSwitcher = document.getElementById('id_language_switcher');
 if (languageSwitcher) {
@@ -31,8 +59,14 @@ if (languageSwitcher) {
   const menu = document.getElementById('id_form_language_menu');
 
   toggle.addEventListener('click', () => {
-    const menuHidden = menu.hidden;
-    menu.hidden = !menuHidden;
-    toggle.setAttribute('aria-expanded', menuHidden);
+    menu.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', menu.classList.contains('open'));
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!languageSwitcher.contains(event.target)) {
+      menu.classList.remove('open');
+      toggle.setAttribute('aria-expanded', false);
+    }
   });
 }

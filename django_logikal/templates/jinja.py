@@ -11,6 +11,7 @@ from jinja2.environment import Environment, Template as EnvironmentTemplate
 from jinja2.runtime import StrictUndefined
 from logikal_utils.imports import installed
 
+from django_logikal.components import commons
 from django_logikal.templates import filters, functions, tests
 
 DEFAULT_OPTIONS = {
@@ -143,6 +144,8 @@ def environment(**options: Any) -> Environment:
         'bibliography': functions.bibliography,
         'faker_factory': functions.faker_factory,
         'component_head': functions.component_head,
+        # Components
+        'menu_item': commons.MenuItem,
     })
     if installed('django_htmx'):
         from django_htmx.jinja import django_htmx_script, htmx_script

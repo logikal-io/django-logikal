@@ -1,1 +1,85 @@
 @import url('commons.css');
+
+.text {
+  font-variant-numeric: oldstyle-nums;
+  max-width: var(--length-text);
+  &.fixed { width: var(--length-text); }
+  &.box { max-width: 100%; }
+
+  &.center {
+    text-align: center;
+    h1, h2, h3, h4, h5, h6 { text-align: center; }
+
+    & > * {
+      margin-inline: auto;
+      width: fit-content;
+    }
+  }
+
+  .error { color: var(--theme-color-text-error); }
+  pre { margin: var(--length-margin-paragraph); }
+
+  ul, ol, p:not(hgroup p) {
+    text-wrap: pretty;
+    margin: var(--length-margin-paragraph);
+    pre { margin: var(--length-margin-paragraph-small); }
+  }
+
+  & > *:last-child :is(ul, ol, p:not(hgroup p)) { margin-block-end: 0; }
+
+  ul, ol { padding-inline-start: calc(1.5 * var(--length-text-indent)); }
+  ul { list-style: disc outside; }
+  ol { list-style: decimal outside; }
+
+  &.long-form {
+    p {
+      margin: 0;
+      text-align: justify;
+      hyphens: auto;
+      hyphenate-limit-chars: 7;
+
+      & + p { text-indent: var(--length-text-indent); }
+    }
+  }
+
+  /* Tables */
+  table:not(.code table) {
+    margin: 0 auto;
+    text-align: start;
+    border-block-end: var(--theme-outline-neutral);
+
+    thead {
+      font: var(--theme-font-body-normal-emphasis);
+      border-block-end: var(--theme-outline-neutral);
+    }
+
+    th, td {
+      padding: var(--length-gap-element);
+      vertical-align: top;
+      text-align: start;
+    }
+  }
+
+  /* References */
+  .cite {
+    span { color: var(--theme-color-body-content); }
+    &:is(:hover, :active) span { color: inherit; }
+  }
+
+  .references li {
+    padding: var(--length-gap-element);
+    border: var(--theme-outline-neutral);
+    border-color: transparent;
+    border-radius: var(--length-radius-element);
+    &:first-child { margin-block-start: calc(-1 * var(--length-gap-element)); }
+
+    &:target {
+      background-color: var(--theme-color-neutral-highlight);
+      color: var(--theme-color-neutral-highlight-content);
+      border: var(--theme-outline-neutral-highlight);
+      box-shadow: var(--theme-shadow-element);
+    }
+
+    .up { margin-inline-end: var(--length-gap-subelement); }
+  }
+}

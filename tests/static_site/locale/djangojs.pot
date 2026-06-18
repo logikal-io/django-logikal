@@ -3,9 +3,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: static-site v5.0.2.dev5+gb40e24e32\n"
+"Project-Id-Version: static-site v5.0.2.dev5+gb40e24e32.d20260609\n"
 "Report-Msgid-Bugs-To: Gergely Kalmár <contact@logikal.io>\n"
-"POT-Creation-Date: 2026-06-09 17:03+0200\n"
+"POT-Creation-Date: 2026-06-17 20:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"

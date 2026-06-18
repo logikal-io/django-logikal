@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: static-site v0.1.dev1+g8fb9899.d20230531\n"
 "Report-Msgid-Bugs-To: Gergely Kalmár <contact@logikal.io>\n"
-"POT-Creation-Date: 2026-06-09 17:03+0200\n"
+"POT-Creation-Date: 2026-06-17 20:36+0200\n"
 "PO-Revision-Date: 2023-06-01 11:46+0200\n"
 "Last-Translator: Gergely Kalmár <contact@logikal.io>\n"
 "Language: en_GB\n"
@@ -20,8 +20,8 @@ msgid "English (US)"
 msgstr "English (US)"
 
 #: tests/static_site/settings/app.py:14
-msgid "English (UK)"
-msgstr "English (UK)"
+msgid "English (GB)"
+msgstr "English (GB)"
 
 #: tests/static_site/templates/localization.html.j:3
 msgid "Localized Page"
