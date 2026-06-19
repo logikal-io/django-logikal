@@ -27,18 +27,18 @@ document.querySelectorAll('.password-input').forEach((container) => {
 // Menu
 document.querySelectorAll('nav > menu.desktop').forEach((menu) => {
   menu.querySelectorAll('li').forEach((item) => {
-    const link = item.querySelector('a');
+    const button = item.querySelector('button');
     const submenu = item.querySelector('menu');
     if (submenu) {
-      link.addEventListener('click', () => {
+      button.addEventListener('click', () => {
         item.classList.toggle('open');
-        link.setAttribute('aria-expanded', item.classList.contains('open'));
+        button.setAttribute('aria-expanded', item.classList.contains('open'));
 
         // Close all other menus (except parents)
         menu.querySelectorAll('li.open').forEach((menuItem) => {
           if (!(menuItem === item || menuItem.contains(item))) {
             menuItem.classList.remove('open');
-            menuItem.querySelector('a').setAttribute('aria-expanded', false);
+            menuItem.querySelector('button').setAttribute('aria-expanded', false);
           }
         });
       });
@@ -50,7 +50,7 @@ document.addEventListener('click', (event) => {
   document.querySelectorAll('nav > menu.desktop li.open').forEach((item) => {
     if (!item.contains(event.target)) {
       item.classList.remove('open');
-      item.querySelector('a').setAttribute('aria-expanded', false);
+      item.querySelector('button').setAttribute('aria-expanded', false);
     }
   });
 });

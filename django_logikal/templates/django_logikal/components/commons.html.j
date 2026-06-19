@@ -30,19 +30,22 @@
     {% for item in items %}
       {% set active = (item.view_name == url_name(request)) if request|default(none) else false %}
       <li role="none"{% if active %} class="active"{% endif %}>
-        <a role="menuitem" id="{{ item.id }}_{{ type }}"
-           {%- if active %} aria-current="page"{% endif %}
-           {%- if item.submenu %} aria-haspopup="true" aria-expanded="false"{% endif %}
-           {%- if not active and not item.submenu %}
-             href="{{ url(viewname=item.view_name, kwargs=item.view_kwargs) }}"
-           {% endif -%}>
-          {{ item.title }}
-          {% if item.submenu %}{{ include_static(arrow_icon) }}{% endif %}
-        </a>
         {% if item.submenu %}
+          <button type="button" role="menuitem" id="{{ item.id }}_{{ type }}"
+                  aria-haspopup="menu" aria-expanded="false">
+            {{ item.title }}
+            {{ include_static(arrow_icon) }}
+          </button>
           <menu role="menu" class="group">
             {{ _render_menu_items(items=item.submenu, request=request, type=type) }}
           </menu>
+        {% else %}
+          <a role="menuitem" id="{{ item.id }}_{{ type }}"
+            {%- if active %} aria-current="page"{% else %} href="{{
+              url(viewname=item.view_name, kwargs=item.view_kwargs)
+            }}" {% endif %}>
+            {{ item.title }}
+          </a>
         {% endif %}
       </li>
     {% endfor %}
@@ -54,14 +57,15 @@
     </menu>
   {% endfor %}
 
-  <button class="mobile-menu-icon" id="id_menu_icon" aria-label="Menu" aria-expanded="false">
+  <button class="mobile-menu-icon" id="id_menu_icon"
+          aria-label="{{ _('Menu') }}" aria-haspopup="menu" aria-expanded="false">
     {{ include_static(menu_icon) }}
   </button>
 {% endmacro %}
 
 {% macro icon_button(
   text, icon, id=none, classes=none, title=none,
-  aria_label=none, aria_expanded=none, aria_controls=none
+  aria_label=none, aria_haspopup=none, aria_expanded=none, aria_controls=none
 ) %}
   {#
   Render a link button with an icon.
@@ -73,6 +77,7 @@
     classes (str): The classes to use.
     title (str): The title to use.
     aria_label (str): The ARIA label to use.
+    aria_haspopup (str | :py:class:`bool`): Whether the element can trigger a popup.
     aria_expanded (bool): Whether the controlled elements are expanded.
     aria_controls (str): The ID of the element which this button controls.
 
@@ -81,6 +86,7 @@
     {%- if id %} id="{{ id }}"{% endif %} class="icon{% if classes %} {{ classes }}{% endif %}"
     {%- if title %} title="{{ title }}"{% endif -%}
     {%- if aria_label %} aria-label="{{ aria_label }}"{% endif -%}
+    {%- if aria_haspopup %} aria-haspopup="{{ aria_haspopup|str|lower }}"{% endif -%}
     {%- if aria_expanded is not none %} aria-expanded="{{ aria_expanded|str|lower }}"{% endif -%}
     {%- if aria_controls %} aria-controls="{{ aria_controls }}"{% endif -%}
     >
@@ -122,7 +128,7 @@
       text=text or dict(languages)[current_language_code], icon=icon,
       id='id_language_switcher_toggle', classes='neutral light',
       title=_('Change language'), aria_label=_('Change language'),
-      aria_expanded=false, aria_controls='id_form_language_menu',
+      aria_haspopup='menu', aria_expanded=false, aria_controls='id_form_language_menu',
     ) }}
     <form id="id_form_language_menu" class="subgroup" action="{{ action_url }}" method="post">
       {{ csrf_input }}
