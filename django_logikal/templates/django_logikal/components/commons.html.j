@@ -31,6 +31,8 @@
       {% set active = (item.view_name == url_name(request)) if request|default(none) else false %}
       <li role="none"{% if active %} class="active"{% endif %}>
         <a role="menuitem" id="{{ item.id }}_{{ type }}"
+           {%- if active %} aria-current="page"{% endif %}
+           {%- if item.submenu %} aria-haspopup="true" aria-expanded="false"{% endif %}
            {%- if not active and not item.submenu %}
              href="{{ url(viewname=item.view_name, kwargs=item.view_kwargs) }}"
            {% endif -%}>
@@ -47,7 +49,7 @@
   {% endmacro %}
 
   {% for type in ['desktop', 'mobile'] %}
-    <menu role="menu" class="{{ type }}">
+    <menu role="menubar" class="{{ type }}">
       {{ _render_menu_items(items=items, request=request, type=type) }}
     </menu>
   {% endfor %}
@@ -124,11 +126,11 @@
     ) }}
     <form id="id_form_language_menu" class="subgroup" action="{{ action_url }}" method="post">
       {{ csrf_input }}
-      <menu>
+      <menu role="menu">
         {% for language_code, language_name in languages %}
           {% if language_code != current_language_code %}
-            <li>
-              <button name="language" value="{{ language_code }}" type="submit">
+            <li role="none">
+              <button name="language" value="{{ language_code }}" type="submit" role="menuitem">
                 {% language language_code %}{{ language_name }}{% endlanguage %}
               </button>
             </li>

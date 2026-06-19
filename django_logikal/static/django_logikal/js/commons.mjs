@@ -32,11 +32,13 @@ document.querySelectorAll('nav > menu.desktop').forEach((menu) => {
     if (submenu) {
       link.addEventListener('click', () => {
         item.classList.toggle('open');
+        link.setAttribute('aria-expanded', item.classList.contains('open'));
 
         // Close all other menus (except parents)
         menu.querySelectorAll('li.open').forEach((menuItem) => {
           if (!(menuItem === item || menuItem.contains(item))) {
             menuItem.classList.remove('open');
+            menuItem.querySelector('a').setAttribute('aria-expanded', false);
           }
         });
       });
@@ -48,6 +50,7 @@ document.addEventListener('click', (event) => {
   document.querySelectorAll('nav > menu.desktop li.open').forEach((item) => {
     if (!item.contains(event.target)) {
       item.classList.remove('open');
+      item.querySelector('a').setAttribute('aria-expanded', false);
     }
   });
 });
