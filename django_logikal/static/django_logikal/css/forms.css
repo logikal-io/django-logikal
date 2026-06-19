@@ -1,0 +1,93 @@
+@import url('commons.css');
+
+form, .form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--length-gap-group);
+  max-width: var(--length-form);
+
+  h1 { margin-block-end: var(--length-gap-group); }
+  p { text-align: center; }
+
+  label {
+    display: block;
+    margin-block-end: var(--length-gap-element);
+  }
+
+  input {
+    display: block;
+    min-width: var(--length-element-normal);
+    padding: var(--length-gap-element);
+    outline: none;
+    background-color: var(--theme-color-neutral);
+    color: var(--theme-color-neutral-content);
+    border-radius: var(--length-radius-element);
+    border: var(--theme-outline-neutral);
+    box-shadow: var(--theme-shadow-element);
+
+    &::placeholder { color: var(--theme-color-neutral-content-hint); }
+    &:focus { border: var(--theme-outline-neutral-highlight); }
+
+    &:user-invalid, .input-field:has(.errors li) & {
+      background-color: var(--theme-color-neutral-error);
+      color: var(--theme-color-neutral-error-content);
+      border: var(--theme-outline-neutral-error);
+
+      &:focus {
+        background-color: var(--theme-color-neutral-error-highlight);
+        color: var(--theme-color-neutral-error-highlight-content);
+        border: var(--theme-outline-neutral-error-highlight);
+      }
+    }
+
+    &[disabled], &[readonly] {
+      background-color: var(--theme-color-neutral-disabled);
+      color: var(--theme-color-neutral-disabled-content);
+      border: var(--theme-outline-neutral-disabled);
+    }
+  }
+
+  input, button { width: 100%; }
+
+  ::file-selector-button { margin-inline-end: var(--length-gap-subelement); }
+
+  :where(select:is([multiple], [size])) optgroup option {
+    padding-inline-start: var(--length-text-indent);
+  }
+
+  .errors {
+    text-wrap: pretty;
+    text-align: start;
+    margin-block-start: var(--length-gap-subelement);
+    color: var(--theme-color-text-error);
+    &:not(:has(li)) { display: none; }
+    &:has(li)) { display: block; }
+  }
+
+  .password-input {
+    position: relative;
+    input { padding-inline-end: calc(var(--length-button-icon) + 2 * var(--length-gap-group)); }
+
+    .icon-toggle {
+      width: auto;
+      position: absolute;
+      top: 50%;
+      right: var(--length-gap-element);
+      transform: translateY(-50%);
+    }
+  }
+
+  .input-field .helptext {
+    margin-block-start: var(--length-gap-subelement);
+    a { padding-block: var(--length-gap-element); }
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--length-gap-element);
+    margin-block-start: var(--length-gap-group);
+    p + & { margin-block-start: 0; }
+  }
+}

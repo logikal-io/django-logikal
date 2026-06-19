@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dynamic-site v0.1.dev1+g8fb9899.d20230520\n"
 "Report-Msgid-Bugs-To: Gergely Kalmár <contact@logikal.io>\n"
-"POT-Creation-Date: 2026-06-09 16:58+0200\n"
+"POT-Creation-Date: 2026-06-17 20:35+0200\n"
 "PO-Revision-Date: 2023-05-23 15:29+0200\n"
 "Last-Translator: Gergely Kalmár <contact@logikal.io>\n"
 "Language: en_GB\n"
@@ -20,8 +20,8 @@ msgid "English (US)"
 msgstr "English (US)"
 
 #: tests/dynamic_site/settings/app.py:15
-msgid "English (UK)"
-msgstr "English (UK)"
+msgid "English (GB)"
+msgstr "English (GB)"
 
 #: tests/dynamic_site/templates/account/account.html.j:34
 msgid "Disconnect"
@@ -48,7 +48,7 @@ msgstr "Sign in to access all content"
 msgid "Sign up to access all content"
 msgstr "Sign up to access all content"
 
-#: tests/dynamic_site/templates/dynamic_site/base.html.j:34
+#: tests/dynamic_site/templates/dynamic_site/base.html.j:59
 msgid "Change language"
 msgstr "Change language"
 

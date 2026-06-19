@@ -74,12 +74,12 @@ def test_field_validation(live_url: LiveURL, browser: Browser) -> None:
     # Start typing the email
     user_email = user.email.split('@')
     email.send_keys(user_email[0])
-    sleep(0.5)
+    sleep(1)
     browser.check('auth_invalid_email')
 
     # Finish typing the email
     email.send_keys(f'@{user_email[1]}')
-    sleep(0.5)
+    sleep(1)
     browser.check('auth_valid_email')
 
     # Click "Next" button
@@ -89,7 +89,7 @@ def test_field_validation(live_url: LiveURL, browser: Browser) -> None:
     # Start typing the password
     password = browser.find_element(By.ID, 'id_password')
     password.send_keys(USER_PASSWORD[:5])
-    sleep(0.5)
+    sleep(1)
     browser.check('login_invalid_password')
 
     show_password_toggle = browser.find_element(By.ID, 'id_password_toggle')
@@ -101,7 +101,7 @@ def test_field_validation(live_url: LiveURL, browser: Browser) -> None:
 
     # Finish typing the password
     password.send_keys(USER_PASSWORD[5:] + '-invalid')
-    sleep(0.5)
+    sleep(1)
     browser.check('login_valid_password')
 
     # Login error message
@@ -170,14 +170,14 @@ def test_password_change(live_url: LiveURL, browser: Browser) -> None:
 
     old_password = browser.find_element(By.ID, 'id_oldpassword')
     old_password.send_keys(f'{USER_PASSWORD}-invalid')
-    sleep(2)
+    sleep(3)
     browser.check('change_password_invalid')
 
     old_password.clear()
     old_password.send_keys(USER_PASSWORD)
     new_password = browser.find_element(By.ID, 'id_password1')
     new_password.send_keys(TEST_USER_NEW_PASSWORD)
-    sleep(2)
+    sleep(3)
     browser.check('change_password_valid')
 
     browser.find_element(By.ID, 'id_form_change_password_action').click()

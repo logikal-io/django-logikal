@@ -3,9 +3,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: dynamic-site v5.0.2.dev5+gb40e24e32\n"
+"Project-Id-Version: dynamic-site v5.0.2.dev5+gb40e24e32.d20260609\n"
 "Report-Msgid-Bugs-To: Gergely Kalmár <contact@logikal.io>\n"
-"POT-Creation-Date: 2026-06-09 16:58+0200\n"
+"POT-Creation-Date: 2026-06-17 20:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,7 @@ msgid "English (US)"
 msgstr ""
 
 #: tests/dynamic_site/settings/app.py:15
-msgid "English (UK)"
+msgid "English (GB)"
 msgstr ""
 
 #: tests/dynamic_site/templates/account/account.html.j:34
@@ -47,7 +47,7 @@ msgstr ""
 msgid "Sign up to access all content"
 msgstr ""
 
-#: tests/dynamic_site/templates/dynamic_site/base.html.j:34
+#: tests/dynamic_site/templates/dynamic_site/base.html.j:59
 msgid "Change language"
 msgstr ""
 

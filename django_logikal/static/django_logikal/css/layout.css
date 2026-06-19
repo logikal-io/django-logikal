@@ -1,0 +1,68 @@
+@import url('commons.css');
+
+/* Groups */
+.group, body > :is(main, aside) > :not(dialog) {
+  background-color: var(--theme-color-group);
+  color: var(--theme-color-group-content);
+  border-radius: var(--length-radius-group);
+  border: var(--theme-outline-group);
+  box-shadow: var(--theme-shadow-group);
+}
+
+.subgroup, :is(.spotlight, .split, .cards) > *, dialog {
+  background-color: var(--theme-color-subgroup);
+  color: var(--theme-color-subgroup-content);
+  border-radius: var(--length-radius-group);
+  border: var(--theme-outline-subgroup);
+  box-shadow: var(--theme-shadow-subgroup);
+}
+
+/* Arrangements */
+.spotlight {
+  display: flex;
+  flex-flow: column nowrap;
+  place-content: center center;
+  padding: var(--length-gap-group);
+  & > * { margin: 0 auto; }
+}
+
+.split {
+  display: grid;
+  grid-template-columns: var(--split-equal);
+  gap: var(--length-gap-group);
+  padding: var(--length-gap-group);
+  & > * { min-width: 0; } /* fixes children overflow */
+  &:has(> aside:not(:first-child)) { grid-template-columns: var(--split-golden-ratio); }
+  &:has(> aside:first-child) { grid-template-columns: var(--split-golden-ratio-reverse); }
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, var(--length-card-normal));
+  gap: var(--length-gap-group);
+  margin: 0 auto;
+  justify-content: center;
+
+  .text :is(ul, ol) { padding-inline-start: calc(0.75 * var(--length-text-indent)); }
+}
+
+.action-tree {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--length-gap-group);
+  margin: var(--length-margin-paragraph);
+
+  .left {
+    width: auto;
+    text-align: right;
+    margin: auto;
+    margin-inline-end: 0;
+  }
+
+  .right {
+    width: auto;
+    text-align: left;
+    margin: auto;
+    margin-inline-start: 0;
+  }
+}

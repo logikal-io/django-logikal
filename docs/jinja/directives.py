@@ -308,6 +308,9 @@ class JinjaAutoModuleDirective(ObjectDescription[str], JinjaSphinxDirective):
             '  **Components:**',
         ]
         for macro in template.find_all(jinja_nodes.Macro):
+            if macro.name.startswith('_'):  # skip internal private macros
+                continue
+
             # Get CSS variables
             docs = self._get_docs(macro=macro, source_lines=source_lines)
             if variables := self.get_css_variables(
@@ -397,12 +400,11 @@ class JinjaExampleDirective(JinjaSphinxDirective):
 
         css_module = self.block_text.splitlines()[0].partition('::')[2].strip()
         template_content = '\n'.join(self.content if not css_module else self.content[2:])
+        module = Path(source_path).stem.split('.')[0]
         if source_path.endswith('.html.j'):
             source_path = '/'.join(source_path.split('/')[2:])
-            module = Path(source_path).stem.split('.')[0]
             template = f'{{% import \'{source_path}\' as {module} %}}\n{template_content}'
         else:
-            module = None
             template = template_content
 
         # Rendering source
