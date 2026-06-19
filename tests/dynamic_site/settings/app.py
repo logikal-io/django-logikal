@@ -11,8 +11,8 @@ class AppSettings(SettingsUpdate):
 
     # Internationalization
     LANGUAGES = [
-        ('en-us', _('English (United States)')),
-        ('en-gb', _('English (United Kingdom)')),
+        ('en-us', _('English (US)')),
+        ('en-gb', _('English (GB)')),
     ]
 
     # Authentication

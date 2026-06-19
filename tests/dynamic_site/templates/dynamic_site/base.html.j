@@ -7,7 +7,7 @@
   used for demonstration and testing purposes.
 {% endblock %}
 
-{% block component_head %}{{ component_head('commons') }}{% endblock %}
+{% block component_head %}{{ component_head('layout', 'text') }}{% endblock %}
 {% block head %}
   <link rel="icon" href="{{ static('favicon.png') }}">
 {% endblock %}
@@ -18,19 +18,51 @@
       <a href="{{ url('dynamic_site:home') }}" class="logo" aria-label="Go to home page">
         {{ include_static('logikal_logo.svg') }}
       </a>
-      {# djlint:off T001 #}
-      {{ commons.menu({
-        'Home': 'dynamic_site:home',
-        'Errors': 'error:404',
-        'Templates': {'view_name': 'dynamic_site:templates', 'kwargs': {'arg': 'extensions'}},
-        'Partials': 'dynamic_site:partials',
-        'Admin': 'admin:index',
-        'API': 'api-root',
-      }, request=request|default(none)) }}
-      {# djlint:on #}
+      {{ commons.menu([
+        menu_item(title='Home', view_name='dynamic_site:home'),
+        menu_item(
+          title='Errors',
+          submenu=[
+            menu_item(title='No Error', view_name='dynamic_site:home'),
+            menu_item(
+              title='Server Errors',
+              submenu=[
+                menu_item(title='400', view_name='error:400'),
+                menu_item(title='500', view_name='error:500'),
+              ],
+            ),
+            menu_item(
+              title='Page Not Found Errors',
+              submenu=[
+                menu_item(title='403', view_name='error:403'),
+                menu_item(title='404', view_name='error:404'),
+              ],
+            ),
+          ],
+        ),
+        menu_item(
+          title='Templates',
+          submenu=[
+            menu_item(
+              title='Features',
+              view_name='dynamic_site:templates', view_kwargs={'arg': 'extensions'},
+            ),
+            menu_item(title='Partials', view_name='dynamic_site:partials'),
+          ],
+        ),
+        menu_item(title='Admin', view_name='admin:index'),
+        menu_item(title='API', view_name='api-root'),
+      ], request=request|default(none)) }}
       <aside>
-        <a href="{{ url('dynamic_site_localized:localization') }}"
-           class="button neutral">Localization</a>
+        {% if request|default(none) and
+              request.resolver_match.view_name == 'dynamic_site_localized:localization' %}
+          {{ commons.language_switcher(
+            current_language_code=language(),
+            languages=settings.LANGUAGES,
+            action_url=url('set_language'),
+            csrf_input=csrf_input,
+          ) }}
+        {% endif %}
         {% if request|default(none) and request.user.is_authenticated %}
           <a href="{{ url(settings.LOGIN_REDIRECT_URL) }}" class="button">Account</a>
         {% else %}

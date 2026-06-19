@@ -10,21 +10,6 @@
     <h1>{% trans %}Localization{% endtrans %}</h1>
 
     {# Translators: This is a template test comment for translators #}
-    <h2>{% trans %}Language & Region{% endtrans %}</h2>
-    <ul>
-      {% for language_code, language_name in settings.LANGUAGES %}
-        <li>
-          {% if language_code == language() %}
-            {{ language_name }}
-          {% else %}
-            {% language language_code %}
-              <a href="{{ url('dynamic_site_localized:localization') }}">{{ language_name }}</a>
-            {% endlanguage %}
-          {% endif %}
-        </li>
-      {% endfor %}
-    </ul>
-
     <h2>{% trans %}Translations{% endtrans %}</h2>
     <p>
       {% for cake in range(1, 3) %}

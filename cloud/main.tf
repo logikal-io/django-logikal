@@ -68,6 +68,12 @@ resource "google_secret_manager_secret_iam_member" "auth_secret_viewer_docs" {
   member = "serviceAccount:docs-publisher@docs-logikal-io.iam.gserviceaccount.com"
 }
 
+resource "google_project_iam_member" "secret_access" {
+  project = var.project_id
+  role = "roles/secretmanager.secretAccessor"
+  member = "group:software@logikal.io"
+}
+
 # Emailing
 resource "aws_ses_domain_identity" "django_logikal_org" {
   domain = "django-logikal.org"

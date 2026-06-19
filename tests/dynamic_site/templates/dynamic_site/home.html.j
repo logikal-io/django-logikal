@@ -11,6 +11,7 @@
         <ul>
           <li><a href="{{ url('dynamic_site:models') }}">Models</a></li>
           <li><a href="{{ url('dynamic_site:internal') }}">Internal Page</a></li>
+          <li><a href="{{ url('dynamic_site_localized:localization') }}">Localization</a></li>
           <li><a href="{{ url('dynamic_site:invalid-html') }}">Invalid HTML</a></li>
           <li><a href="{{ url('dynamic_site:redirect') }}">Redirection</a></li>
           <li><a href="{{ url('dynamic_site:email') }}">Email Sending</a></li>

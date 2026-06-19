@@ -11,7 +11,7 @@ from jinja2.environment import Environment, Template as EnvironmentTemplate
 from jinja2.runtime import StrictUndefined
 from logikal_utils.imports import installed
 
-from django_logikal.env import is_dev_env, is_testing_env
+from django_logikal.components import commons
 from django_logikal.templates import filters, functions, tests
 
 DEFAULT_OPTIONS = {
@@ -124,6 +124,7 @@ def environment(**options: Any) -> Environment:
     })
     env.globals.update({
         # Django objects
+        'settings': settings,
         'filters': env.filters,
         'tests': env.tests,
         # Libraries
@@ -143,11 +144,9 @@ def environment(**options: Any) -> Environment:
         'bibliography': functions.bibliography,
         'faker_factory': functions.faker_factory,
         'component_head': functions.component_head,
+        # Components
+        'menu_item': commons.MenuItem,
     })
-    if is_dev_env() or is_testing_env():
-        # Add settings only for local development and testing to avoid accidental exposure
-        env.globals.update({'settings': settings})
-
     if installed('django_htmx'):
         from django_htmx.jinja import django_htmx_script, htmx_script
 

@@ -47,6 +47,20 @@ def test_localization(live_url: LiveURL, browser: Browser) -> None:
 
 
 @set_browser(scenarios.desktop)
+def test_language_switcher(live_url: LiveURL, browser: Browser) -> None:
+    browser.get(live_url('dynamic_site_localized:localization'))
+    browser.check('english_us')
+    language_switcher = browser.find_element(By.ID, 'id_language_switcher')
+    language_switcher.find_element(By.ID, 'id_language_switcher_toggle').click()
+    browser.check('switcher_open')
+    language_en_gb = language_switcher.find_element(By.CSS_SELECTOR, 'menu button[value="en-gb"]')
+    browser.hover(language_en_gb)
+    browser.check('switcher_hover')
+    language_en_gb.click()
+    browser.check('english_uk')
+
+
+@set_browser(scenarios.desktop)
 def test_templates(live_app_url: LiveURL, browser: Browser) -> None:
     browser.get(live_app_url('templates', kwargs={'arg': 'test-arg'}) + '?next=/internal/')
     browser.check()
@@ -131,6 +145,6 @@ def test_partials(
 ) -> None:
     browser.get(live_app_url('partials'))
     browser.check('initial')
-    button = browser.find_element(By.TAG_NAME, 'button')
+    button = browser.find_element(By.CSS_SELECTOR, 'main section button')
     button.click()
     browser.check('updated')
