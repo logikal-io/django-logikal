@@ -2,8 +2,8 @@
   /* Colors */
 
   /** Surfaces **/
-  --color-black: #000000; /* H0 C0 L0 */
-  --color-white: #ffffff; /* H0 C0 L1 */
+  --color-black: #000000; /* H0 S0 L0 */
+  --color-white: #ffffff; /* H0 S0 L1 */
   --color-surface-darkgray: #161616; /* H0 S0 L0.1 */
   --color-surface-deepgray: #222222; /* H0 S0 L0.15 */
   --color-surface-gray: #2e2e2e; /* H0 S0 L0.2 */

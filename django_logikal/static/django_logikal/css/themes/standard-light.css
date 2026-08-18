@@ -6,8 +6,8 @@
   /* Colors */
 
   /** Surfaces **/
-  --color-white: #ffffff; /* H0 C0 L1 */
-  --color-black: #000000; /* H0 C0 L0 */
+  --color-white: #ffffff; /* H0 S0 L1 */
+  --color-black: #000000; /* H0 S0 L0 */
   --color-surface-palegray: #f9f9f9; /* H0 S0 L0.98 */
   --color-surface-lightgray: #f4f4f4; /* H0 S0 L0.96 */
   --color-surface-gray: #eeeeee; /* H0 S0 L0.94 */
