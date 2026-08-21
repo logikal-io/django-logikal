@@ -1,2 +1,2 @@
-djangorestframework~=3.17
+djangorestframework~=3.18
 djangorestframework-stubs
