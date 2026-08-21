@@ -37,7 +37,9 @@ def test_dev_settings(mocker: MockerFixture) -> None:
     assert dev.SECRET_KEY == 'dev'  # nosec: only an assertion
     assert dev.DATABASES['default']['HOST'] == '127.0.0.1'
     assert 'django_logikal.validation.ValidationMiddleware' in dev.MIDDLEWARE
-    assert 'console.EmailBackend' in dev.EMAIL_BACKEND
+    assert dev.MAILERS == {
+        'default': {'BACKEND': 'django.core.mail.backends.console.EmailBackend'},
+    }
 
 
 def test_production_settings(mocker: MockerFixture) -> None:
@@ -50,4 +52,7 @@ def test_production_settings(mocker: MockerFixture) -> None:
     production = import_module('tests.dynamic_site.settings.production')
     assert production.SECRET_KEY == COMMON_PRODUCTION_SECRETS['django-logikal-secret-key']
     assert production.DATABASES['default']['HOST'] == DATABASE_SECRETS['hostname']
+    assert production.MAILERS == {
+        'default': {'BACKEND': 'anymail.backends.amazon_ses.EmailBackend'},
+    }
     assert cloud_logging_client.called

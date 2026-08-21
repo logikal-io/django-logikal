@@ -1,6 +1,6 @@
-Django~=6.0
-django-stubs~=6.0
-django-stubs-ext~=6.0
+Django~=6.1
+django-stubs~=6.1
+django-stubs-ext~=6.1
 
 # Django utilities
 django-debug-toolbar~=6.3

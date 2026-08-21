@@ -13,6 +13,7 @@ from django.http import HttpRequest
 from django.templatetags.static import static as django_static
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.html import format_html, format_html_join
 from django.utils.safestring import SafeString, mark_safe
 from django.utils.translation import get_language
 from faker import Faker
@@ -217,6 +218,17 @@ def faker_factory(seed: int = 0) -> Faker:
     return faker
 
 
+def _media_links(media_files: dict[str, str | None]) -> list[SafeString]:
+    return [
+        format_html(
+            '<link rel="stylesheet" href="{file}"{media_attr}>',
+            file=file,
+            media_attr=format_html('\n      media="({media})"', media=media) if media else '',
+        )
+        for file, media in media_files.items()
+    ]
+
+
 @cache
 def component_head(
     *modules: str, use_standard_theme: bool = True, static_site: bool = False,
@@ -238,38 +250,46 @@ def component_head(
             static(str((THEMES_CSS_PATH / theme).with_suffix('.css'))): media
             for theme, media in THEMES.items()
         }
-        theme_links = [
-            f'<link rel="stylesheet" href="{file}"'
-            + (f'\n      media="({media})"' if media else '')
-            + '>'
-            for file, media in theme_files.items()
-        ]
-        links.extend(['<!-- Theme styles -->', *theme_links, '<!-- End of theme styles -->', ''])
+        links.extend([
+            mark_safe('<!-- Theme styles -->'),  # nosec: fixed string
+            *_media_links(theme_files),
+            mark_safe('<!-- End of theme styles -->'),  # nosec: fixed string
+            '',
+        ])
 
     head_files = component_head_files(modules)
-    style_links = [
-        f'<link rel="stylesheet" href="{static(str(file))}">'
-        for file in head_files['css']
-    ]
-    links.extend(['<!-- Component styles -->', *style_links, '<!-- End of component styles -->'])
+    style_links = [format_html(
+        '<link rel="stylesheet" href="{href}">',
+        href=static(str(file)),
+    ) for file in head_files['css']]
+    links.extend([
+        mark_safe('<!-- Component styles -->'),  # nosec: fixed string
+        *style_links,
+        mark_safe('<!-- End of component styles -->'),  # nosec: fixed string
+    ])
 
     # Add JavaScript modules
     js_modules = ['django_logikal/js/gettext.mjs']
-
     if scripts := [
-        f'<script type="module" src="{static(str(file))}"></script>'
+        format_html('<script type="module" src="{src}"></script>', src=static(str(file)))
         for file in head_files['js']
     ]:
         js_modules = [
-            f'<script type="module" src="{static(str(module))}"></script>'
+            format_html('<script type="module" src="{src}"></script>', src=static(str(module)))
             for module in js_modules
         ]
         scripts = js_modules + scripts
         if not static_site:
-            scripts = [f'<script defer src="{reverse('js-i18n-catalog')}"></script>', *scripts]
-
+            scripts = [
+                format_html('<script defer src="{src}"></script>', src=reverse('js-i18n-catalog')),
+                *scripts,
+            ]
         links.extend([
-            '', '<!-- Component scripts -->', *scripts, '<!-- End of component scripts -->',
+            '',
+            mark_safe('<!-- Component scripts -->'),  # nosec: fixed string
+            *scripts,
+            mark_safe('<!-- End of component scripts -->'),  # nosec: fixed string
         ])
 
-    return mark_safe('\n'.join(links) + '\n')  # nosec: component links are safe
+    links.append('')
+    return format_html_join('\n', '{}', ((link, ) for link in links))

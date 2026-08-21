@@ -16,4 +16,6 @@ class DevSettings(CommonDevSettings, BaseSettings):
             before='django.contrib.staticfiles',
         )
         if not option_is_set('send_emails'):
-            settings['EMAIL_BACKEND'] = 'django.core.mail.backends.console.EmailBackend'
+            settings['MAILERS'] = {
+                'default': {'BACKEND': 'django.core.mail.backends.console.EmailBackend'},
+            }

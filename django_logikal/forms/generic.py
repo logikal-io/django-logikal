@@ -63,7 +63,7 @@ class Form(forms.Form):
 
     Meta: FormMeta  #: The form metadata class to use.
 
-    def __init__(  # pylint: disable=too-many-arguments
+    def __init__(
         self,
         *args: Any,
         error_class: type[ErrorList] = ErrorList,

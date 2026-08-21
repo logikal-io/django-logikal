@@ -12,7 +12,7 @@ class HTMXValidated:
 
 
 class InputFieldMixin:
-    def __init__(  # pylint: disable=too-many-arguments
+    def __init__(
         self,
         *,
         placeholder: StrOrPromise | None = None,

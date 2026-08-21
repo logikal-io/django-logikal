@@ -18,9 +18,6 @@ class CommonProductionSettings(SettingsUpdate):
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
 
-    # Email
-    EMAIL_BACKEND = 'anymail.backends.amazon_ses.EmailBackend'
-
     @staticmethod
     def apply(settings: Settings) -> None:
         settings['LOGGING'] = logging_config(console=False, cloud=True)

@@ -132,7 +132,7 @@ class Email:
         """
         self._email.attach_file(path=path, mimetype=mimetype)
 
-    def send(  # pylint: disable=too-many-arguments
+    def send(
         self,
         *,
         sender: str,
