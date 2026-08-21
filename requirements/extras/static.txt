@@ -1,1 +1,1 @@
-django-distill~=3.2
+django-distill~=3.2  # cannot upgrade to v4 due to https://github.com/meeb/django-distill/issues/96
