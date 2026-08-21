@@ -10,10 +10,10 @@ from babel import Locale
 from babel.support import Format
 from django.contrib.staticfiles import finders
 from django.http import HttpRequest
+from django.template.loader import render_to_string
 from django.templatetags.static import static as django_static
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.html import format_html, format_html_join
 from django.utils.safestring import SafeString, mark_safe
 from django.utils.translation import get_language
 from faker import Faker
@@ -218,17 +218,6 @@ def faker_factory(seed: int = 0) -> Faker:
     return faker
 
 
-def _media_links(media_files: dict[str, str | None]) -> list[SafeString]:
-    return [
-        format_html(
-            '<link rel="stylesheet" href="{file}"{media_attr}>',
-            file=file,
-            media_attr=format_html('\n      media="({media})"', media=media) if media else '',
-        )
-        for file, media in media_files.items()
-    ]
-
-
 @cache
 def component_head(
     *modules: str, use_standard_theme: bool = True, static_site: bool = False,
@@ -242,54 +231,25 @@ def component_head(
         static_site: Whether this is a static site.
 
     """
-    links = []
-
-    # Add style sheets
-    if use_standard_theme:
-        theme_files = {
-            static(str((THEMES_CSS_PATH / theme).with_suffix('.css'))): media
-            for theme, media in THEMES.items()
-        }
-        links.extend([
-            mark_safe('<!-- Theme styles -->'),  # nosec: fixed string
-            *_media_links(theme_files),
-            mark_safe('<!-- End of theme styles -->'),  # nosec: fixed string
-            '',
-        ])
+    theme_styles = [
+        {'href': static(str((THEMES_CSS_PATH / theme).with_suffix('.css'))), 'media': media}
+        for theme, media in (THEMES if use_standard_theme else {}).items()
+    ]
 
     head_files = component_head_files(modules)
-    style_links = [format_html(
-        '<link rel="stylesheet" href="{href}">',
-        href=static(str(file)),
-    ) for file in head_files['css']]
-    links.extend([
-        mark_safe('<!-- Component styles -->'),  # nosec: fixed string
-        *style_links,
-        mark_safe('<!-- End of component styles -->'),  # nosec: fixed string
-    ])
+    component_styles = [{'href': static(str(file))} for file in head_files['css']]
 
-    # Add JavaScript modules
-    js_modules = ['django_logikal/js/gettext.mjs']
-    if scripts := [
-        format_html('<script type="module" src="{src}"></script>', src=static(str(file)))
-        for file in head_files['js']
-    ]:
-        js_modules = [
-            format_html('<script type="module" src="{src}"></script>', src=static(str(module)))
-            for module in js_modules
-        ]
-        scripts = js_modules + scripts
+    scripts: list[dict[str, str | bool]] = []
+    if head_files['js']:
         if not static_site:
-            scripts = [
-                format_html('<script defer src="{src}"></script>', src=reverse('js-i18n-catalog')),
-                *scripts,
-            ]
-        links.extend([
-            '',
-            mark_safe('<!-- Component scripts -->'),  # nosec: fixed string
-            *scripts,
-            mark_safe('<!-- End of component scripts -->'),  # nosec: fixed string
-        ])
+            scripts.append({'src': reverse('js-i18n-catalog'), 'defer': True, 'module': False})
+        scripts.extend(
+            {'src': static(str(file)), 'defer': False, 'module': True}
+            for file in ['django_logikal/js/gettext.mjs', *head_files['js']]
+        )
 
-    links.append('')
-    return format_html_join('\n', '{}', ((link, ) for link in links))
+    rendered = render_to_string(
+        'django_logikal/component_head.html.j',
+        dict(theme_styles=theme_styles, component_styles=component_styles, scripts=scripts),
+    ) + '\n\n'
+    return mark_safe(rendered)  # nosec: template contents are already escaped
