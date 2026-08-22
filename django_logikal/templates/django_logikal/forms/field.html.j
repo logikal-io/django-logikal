@@ -7,7 +7,7 @@
 {{ field }}
 {{ field.errors }}
 {% if field.help_text %}
-  <div class="helptext"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>
+  <div class="helptext"{% if field.auto_id %} id="{{ field.auto_id }}-helptext"{% endif %}>
     {{- field.help_text|safe -}}
   </div>
 {% endif %}

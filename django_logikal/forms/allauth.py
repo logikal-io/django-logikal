@@ -54,7 +54,7 @@ class LoginForm(account.AuthForm, forms.LoginForm):  # type: ignore[misc]
 
 class ResetPasswordForm(account.AuthForm, forms.ResetPasswordForm):  # type: ignore[misc]
     class Meta(generic.FormMeta):
-        id = 'reset_password'
+        id = 'reset-password'
         action_url_name = 'account_reset_password'
         header = _('Reset Password')
         help_text = _(
@@ -77,7 +77,7 @@ class ResetPasswordKeyForm(generic.Form, forms.ResetPasswordKeyForm):  # type: i
     )
 
     class Meta(generic.FormMeta):
-        id = 'reset_password_key'
+        id = 'reset-password-key'
         action_url_name = 'account_reset_password_from_key'
         header = _('Reset Password')
         action_button_text = _('Set password')
@@ -107,7 +107,7 @@ class SetPasswordForm(generic.Form, forms.SetPasswordForm):  # type: ignore[misc
     )
 
     class Meta(generic.FormMeta):
-        id = 'set_password'
+        id = 'set-password'
         action_url_name = 'account_set_password'
         header = _('Set Password')
         action_button_text = _('Set password')
@@ -141,7 +141,7 @@ class ChangePasswordForm(generic.Form, forms.ChangePasswordForm):  # type: ignor
     )
 
     class Meta(generic.FormMeta):
-        id = 'change_password'
+        id = 'change-password'
         action_button_text = _('Change password')
         header = _('Change Password')
         action_url_name = 'account_change_password'

@@ -2,7 +2,7 @@
 -r build.txt
 -r docs.txt
 
-pytest-logikal[browser,django]==6.5.2
+pytest-logikal[browser,django]==6.5.3
 pytest-order==1.5.0
 requests-mock==1.12.1
 types-Pygments

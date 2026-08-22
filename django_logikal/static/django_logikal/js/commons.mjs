@@ -56,10 +56,10 @@ document.addEventListener('click', (event) => {
 });
 
 // Language switcher
-const languageSwitcher = document.getElementById('id_language_switcher');
+const languageSwitcher = document.getElementById('language-switcher');
 if (languageSwitcher) {
-  const toggle = document.getElementById('id_language_switcher_toggle');
-  const menu = document.getElementById('id_form_language_menu');
+  const toggle = document.getElementById('language-switcher-toggle');
+  const menu = document.getElementById('form-language-menu');
 
   toggle.addEventListener('click', () => {
     menu.classList.toggle('open');

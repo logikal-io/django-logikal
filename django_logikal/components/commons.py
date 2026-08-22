@@ -12,8 +12,8 @@ class MenuItem:
     view_kwargs: dict[str, Any] = field(default_factory=dict)
     submenu: list['MenuItem'] = field(default_factory=list)
     id: str | None = None
-    id_prefix: str = 'id_menu'
+    id_prefix: str = 'menu'
 
     def __post_init__(self) -> None:
         if self.id is None:
-            self.id = self.id_prefix + '_' + self.title.lower().replace(' ', '_')
+            self.id = f'{self.id_prefix}-{self.title.lower().replace(' ', '-')}'.replace('_', '-')

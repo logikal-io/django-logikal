@@ -1,7 +1,7 @@
 {% if form.Meta.render_tag %}
-  <form action="{{
+  <form id="{{ form.id }}" action="{{
     url(form.Meta.action_url_name, request=request, kwargs=form.action_url_kwargs)
-  }}" method="post" id="{{ form.Meta.id_prefix }}_{{ form.Meta.id }}">
+  }}" method="post">
 {% endif %}
 {% if form.Meta.header %}<h1>{{ form.Meta.header }}</h1>{% endif %}
 {% if form.Meta.help_text %}<div class="helptext">{{ form.Meta.help_text }}</div>{% endif %}
@@ -23,13 +23,10 @@
 {% endif %}
 {% if form.Meta.action_button_text %}
   {% if form.Meta.back_url_name %}<div class="actions">{% endif %}
-  <button id="{{ form.Meta.id_prefix }}_{{ form.Meta.id }}_action">{{
-    form.Meta.action_button_text
-  }}</button>
+  <button id="{{ form.id }}-action">{{ form.Meta.action_button_text }}</button>
   {% if form.Meta.back_url_name %}
     <a href="{{ url(form.Meta.back_url_name, request=request, kwargs=form.back_url_kwargs) }}"
-       id="{{ form.Meta.id_prefix }}_{{ form.Meta.id }}_back"
-       class="button neutral">{{ form.Meta.back_url_text }}</a>
+       id="{{ form.id }}-back" class="button neutral">{{ form.Meta.back_url_text }}</a>
   {% endif %}
   {% if form.Meta.back_url_name %}</div>{% endif %}
 {% endif %}

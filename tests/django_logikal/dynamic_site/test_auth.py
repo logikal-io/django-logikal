@@ -20,23 +20,23 @@ TEST_USER_NEW_PASSWORD = 'test_user_new_password'  # nosec: only used for testin
 
 def login(live_url: LiveURL, browser: Browser, user: User, password: str) -> None:
     browser.get(live_url('account_auth'))
-    email_input = browser.find_element(By.ID, 'id_email')
+    email_input = browser.find_element(By.ID, 'form-auth-email')
     email_input.send_keys(user.email)
-    browser.find_element(By.ID, 'id_form_auth_action').click()
-    password_input = browser.find_element(By.ID, 'id_password')
+    browser.find_element(By.ID, 'form-auth-action').click()
+    password_input = browser.find_element(By.ID, 'form-login-password')
     password_input.send_keys(password)
-    browser.find_element(By.ID, 'id_form_login_action').click()
+    browser.find_element(By.ID, 'form-login-action').click()
 
 
 def reset_password(browser: Browser, user: User, mailoutbox: list[AnymailMessage]) -> None:
     # Go to "Forgot your password?"
-    email_input = browser.find_element(By.ID, 'id_email')
+    email_input = browser.find_element(By.ID, 'form-auth-email')
     email_input.send_keys(user.email)
-    browser.find_element(By.ID, 'id_form_auth_action').click()
+    browser.find_element(By.ID, 'form-auth-action').click()
     browser.find_element(By.CSS_SELECTOR, '.helptext a').click()
     browser.check('reset_password')
 
-    browser.find_element(By.ID, 'id_form_reset_password_action').click()
+    browser.find_element(By.ID, 'form-reset-password-action').click()
     browser.check('reset_password_email')
 
     # Get password reset link
@@ -46,15 +46,15 @@ def reset_password(browser: Browser, user: User, mailoutbox: list[AnymailMessage
     browser.check('reset_password_email_link')
 
     # Set new password
-    password = browser.find_element(By.ID, 'id_password1')
+    password = browser.find_element(By.ID, 'form-reset-password-key-password1')
     password.send_keys(TEST_USER_NEW_PASSWORD)
-    browser.find_element(By.ID, 'id_form_reset_password_key_action').click()
+    browser.find_element(By.ID, 'form-reset-password-key-action').click()
     browser.check('reset_password_successful')
 
     # Log in with the new password
-    password = browser.find_element(By.ID, 'id_password')
+    password = browser.find_element(By.ID, 'form-login-password')
     password.send_keys(TEST_USER_NEW_PASSWORD)
-    browser.find_element(By.ID, 'id_form_login_action').click()
+    browser.find_element(By.ID, 'form-login-action').click()
 
 
 @set_browser(scenarios.desktop)
@@ -67,7 +67,7 @@ def test_field_validation(live_url: LiveURL, browser: Browser) -> None:
     browser.check('auth')
 
     # Click on the email field
-    email = browser.find_element(By.ID, 'id_email')
+    email = browser.find_element(By.ID, 'form-auth-email')
     email.click()
     browser.check('auth_focus')
 
@@ -83,16 +83,16 @@ def test_field_validation(live_url: LiveURL, browser: Browser) -> None:
     browser.check('auth_valid_email')
 
     # Click "Next" button
-    browser.find_element(By.ID, 'id_form_auth_action').click()
+    browser.find_element(By.ID, 'form-auth-action').click()
     browser.check('login')
 
     # Start typing the password
-    password = browser.find_element(By.ID, 'id_password')
+    password = browser.find_element(By.ID, 'form-login-password')
     password.send_keys(USER_PASSWORD[:5])
     sleep(1)
     browser.check('login_invalid_password')
 
-    show_password_toggle = browser.find_element(By.ID, 'id_password_toggle')
+    show_password_toggle = browser.find_element(By.ID, 'form-login-password-toggle')
     show_password_toggle.click()
     browser.check('login_invalid_password_show')
 
@@ -105,7 +105,7 @@ def test_field_validation(live_url: LiveURL, browser: Browser) -> None:
     browser.check('login_valid_password')
 
     # Login error message
-    browser.find_element(By.ID, 'id_form_login_action').click()
+    browser.find_element(By.ID, 'form-login-action').click()
     browser.check('login_error')
 
 
@@ -124,11 +124,11 @@ def test_login(live_url: LiveURL, browser: Browser, mailoutbox: list[AnymailMess
     browser.check('email_verification_successful')
 
     # Dismiss info message
-    browser.find_element(By.ID, 'id_messages_dismiss').click()
+    browser.find_element(By.ID, 'messages-dismiss').click()
     browser.check('after_login')
 
     # Log out
-    browser.find_element(By.ID, 'id_logout').click()
+    browser.find_element(By.ID, 'logout').click()
     browser.check('after_logout')
 
     # Go through the reset password flow
@@ -139,14 +139,14 @@ def test_login(live_url: LiveURL, browser: Browser, mailoutbox: list[AnymailMess
 @set_browser(scenarios.desktop)
 def test_signup(live_url: LiveURL, browser: Browser, mailoutbox: list[AnymailMessage]) -> None:
     browser.get(live_url('account_auth'))
-    email_input = browser.find_element(By.ID, 'id_email')
+    email_input = browser.find_element(By.ID, 'form-auth-email')
     email_input.send_keys(TEST_USER)
-    browser.find_element(By.ID, 'id_form_auth_action').click()
+    browser.find_element(By.ID, 'form-auth-action').click()
     browser.get(live_url('account_signup'))
 
-    password_input = browser.find_element(By.ID, 'id_password1')
+    password_input = browser.find_element(By.ID, 'form-signup-password1')
     password_input.send_keys(USER_PASSWORD)
-    browser.find_element(By.ID, 'id_form_signup_action').click()
+    browser.find_element(By.ID, 'form-signup-action').click()
     browser.check('email_verification')
 
     email = mailoutbox[0].body
@@ -165,26 +165,26 @@ def test_password_change(live_url: LiveURL, browser: Browser) -> None:
     browser.get(live_url('account'))
     browser.check('account')
 
-    browser.find_element(By.ID, 'id_change_password_link').click()
+    browser.find_element(By.ID, 'change-password-link').click()
     browser.check('change_password')
 
-    old_password = browser.find_element(By.ID, 'id_oldpassword')
+    old_password = browser.find_element(By.ID, 'form-change-password-oldpassword')
     old_password.send_keys(f'{USER_PASSWORD}-invalid')
     sleep(3)
     browser.check('change_password_invalid')
 
     old_password.clear()
     old_password.send_keys(USER_PASSWORD)
-    new_password = browser.find_element(By.ID, 'id_password1')
+    new_password = browser.find_element(By.ID, 'form-change-password-password1')
     new_password.send_keys(TEST_USER_NEW_PASSWORD)
     sleep(3)
     browser.check('change_password_valid')
 
-    browser.find_element(By.ID, 'id_form_change_password_action').click()
+    browser.find_element(By.ID, 'form-change-password-action').click()
     browser.check('after_change_password')
 
     # Log out and log in again with the new password
-    browser.find_element(By.ID, 'id_logout').click()
+    browser.find_element(By.ID, 'logout').click()
     login(live_url=live_url, browser=browser, user=user, password=TEST_USER_NEW_PASSWORD)
     browser.check('after_login_with_new')
 
@@ -286,19 +286,19 @@ def test_set_password(
     browser.check('after_login')
 
     # Set new password
-    browser.find_element(By.ID, 'id_set_password_link').click()
+    browser.find_element(By.ID, 'set-password-link').click()
     browser.check('set_password')
 
-    new_password = browser.find_element(By.ID, 'id_password1')
+    new_password = browser.find_element(By.ID, 'form-set-password-password1')
     new_password.send_keys(TEST_USER_NEW_PASSWORD)
     sleep(2)
     browser.check('set_password_valid')
 
-    browser.find_element(By.ID, 'id_form_set_password_action').click()
+    browser.find_element(By.ID, 'form-set-password-action').click()
     browser.check('after_set_password')
 
     # Log out and log in again with the new password
-    browser.find_element(By.ID, 'id_logout').click()
+    browser.find_element(By.ID, 'logout').click()
     user = User.objects.get(email=TEST_USER)
     login(live_url=live_url, browser=browser, user=user, password=TEST_USER_NEW_PASSWORD)
     browser.check('after_login_with_new')

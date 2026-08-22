@@ -35,7 +35,7 @@
             {{ commons.icon_button(
               text=_('Continue with %(provider)s', provider=provider),
               icon='django_logikal/icons/sign_in_with_' + provider|lower + '.svg',
-              id='id_social_login_' + provider|lower,
+              id='social-login-' + provider|lower,
               classes='neutral wide ' + provider|lower + '-login',
             ) }}
           </form>
