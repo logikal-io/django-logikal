@@ -32,13 +32,28 @@ class FormRenderer(forms.renderers.BaseRenderer):
         return get_template(template_name=template_name)
 
 
+class BoundField(forms.BoundField):
+    """
+    Improved bound field class for forms.
+    """
+    @property
+    def auto_id(self) -> str:
+        return super().auto_id.replace('_', '-')  # transform into kebab-case
+
+    @property
+    def aria_describedby(self) -> str | None:
+        if not (aria_describedby := super().aria_describedby):
+            return None
+        return aria_describedby.replace('_', '-')  # transform into kebab-case
+
+
 class FormMeta:
     """
     Metadata class for forms.
     """
     # Form attributes
     id: str  #: The form ID to use.
-    id_prefix = 'id_form'  #: The form ID prefix to use.
+    id_prefix = 'form'  #: The form ID prefix to use.
     action_url_name: str  #: The URL name to use for the form action.
     action_method = 'post'  #: The form action method to use.
     render_tag = True  #: Whether to render the ``<form>`` tag.
@@ -59,9 +74,18 @@ class Form(forms.Form):
     Improved parent class for forms.
     """
     default_renderer = FormRenderer()
+    bound_field_class = BoundField
     template_name_label = 'django_logikal/forms/label.html.j'
 
     Meta: FormMeta  #: The form metadata class to use.
+
+    @property
+    def id(self) -> str:
+        """
+        Return the form ID.
+        """
+        form_id = f'{self.Meta.id_prefix}-{self.Meta.id}'  # pylint: disable=no-member
+        return form_id.replace('_', '-')  # transform into kebab-case
 
     def __init__(
         self,
@@ -79,6 +103,7 @@ class Form(forms.Form):
         self.render_context = render_context or {}
         self.action_url_kwargs = action_url_kwargs or {}
         self.back_url_kwargs = back_url_kwargs or {}
+        kwargs.setdefault('auto_id', f'{self.id}-%s')
 
         # Regarding type ignores see https://github.com/python/mypy/issues/6799
         super().__init__(
