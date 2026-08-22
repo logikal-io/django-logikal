@@ -31,7 +31,7 @@
       {% set active = (item.view_name == url_name(request)) if request|default(none) else false %}
       <li role="none"{% if active %} class="active"{% endif %}>
         {% if item.submenu %}
-          <button type="button" role="menuitem" id="{{ item.id }}_{{ type }}"
+          <button type="button" role="menuitem" id="{{ item.id }}-{{ type }}"
                   aria-haspopup="menu" aria-expanded="false">
             {{ item.title }}
             {{ include_static(arrow_icon) }}
@@ -40,7 +40,7 @@
             {{ _render_menu_items(items=item.submenu, request=request, type=type) }}
           </menu>
         {% else %}
-          <a role="menuitem" id="{{ item.id }}_{{ type }}"
+          <a role="menuitem" id="{{ item.id }}-{{ type }}"
             {%- if active %} aria-current="page"{% else %} href="{{
               url(viewname=item.view_name, kwargs=item.view_kwargs)
             }}" {% endif %}>
@@ -57,7 +57,7 @@
     </menu>
   {% endfor %}
 
-  <button class="mobile-menu-icon" id="id_menu_icon"
+  <button class="mobile-menu-icon" id="menu-icon"
           aria-label="{{ _('Menu') }}" aria-haspopup="menu" aria-expanded="false">
     {{ include_static(menu_icon) }}
   </button>
@@ -123,14 +123,14 @@
     ) }}
 
   #}
-  <div id="id_language_switcher" class="dropdown-form-menu">
+  <div id="language-switcher" class="dropdown-form-menu">
     {{ icon_button(
       text=text or dict(languages)[current_language_code], icon=icon,
-      id='id_language_switcher_toggle', classes='neutral light',
+      id='language-switcher-toggle', classes='neutral light',
       title=_('Change language'), aria_label=_('Change language'),
-      aria_haspopup='menu', aria_expanded=false, aria_controls='id_form_language_menu',
+      aria_haspopup='menu', aria_expanded=false, aria_controls='form-language-menu',
     ) }}
-    <form id="id_form_language_menu" class="subgroup" action="{{ action_url }}" method="post">
+    <form id="form-language-menu" class="subgroup" action="{{ action_url }}" method="post">
       {{ csrf_input }}
       <menu role="menu">
         {% for language_code, language_name in languages %}

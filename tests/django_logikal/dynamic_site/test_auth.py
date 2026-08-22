@@ -124,11 +124,11 @@ def test_login(live_url: LiveURL, browser: Browser, mailoutbox: list[AnymailMess
     browser.check('email_verification_successful')
 
     # Dismiss info message
-    browser.find_element(By.ID, 'id_messages_dismiss').click()
+    browser.find_element(By.ID, 'messages-dismiss').click()
     browser.check('after_login')
 
     # Log out
-    browser.find_element(By.ID, 'id_logout').click()
+    browser.find_element(By.ID, 'logout').click()
     browser.check('after_logout')
 
     # Go through the reset password flow
@@ -165,7 +165,7 @@ def test_password_change(live_url: LiveURL, browser: Browser) -> None:
     browser.get(live_url('account'))
     browser.check('account')
 
-    browser.find_element(By.ID, 'id_change_password_link').click()
+    browser.find_element(By.ID, 'change-password-link').click()
     browser.check('change_password')
 
     old_password = browser.find_element(By.ID, 'form-change-password-oldpassword')
@@ -184,7 +184,7 @@ def test_password_change(live_url: LiveURL, browser: Browser) -> None:
     browser.check('after_change_password')
 
     # Log out and log in again with the new password
-    browser.find_element(By.ID, 'id_logout').click()
+    browser.find_element(By.ID, 'logout').click()
     login(live_url=live_url, browser=browser, user=user, password=TEST_USER_NEW_PASSWORD)
     browser.check('after_login_with_new')
 
@@ -286,7 +286,7 @@ def test_set_password(
     browser.check('after_login')
 
     # Set new password
-    browser.find_element(By.ID, 'id_set_password_link').click()
+    browser.find_element(By.ID, 'set-password-link').click()
     browser.check('set_password')
 
     new_password = browser.find_element(By.ID, 'form-set-password-password1')
@@ -298,7 +298,7 @@ def test_set_password(
     browser.check('after_set_password')
 
     # Log out and log in again with the new password
-    browser.find_element(By.ID, 'id_logout').click()
+    browser.find_element(By.ID, 'logout').click()
     user = User.objects.get(email=TEST_USER)
     login(live_url=live_url, browser=browser, user=user, password=TEST_USER_NEW_PASSWORD)
     browser.check('after_login_with_new')
