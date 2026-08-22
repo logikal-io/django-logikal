@@ -41,10 +41,10 @@ def test_generate(tmp_path: Path, browser: Browser) -> None:
     assert 'User-agent: *\n' in robots
     assert '\nDisallow:\n' in robots
     sitemap = (output_path / 'sitemap.xml').read_text()
-    assert '<loc>http://logikal.io/</loc><priority>1</priority>' in sitemap
-    assert '<loc>http://logikal.io/en-us/localization/</loc><priority>0.5</priority>' in sitemap
+    assert '<loc>https://logikal.io/</loc><priority>1</priority>' in sitemap
+    assert '<loc>https://logikal.io/en-us/localization/</loc><priority>0.5</priority>' in sitemap
     assert (
-        '<loc>http://logikal.io/en-gb/localisation/'  # codespell:ignore localisation
+        '<loc>https://logikal.io/en-gb/localisation/'  # codespell:ignore localisation
         '</loc><priority>0.5</priority>'
         in sitemap
     )

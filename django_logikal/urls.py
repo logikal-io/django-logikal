@@ -1,5 +1,6 @@
 # pylint: disable=import-outside-toplevel
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
+from functools import partial
 from importlib import import_module
 from typing import Any
 
@@ -127,11 +128,9 @@ def utility_paths(  # pylint: disable=too-many-arguments
     from robots.views import rules_list  # pylint: disable=import-outside-toplevel
 
     paths: list[URLType] = []
-    universal_path = path  # included for both static and dynamic sites
+    universal_path: Callable[..., URLType] = path  # included for both static and dynamic sites
     if static_site:
-        from django_distill import distill_path  # pylint: disable=import-outside-toplevel
-
-        universal_path = distill_path
+        universal_path = partial(path, distill_path=True)
     else:
         if auth:
             paths.append(path('account/', auth_urls()))
