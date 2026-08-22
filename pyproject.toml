@@ -102,7 +102,7 @@ microsoft = 'Microsoft'
 parallel = false  # parallel builds do not work with automatic docker compose service starting
 
 [tool.browser.versions]
-chrome = '148.0.7778.216'
+chrome = '151.0.7922.170'
 
 [tool.mypy]
 plugins = ['mypy_django_plugin.main']

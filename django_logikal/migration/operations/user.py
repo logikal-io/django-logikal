@@ -1,6 +1,7 @@
 from abc import ABC
 from typing import Any
 
+from django.db import transaction
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor as SchemaEditor
 from django.db.migrations.operations.base import Operation
 from django.db.migrations.state import ProjectState
@@ -43,21 +44,32 @@ class CreateUser(UserOperation):
         self, app_label: str, schema_editor: SchemaEditor,
         from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
-        with schema_editor.connection.cursor() as cursor:
-            cursor.execute(
-                sql='SELECT 1 FROM pg_roles WHERE rolname=%(name)s',
-                params={'name': self.name},
-            )
-            user_exists = bool(cursor.fetchone())
-        if not user_exists:
-            sql = f'CREATE USER "{self.name}"'
-            params: Any = {}
-            if self.password:
-                sql += ' WITH PASSWORD %(password)s'
-                params['password'] = self.password
-            schema_editor.execute(sql=sql, params=params)
-        elif not self.exists_ok:
-            raise RuntimeError(f'User "{self.name}" already exists')
+        connection = schema_editor.connection
+        with transaction.atomic(using=connection.alias):
+            with connection.cursor() as cursor:
+                # Create a lock to ensure concurrent creations wait
+                cursor.execute(
+                    sql="""
+                        SELECT pg_advisory_xact_lock(
+                          hashtextextended('django_logikal.CreateUser:' || %(name)s, 0)
+                        )
+                    """,
+                    params={'name': self.name},
+                )
+                cursor.execute(
+                    sql='SELECT 1 FROM pg_roles WHERE rolname=%(name)s',
+                    params={'name': self.name},
+                )
+                user_exists = bool(cursor.fetchone())
+            if not user_exists:
+                sql = f'CREATE USER "{self.name}"'
+                params: Any = {}
+                if self.password:
+                    sql += ' WITH PASSWORD %(password)s'
+                    params['password'] = self.password
+                schema_editor.execute(sql=sql, params=params)
+            elif not self.exists_ok:
+                raise RuntimeError(f'User "{self.name}" already exists')
 
     def database_backwards(
         self, app_label: str, schema_editor: SchemaEditor,

@@ -20,4 +20,4 @@ class Command(BaseCommand):
         no_input = options.pop('no_input', False)
         output_dir = options.pop('output_dir', None)
         call_command('collectstatic', clear=True, no_input=not no_input, **options)
-        call_command('distill-local', force=no_input, output_dir=output_dir, **options)
+        call_command('distill', 'generate', force=no_input, output_directory=output_dir, **options)

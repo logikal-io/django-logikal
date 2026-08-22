@@ -58,8 +58,7 @@ class BaseSettings(CommonBaseSettings):
     }
 
     # Email
-    EMAIL_BACKEND = 'anymail.backends.amazon_ses.EmailBackend'
-    EMAIL_TIMEOUT = 10  # default: infinite
+    MAILERS = {'default': {'BACKEND': 'anymail.backends.amazon_ses.EmailBackend'}}
     ANYMAIL: dict[str, Any] = {
         'REQUESTS_TIMEOUT': 10,  # default: 30s
         'AMAZON_SES_SESSION_PARAMS': {'profile_name': AWSAuth().profile()},

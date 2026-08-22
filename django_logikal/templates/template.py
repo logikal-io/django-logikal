@@ -52,7 +52,7 @@ class Template:
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:  # pylint: disable=no-self-use
         return {}
 
-    def path(  # pylint:disable=too-many-arguments
+    def path(
         self,
         route: StrOrPromise,
         *,
@@ -73,10 +73,9 @@ class Template:
         priority: str | None = None,
         **kwargs: Any,
     ) -> Any:
-        from django_distill import distill_path  # pylint: disable=import-outside-toplevel
-
         self._add_path_priority(name, priority)
-        return distill_path(route=route, view=self._view(name), name=name, **kwargs)
+        kwargs['distill_path'] = True  # we mark the static path explicitly
+        return path(route=route, view=self._view(name), name=name, **kwargs)
 
     def include(
         self, paths: list[URLPattern],

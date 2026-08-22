@@ -2,8 +2,9 @@
 -r build.txt
 -r docs.txt
 
-pytest-logikal[browser,django]==6.4.1
-pytest-order==1.4.0
+pytest-logikal[browser,django]==6.5.2
+pytest-order==1.5.0
 requests-mock==1.12.1
 types-Pygments
+types-docutils
 types-tinycss2

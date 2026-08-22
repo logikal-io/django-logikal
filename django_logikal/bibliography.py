@@ -5,7 +5,7 @@ from datetime import datetime
 from logging import getLogger
 from typing import Any
 
-from django.utils.html import escape
+from django.utils.html import format_html, format_html_join
 from django.utils.safestring import SafeString, mark_safe
 from pybtex.database import BibliographyData, parse_file
 from pybtex.richtext import Symbol, Text
@@ -151,7 +151,7 @@ class Bibliography:
             name: The name of the entry.
 
         """
-        if (name := escape(name).lower()) in self._references:  # pybtex is case insensitive
+        if (name := name.lower()) in self._references:  # pybtex is case insensitive
             raise RuntimeError(f'Reference "{name}" has already been used')
         try:
             self._references[name] = self._data.entries[name]
@@ -159,9 +159,11 @@ class Bibliography:
             raise RuntimeError(f'Reference "{name}" not found in "{self._name}"') from error
 
         self._index += 1
-        return mark_safe(  # nosec: name is escaped and index is an internal integer
-            f'<a href="#ref-{name}" id="cite-{name}" class="cite">'
-            f'<span>[</span>{self._index}<span>]</span></a>'
+        return format_html(
+            '<a href="#ref-{name}" id="cite-{name}" class="cite">'
+            '<span>[</span>{index}<span>]</span></a>',
+            name=name,
+            index=self._index,
         )
 
     def references(self, classes: Sequence[str] = ('references', )) -> SafeString:
@@ -173,11 +175,18 @@ class Bibliography:
 
         """
         style = WebStyle(name_style='plain')
-        items = '\n'.join(
-            f'<li id="ref-{name}"><a href="#cite-{name}" class="cite up">&uarr;</a>'
-            f'{style.format_entry(name, entry).text.render_as('html')}</li>'
-            for name, entry in self._references.items()
+        items = format_html_join(
+            '\n',
+            '<li id="ref-{name}"><a href="#cite-{name}" class="cite up">&uarr;</a>{entry}</li>',
+            ({
+                'name': name,
+                'entry': mark_safe(  # nosec: bibliography entries are trusted (local) content
+                    style.format_entry(name, entry).text.render_as('html')
+                ),
+            } for name, entry in self._references.items()),
         )
-        return mark_safe(  # nosec: name and entries are escaped
-            f'<ol class="{' '.join(classes)}">\n{items}\n</ol>'
+        return format_html(
+            '<ol class="{classes}">{items}</ol>',
+            classes=' '.join(classes),
+            items=items,
         )

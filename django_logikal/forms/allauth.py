@@ -36,6 +36,7 @@ class LoginForm(account.AuthForm, forms.LoginForm):  # type: ignore[misc]
         required=True, label=_('Password'), autocomplete='current-password',
         min_length=settings.AUTH_MIN_PASSWORD_LENGTH,  # type: ignore[misc]
         max_length=4096,
+        help_text=forms.LoginForm.base_fields['password'].help_text,  # pylint: disable=no-member
     )
 
     class Meta(generic.FormMeta):

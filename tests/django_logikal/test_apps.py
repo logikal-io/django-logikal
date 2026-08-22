@@ -1,6 +1,6 @@
 from django.conf import global_settings
 from django.core.checks import Error
-from pytest_django.fixtures import SettingsWrapper
+from pytest_django.fixtures import Settings
 
 from django_logikal.apps import check_settings
 
@@ -9,7 +9,7 @@ def message_in_errors(message: str, errors: list[Error]) -> bool:
     return any(message in error.msg for error in errors)
 
 
-def test_check_settings(settings: SettingsWrapper) -> None:
+def test_check_settings(settings: Settings) -> None:
     settings.ROOT_URLCONF = None
     settings.AUTH_USER_MODEL = global_settings.AUTH_USER_MODEL
     settings.EMAIL_SUBJECT_PREFIX = global_settings.EMAIL_SUBJECT_PREFIX

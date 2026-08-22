@@ -10,6 +10,7 @@ from babel import Locale
 from babel.support import Format
 from django.contrib.staticfiles import finders
 from django.http import HttpRequest
+from django.template.loader import render_to_string
 from django.templatetags.static import static as django_static
 from django.urls import reverse
 from django.utils import timezone
@@ -230,46 +231,25 @@ def component_head(
         static_site: Whether this is a static site.
 
     """
-    links = []
-
-    # Add style sheets
-    if use_standard_theme:
-        theme_files = {
-            static(str((THEMES_CSS_PATH / theme).with_suffix('.css'))): media
-            for theme, media in THEMES.items()
-        }
-        theme_links = [
-            f'<link rel="stylesheet" href="{file}"'
-            + (f'\n      media="({media})"' if media else '')
-            + '>'
-            for file, media in theme_files.items()
-        ]
-        links.extend(['<!-- Theme styles -->', *theme_links, '<!-- End of theme styles -->', ''])
+    theme_styles = [
+        {'href': static(str((THEMES_CSS_PATH / theme).with_suffix('.css'))), 'media': media}
+        for theme, media in (THEMES if use_standard_theme else {}).items()
+    ]
 
     head_files = component_head_files(modules)
-    style_links = [
-        f'<link rel="stylesheet" href="{static(str(file))}">'
-        for file in head_files['css']
-    ]
-    links.extend(['<!-- Component styles -->', *style_links, '<!-- End of component styles -->'])
+    component_styles = [{'href': static(str(file))} for file in head_files['css']]
 
-    # Add JavaScript modules
-    js_modules = ['django_logikal/js/gettext.mjs']
-
-    if scripts := [
-        f'<script type="module" src="{static(str(file))}"></script>'
-        for file in head_files['js']
-    ]:
-        js_modules = [
-            f'<script type="module" src="{static(str(module))}"></script>'
-            for module in js_modules
-        ]
-        scripts = js_modules + scripts
+    scripts: list[dict[str, str | bool]] = []
+    if head_files['js']:
         if not static_site:
-            scripts = [f'<script defer src="{reverse('js-i18n-catalog')}"></script>', *scripts]
+            scripts.append({'src': reverse('js-i18n-catalog'), 'defer': True, 'module': False})
+        scripts.extend(
+            {'src': static(str(file)), 'defer': False, 'module': True}
+            for file in ['django_logikal/js/gettext.mjs', *head_files['js']]
+        )
 
-        links.extend([
-            '', '<!-- Component scripts -->', *scripts, '<!-- End of component scripts -->',
-        ])
-
-    return mark_safe('\n'.join(links) + '\n')  # nosec: component links are safe
+    rendered = render_to_string(
+        'django_logikal/component_head.html.j',
+        dict(theme_styles=theme_styles, component_styles=component_styles, scripts=scripts),
+    ) + '\n\n'
+    return mark_safe(rendered)  # nosec: template contents are already escaped

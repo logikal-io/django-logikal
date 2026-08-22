@@ -78,7 +78,14 @@ class CommonDevSettings(SettingsUpdate):
                     'debug_toolbar.panels.profiling.ProfilingPanel',
                 },
             }
-            if 'EMAIL_BACKEND' in settings:
-                cls.append(settings['INSTALLED_APPS'], 'mail_panel')
-                cls.prepend(settings['DEBUG_TOOLBAR_PANELS'], 'mail_panel.panels.MailToolbarPanel')
-                settings['EMAIL_BACKEND'] = 'mail_panel.backend.MailToolbarBackend'
+            # The mail panel is currently incompatible with the debug toolbar shadow DOM
+            # (see https://github.com/scuml/django-mail-panel/issues/53)
+            # if 'MAILERS' in settings:
+            #     cls.append(settings['INSTALLED_APPS'], 'mail_panel')
+            #     cls.prepend(
+            #         settings['DEBUG_TOOLBAR_PANELS'],
+            #         'mail_panel.panels.MailToolbarPanel',
+            #     )
+            #     settings['MAILERS'] = {
+            #         'default': {'BACKEND': 'mail_panel.backend.MailToolbarBackend'},
+            #     }

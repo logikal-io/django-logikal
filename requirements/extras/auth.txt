@@ -1,1 +1,1 @@
-django-allauth[socialaccount]~=65.18
+django-allauth[socialaccount]~=65.19
