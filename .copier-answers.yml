@@ -9,7 +9,7 @@ _src_path: git@github.com:logikal-io/python-package-template.git
 audience: Developers
 classifiers:
 - 'Framework :: Django'
-- 'Framework :: Django :: 5'
+- 'Framework :: Django :: 6'
 - 'Topic :: Software Development'
 - 'Topic :: Utilities'
 cloud: true
