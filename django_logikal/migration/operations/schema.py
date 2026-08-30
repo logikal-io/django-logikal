@@ -1,12 +1,15 @@
-from abc import ABC
 from collections.abc import Iterable
 
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor as SchemaEditor
-from django.db.migrations.operations.base import Operation
 from django.db.migrations.state import ProjectState
+from psycopg import sql
+
+from django_logikal.migration.operations.base import SQLOperation
+
+SCHEMA_PRIVILEGES = {'CREATE', 'USAGE'}
 
 
-class SchemaAccessOperation(ABC, Operation):
+class SchemaAccessOperation(SQLOperation):
     def __init__(
         self,
         schemas: Iterable[str],
@@ -20,12 +23,13 @@ class SchemaAccessOperation(ABC, Operation):
             accesses: An iterable of accesses to manage.
 
         """
-        self.accesses = ', '.join(access.upper() for access in accesses)
-        self.schemas = ', '.join(f'"{schema}"' for schema in schemas)
-        self.roles = ', '.join(f'"{role}"' for role in roles)
+        accesses = [access.upper() for access in accesses]
+        if invalid_accesses := set(accesses) - SCHEMA_PRIVILEGES:
+            raise ValueError(f'Invalid schema privileges: {sorted(invalid_accesses)}')
 
-    def state_forwards(self, app_label: str, state: ProjectState) -> None:
-        pass
+        self.accesses = sql.SQL(', ').join(sql.SQL(access) for access in accesses)
+        self.schemas = sql.SQL(', ').join(sql.Identifier(schema) for schema in schemas)
+        self.roles = sql.SQL(', ').join(sql.Identifier(role) for role in roles)
 
 
 class GrantSchemaAccess(SchemaAccessOperation):
@@ -36,16 +40,19 @@ class GrantSchemaAccess(SchemaAccessOperation):
         self, app_label: str, schema_editor: SchemaEditor,
         from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
-        schema_editor.execute(f'GRANT {self.accesses} ON SCHEMA {self.schemas} TO {self.roles}')
+        statement = sql.SQL('GRANT {accesses} ON SCHEMA {schemas} TO {roles}').format(
+            accesses=self.accesses, schemas=self.schemas, roles=self.roles,
+        )
+        self.execute_statement(schema_editor, statement=statement)
 
     def database_backwards(
         self, app_label: str, schema_editor: SchemaEditor,
         from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
-        schema_editor.execute(f'REVOKE {self.accesses} ON SCHEMA {self.schemas} FROM {self.roles}')
-
-    def describe(self) -> str:
-        return f'Grant access on {self.schemas} to {self.roles}'
+        statement = sql.SQL('REVOKE {accesses} ON SCHEMA {schemas} FROM {roles}').format(
+            accesses=self.accesses, schemas=self.schemas, roles=self.roles,
+        )
+        self.execute_statement(schema_editor, statement=statement)
 
 
 class RevokeSchemaAccess(SchemaAccessOperation):
@@ -56,19 +63,22 @@ class RevokeSchemaAccess(SchemaAccessOperation):
         self, app_label: str, schema_editor: SchemaEditor,
         from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
-        schema_editor.execute(f'REVOKE {self.accesses} ON SCHEMA {self.schemas} FROM {self.roles}')
+        statement = sql.SQL('REVOKE {accesses} ON SCHEMA {schemas} FROM {roles}').format(
+            accesses=self.accesses, schemas=self.schemas, roles=self.roles,
+        )
+        self.execute_statement(schema_editor, statement=statement)
 
     def database_backwards(
         self, app_label: str, schema_editor: SchemaEditor,
         from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
-        schema_editor.execute(f'GRANT {self.accesses} ON SCHEMA {self.schemas} TO {self.roles}')
+        statement = sql.SQL('GRANT {accesses} ON SCHEMA {schemas} TO {roles}').format(
+            accesses=self.accesses, schemas=self.schemas, roles=self.roles,
+        )
+        self.execute_statement(schema_editor, statement=statement)
 
-    def describe(self) -> str:
-        return f'Revoke access on {self.schemas} from {self.roles}'
 
-
-class SchemaOperation(ABC, Operation):
+class SchemaOperation(SQLOperation):
     def __init__(self, name: str):  # noqa: D205, D400, D415
         """
         Args:
@@ -76,9 +86,6 @@ class SchemaOperation(ABC, Operation):
 
         """
         self.name = name
-
-    def state_forwards(self, app_label: str, state: ProjectState) -> None:
-        pass
 
 
 class CreateSchema(SchemaOperation):
@@ -89,13 +96,15 @@ class CreateSchema(SchemaOperation):
         self, app_label: str, schema_editor: SchemaEditor,
         from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
-        schema_editor.execute(sql=f'CREATE SCHEMA IF NOT EXISTS "{self.name}"')
+        statement = sql.SQL('CREATE SCHEMA IF NOT EXISTS {}').format(sql.Identifier(self.name))
+        self.execute_statement(schema_editor, statement=statement)
 
     def database_backwards(
         self, app_label: str, schema_editor: SchemaEditor,
         from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
-        schema_editor.execute(f'DROP SCHEMA "{self.name}"')
+        statement = sql.SQL('DROP SCHEMA {}').format(sql.Identifier(self.name))
+        self.execute_statement(schema_editor, statement=statement)
 
     def describe(self) -> str:
         return f'Create schema {self.name}'
@@ -111,7 +120,8 @@ class DropSchema(SchemaOperation):
         self, app_label: str, schema_editor: SchemaEditor,
         from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
-        schema_editor.execute(f'DROP SCHEMA IF EXISTS "{self.name}"')
+        statement = sql.SQL('DROP SCHEMA IF EXISTS {}').format(sql.Identifier(self.name))
+        self.execute_statement(schema_editor, statement=statement)
 
     def describe(self) -> str:
         return f'Drop schema {self.name}'

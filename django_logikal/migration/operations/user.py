@@ -1,13 +1,12 @@
-from abc import ABC
-from typing import Any
-
 from django.db import transaction
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor as SchemaEditor
-from django.db.migrations.operations.base import Operation
 from django.db.migrations.state import ProjectState
+from psycopg import sql
+
+from django_logikal.migration.operations.base import SQLOperation
 
 
-class UserOperation(ABC, Operation):
+class UserOperation(SQLOperation):
     def __init__(self, name: str):  # noqa: D205, D400, D415
         """
         Args:
@@ -15,9 +14,6 @@ class UserOperation(ABC, Operation):
 
         """
         self.name = name
-
-    def state_forwards(self, app_label: str, state: ProjectState) -> None:
-        pass
 
 
 class CreateUser(UserOperation):
@@ -61,13 +57,14 @@ class CreateUser(UserOperation):
                     params={'name': self.name},
                 )
                 user_exists = bool(cursor.fetchone())
+
             if not user_exists:
-                sql = f'CREATE USER "{self.name}"'
-                params: Any = {}
+                statement = sql.SQL('CREATE USER {}').format(sql.Identifier(self.name))
+                params: tuple[object, ...] = ()
                 if self.password:
-                    sql += ' WITH PASSWORD %(password)s'
-                    params['password'] = self.password
-                schema_editor.execute(sql=sql, params=params)
+                    statement += sql.SQL(' WITH PASSWORD %s')
+                    params = (self.password, )
+                self.execute_statement(schema_editor, statement=statement, params=params)
             elif not self.exists_ok:
                 raise RuntimeError(f'User "{self.name}" already exists')
 
@@ -75,7 +72,8 @@ class CreateUser(UserOperation):
         self, app_label: str, schema_editor: SchemaEditor,
         from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
-        schema_editor.execute(f'DROP USER "{self.name}"')
+        statement = sql.SQL('DROP USER {}').format(sql.Identifier(self.name))
+        self.execute_statement(schema_editor, statement=statement)
 
     def describe(self) -> str:
         return f'Create user {self.name}'
@@ -91,7 +89,8 @@ class DropUser(UserOperation):
         self, app_label: str, schema_editor: SchemaEditor,
         from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
-        schema_editor.execute(f'DROP USER IF EXISTS "{self.name}"')
+        statement = sql.SQL('DROP USER IF EXISTS {}').format(sql.Identifier(self.name))
+        self.execute_statement(schema_editor, statement=statement)
 
     def describe(self) -> str:
         return f'Drop user {self.name}'

@@ -1,13 +1,24 @@
-from abc import ABC
 from collections.abc import Iterable
 
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor as SchemaEditor
-from django.db.migrations.operations.base import Operation
 from django.db.migrations.state import ProjectState
 from django.db.models import Model
+from psycopg import sql
+
+from django_logikal.migration.operations.base import SQLOperation
+
+TABLE_PRIVILEGES = {
+    'DELETE',
+    'INSERT',
+    'REFERENCES',
+    'SELECT',
+    'TRIGGER',
+    'TRUNCATE',
+    'UPDATE',
+}
 
 
-class ModelAccessOperation(ABC, Operation):
+class ModelAccessOperation(SQLOperation):
     def __init__(
         self,
         models: Iterable[type[Model]],
@@ -28,12 +39,13 @@ class ModelAccessOperation(ABC, Operation):
                 history_model = getattr(model, history_field).model
                 tables.append(history_model._meta.db_table)
 
-        self.accesses = ', '.join(access.upper() for access in accesses)
-        self.tables = ', '.join(f'"{table}"' for table in tables)
-        self.roles = ', '.join(f'"{role}"' for role in roles)
+        accesses = [access.upper() for access in accesses]
+        if invalid_accesses := set(accesses) - TABLE_PRIVILEGES:
+            raise ValueError(f'Invalid table privileges: {sorted(invalid_accesses)}')
 
-    def state_forwards(self, app_label: str, state: ProjectState) -> None:
-        pass
+        self.accesses = sql.SQL(', ').join(sql.SQL(access) for access in accesses)
+        self.tables = sql.SQL(', ').join(sql.Identifier(table) for table in tables)
+        self.roles = sql.SQL(', ').join(sql.Identifier(role) for role in roles)
 
 
 class GrantModelAccess(ModelAccessOperation):
@@ -44,16 +56,19 @@ class GrantModelAccess(ModelAccessOperation):
         self, app_label: str, schema_editor: SchemaEditor,
         from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
-        schema_editor.execute(f'GRANT {self.accesses} ON {self.tables} TO {self.roles}')
+        statement = sql.SQL('GRANT {accesses} ON {tables} TO {roles}').format(
+            accesses=self.accesses, tables=self.tables, roles=self.roles,
+        )
+        self.execute_statement(schema_editor, statement=statement)
 
     def database_backwards(
         self, app_label: str, schema_editor: SchemaEditor,
         from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
-        schema_editor.execute(f'REVOKE {self.accesses} ON {self.tables} FROM {self.roles}')
-
-    def describe(self) -> str:
-        return f'Grant access on {self.tables} to {self.roles}'
+        statement = sql.SQL('REVOKE {accesses} ON {tables} FROM {roles}').format(
+            accesses=self.accesses, tables=self.tables, roles=self.roles,
+        )
+        self.execute_statement(schema_editor, statement=statement)
 
 
 class RevokeModelAccess(ModelAccessOperation):
@@ -64,13 +79,16 @@ class RevokeModelAccess(ModelAccessOperation):
         self, app_label: str, schema_editor: SchemaEditor,
         from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
-        schema_editor.execute(f'REVOKE {self.accesses} ON {self.tables} FROM {self.roles}')
+        statement = sql.SQL('REVOKE {accesses} ON {tables} FROM {roles}').format(
+            accesses=self.accesses, tables=self.tables, roles=self.roles,
+        )
+        self.execute_statement(schema_editor, statement=statement)
 
     def database_backwards(
         self, app_label: str, schema_editor: SchemaEditor,
         from_state: ProjectState | None = None, to_state: ProjectState | None = None,
     ) -> None:
-        schema_editor.execute(f'GRANT {self.accesses} ON {self.tables} TO {self.roles}')
-
-    def describe(self) -> str:
-        return f'Revoke access on {self.tables} from {self.roles}'
+        statement = sql.SQL('GRANT {accesses} ON {tables} TO {roles}').format(
+            accesses=self.accesses, tables=self.tables, roles=self.roles,
+        )
+        self.execute_statement(schema_editor, statement=statement)

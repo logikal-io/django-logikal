@@ -13,7 +13,7 @@ def user_exists(name: str, schema_editor: SchemaEditor) -> bool:
 @mark.django_db
 def test_create_user(schema_editor: SchemaEditor) -> None:
     name = 'test_create_user'
-    password = 'test_password'  # nosec: only used for testing
+    password = "test_password'\""  # nosec: only used for testing
 
     # Create user (forwards)
     migration = operations.CreateUser(name=name, password=password, exists_ok=False)
@@ -38,7 +38,7 @@ def test_create_user(schema_editor: SchemaEditor) -> None:
 @mark.django_db
 def test_drop_user(schema_editor: SchemaEditor) -> None:
     name = 'test_drop_user'
-    password = 'test_password'  # nosec: only used for testing
+    password = "test_password'\""  # nosec: only used for testing
 
     # Create user
     create = operations.CreateUser(name=name, password=password, exists_ok=False)
