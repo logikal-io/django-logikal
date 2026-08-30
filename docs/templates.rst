@@ -128,12 +128,6 @@ Objects
           {{ message }}
         {% endfor %}
 
-.. py:data:: settings
-    :noindexentry:
-    :type: django.conf.LazySettings
-
-    The current Django settings object.
-
 .. py:data:: filters
     :noindexentry:
     :type: dict[str, typing.Any]

@@ -58,15 +58,15 @@
               request.resolver_match.view_name == 'dynamic_site_localized:localization' %}
           {{ commons.language_switcher(
             current_language_code=language(),
-            languages=settings.LANGUAGES,
+            languages=languages(),
             action_url=url('set_language'),
             csrf_input=csrf_input,
           ) }}
         {% endif %}
         {% if request|default(none) and request.user.is_authenticated %}
-          <a href="{{ url(settings.LOGIN_REDIRECT_URL) }}" class="button">Account</a>
+          <a href="{{ url('account') }}" class="button">Account</a>
         {% else %}
-          <a href="{{ url(settings.LOGIN_URL) }}" class="button">Log in</a>
+          <a href="{{ url('account_auth') }}" class="button">Log in</a>
         {% endif %}
       </aside>
     </nav>

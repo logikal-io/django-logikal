@@ -2,7 +2,6 @@
 import re
 from typing import Any
 
-from django.conf import settings
 from django.http import HttpRequest
 from django.template import Origin, TemplateDoesNotExist
 from django.template.backends.jinja2 import Jinja2, Template
@@ -123,8 +122,6 @@ def environment(**options: Any) -> Environment:
         'startswith': tests.startswith,
     })
     env.globals.update({
-        # Django objects
-        'settings': settings,
         'filters': env.filters,
         'tests': env.tests,
         # Libraries
@@ -137,6 +134,7 @@ def environment(**options: Any) -> Environment:
         'url': functions.url,
         'url_name': functions.url_name,
         'language': functions.language,
+        'languages': functions.languages,
         'format': functions.format,
         # Other utilities
         'cwd': functions.cwd,

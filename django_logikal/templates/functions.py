@@ -8,6 +8,7 @@ from typing import Any
 
 from babel import Locale
 from babel.support import Format
+from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.http import HttpRequest
 from django.template.loader import render_to_string
@@ -113,6 +114,13 @@ def language() -> str:
     Return the current language code.
     """
     return get_language()
+
+
+def languages() -> list[tuple[str, str]]:
+    """
+    Return the configured languages.
+    """
+    return settings.LANGUAGES
 
 
 def format(  # pylint: disable=redefined-builtin
