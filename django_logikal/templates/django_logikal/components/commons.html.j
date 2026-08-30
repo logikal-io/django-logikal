@@ -117,7 +117,7 @@
 
     {{ commons.language_switcher(
       current_language_code=language(),
-      languages=settings.LANGUAGES,
+      languages=languages(),
       action_url=url('set_language'),
       csrf_input=csrf_input
     ) }}

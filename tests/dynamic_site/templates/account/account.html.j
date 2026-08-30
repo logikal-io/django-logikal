@@ -29,7 +29,7 @@
           <form action="{{ url('socialaccount_connections') }}" method="post" class="action-tree">
             {{ csrf_input }}
             <input type="hidden" name="account" value="{{ account.id }}">
-            <div class="left">{{ settings.ALLAUTH_SOCIAL_PROVIDERS[account.provider] }}</div>
+            <div class="left">{{ social_providers[account.provider] }}</div>
             <button class="inline neutral right">{{ _('Disconnect') }}</button>
           </form>
         {% endfor %}

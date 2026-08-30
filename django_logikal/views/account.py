@@ -55,8 +55,12 @@ class AccountView(TemplateView):
         """
         Return the template context.
 
-        Includes the ``social_accounts`` field containing all connected social account instances of
-        the user.
+        Includes the ``social_accounts`` field (containing all connected social account instances
+        of the user) and the ``social_providers`` field (mapping provider IDs to display names).
         """
         social_accounts = self.request.user.socialaccount_set.all()  # type: ignore[union-attr]
-        return {**super().get_context_data(**kwargs), 'social_accounts': social_accounts}
+        return {
+            **super().get_context_data(**kwargs),
+            'social_accounts': social_accounts,
+            'social_providers': settings.ALLAUTH_SOCIAL_PROVIDERS,  # type: ignore[misc]
+        }

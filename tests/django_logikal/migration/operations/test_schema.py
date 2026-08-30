@@ -1,5 +1,5 @@
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor as SchemaEditor
-from pytest import mark
+from pytest import mark, raises
 
 from django_logikal.migration import operations
 from tests.django_logikal.migration.operations.utils import has_schema_privilege
@@ -33,6 +33,10 @@ def test_grant_schema_access(schema_editor: SchemaEditor) -> None:
     # Grant access (backwards)
     grant.database_backwards(app_label='test', schema_editor=schema_editor)
     assert not has_schema_privilege(schema_editor, user_name=user_name, schema=schema)
+
+    # Errors
+    with raises(ValueError, match='Invalid schema privileges'):
+        operations.GrantSchemaAccess(schemas=[schema], roles=[user_name], accesses=['invalid'])
 
 
 @mark.django_db
