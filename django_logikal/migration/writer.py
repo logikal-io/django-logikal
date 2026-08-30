@@ -23,7 +23,7 @@ class FormattedMigrationWriter(MigrationWriter):
         from pytest_logikal.utils import get_ini_option
 
         max_line_length = get_ini_option('max_line_length')
-        code = super().as_string()
+        code = super().as_string()  # pylint: disable=no-member,useless-suppression; flaky issue
         code = black.format_str(code, mode=black_mode(max_line_length))
         return isort.api.sort_code_string(  # pylint: disable=c-extension-no-member
             code, **isort_config(max_line_length=max_line_length),
