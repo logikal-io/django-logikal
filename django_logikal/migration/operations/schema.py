@@ -6,7 +6,7 @@ from psycopg import sql
 
 from django_logikal.migration.operations.base import SQLOperation
 
-SCHEMA_PRIVILEGES = {'CREATE', 'USAGE'}
+SCHEMA_PRIVILEGES = {'ALL', 'ALL PRIVILEGES', 'CREATE', 'USAGE'}
 
 
 class SchemaAccessOperation(SQLOperation):

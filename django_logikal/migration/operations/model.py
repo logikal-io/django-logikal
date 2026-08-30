@@ -8,8 +8,11 @@ from psycopg import sql
 from django_logikal.migration.operations.base import SQLOperation
 
 TABLE_PRIVILEGES = {
+    'ALL',
+    'ALL PRIVILEGES',
     'DELETE',
     'INSERT',
+    'MAINTAIN',
     'REFERENCES',
     'SELECT',
     'TRIGGER',
