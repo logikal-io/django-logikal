@@ -47,7 +47,7 @@ class CommonDevSettings(SettingsUpdate):
         cls.append(settings['INSTALLED_APPS'], 'django_migration_linter')
 
         # Cloud logging
-        if option_is_set('cloud_logging'):
+        if option_is_set('cloud_logging'):  # pragma: no cover, this is for local usage
             cls.append(
                 settings['MIDDLEWARE'],
                 'google.cloud.logging_v2.handlers.middleware.RequestMiddleware',

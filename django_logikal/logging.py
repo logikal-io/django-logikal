@@ -107,7 +107,7 @@ def logging_config(
             credentials=auth.credentials(),
         )
         config['handlers']['cloud'] = {
-            'class': 'google.cloud.logging.handlers.CloudLoggingHandler',
+            'class': 'google.cloud.logging_v2.handlers.CloudLoggingHandler',
             'client': client,
             'name': f'django-{settings.SETTINGS_MODULE.rsplit('.', 1)[-1].replace('_', '-')}',
         }
