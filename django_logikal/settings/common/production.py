@@ -22,6 +22,12 @@ class CommonProductionSettings(SettingsUpdate):
     def apply(settings: Settings) -> None:
         settings['LOGGING'] = logging_config(console=False, cloud=True)
 
+        # Cloud logging
+        cls.append(
+            settings['MIDDLEWARE'],
+            'google.cloud.logging_v2.handlers.middleware.RequestMiddleware',
+        )
+
         # Secrets
         settings.setdefault('SECRET_KEY_PATH', f'{settings['SECRET_PATH_PREFIX']}-secret-key')
         settings.setdefault(

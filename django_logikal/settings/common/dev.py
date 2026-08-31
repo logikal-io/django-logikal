@@ -46,6 +46,13 @@ class CommonDevSettings(SettingsUpdate):
         # Migration linter
         cls.append(settings['INSTALLED_APPS'], 'django_migration_linter')
 
+        # Cloud logging
+        if option_is_set('cloud_logging'):
+            cls.append(
+                settings['MIDDLEWARE'],
+                'google.cloud.logging_v2.handlers.middleware.RequestMiddleware',
+            )
+
         # Debug toolbar
         if option_is_set('toolbar'):  # pragma: no cover, tested in subprocess
             cls.prepend(settings['MIDDLEWARE'], 'debug_toolbar.middleware.DebugToolbarMiddleware')
