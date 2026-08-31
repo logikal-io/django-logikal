@@ -18,11 +18,10 @@ class CommonProductionSettings(SettingsUpdate):
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
 
-    @staticmethod
-    def apply(settings: Settings) -> None:
-        settings['LOGGING'] = logging_config(console=False, cloud=True)
-
+    @classmethod
+    def apply(cls, settings: Settings) -> None:
         # Cloud logging
+        settings['LOGGING'] = logging_config(console=False, cloud=True)
         cls.append(
             settings['MIDDLEWARE'],
             'google.cloud.logging_v2.handlers.middleware.RequestMiddleware',
