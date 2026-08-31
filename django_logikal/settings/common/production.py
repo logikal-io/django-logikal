@@ -18,9 +18,14 @@ class CommonProductionSettings(SettingsUpdate):
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
 
-    @staticmethod
-    def apply(settings: Settings) -> None:
+    @classmethod
+    def apply(cls, settings: Settings) -> None:
+        # Cloud logging
         settings['LOGGING'] = logging_config(console=False, cloud=True)
+        cls.append(
+            settings['MIDDLEWARE'],
+            'google.cloud.logging_v2.handlers.middleware.RequestMiddleware',
+        )
 
         # Secrets
         settings.setdefault('SECRET_KEY_PATH', f'{settings['SECRET_PATH_PREFIX']}-secret-key')
