@@ -16,7 +16,8 @@
 {%- macro __function_args(args=none, kwargs=none) -%}
   {%- for arg in args or [] -%}{%- if not loop.first %}, {% endif %}{{ arg|repr }}{%- endfor -%}
   {%- if kwargs -%}
-    {%- if args -%}, {% endif %}{% for key, value in kwargs.items() -%}
+    {%- if args -%}, {% endif %}
+    {%- for key, value in kwargs.items() -%}
       {%- if not loop.first -%}, {% endif %}{{ key }}={{ value|repr }}
     {%- endfor -%}
   {%- endif -%}

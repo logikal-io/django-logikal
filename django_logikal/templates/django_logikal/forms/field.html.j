@@ -1,6 +1,7 @@
 {% if field.use_fieldset %}
-  <fieldset{% if field.aria_describedby %} aria-describedby="{{ field.aria_describedby }}"{% endif %}>
-  {% if field.label %}{{ field.legend_tag() }}{% endif %}
+  <fieldset
+    {%- if field.aria_describedby %} aria-describedby="{{ field.aria_describedby }}"{% endif %}>
+    {% if field.label %}{{ field.legend_tag() }}{% endif %}
 {% else %}
   {% if field.label %}{{ field.label_tag() }}{% endif %}
 {% endif %}

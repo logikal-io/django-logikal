@@ -2,8 +2,7 @@
 {% if theme_styles %}
   {% for style in theme_styles %}
     {% if style.media %}
-      <link rel="stylesheet" href="{{ style.href }}"
-            media="({{ style.media }})">
+      <link rel="stylesheet" href="{{ style.href }}" media="({{ style.media }})">
     {% else %}
       <link rel="stylesheet" href="{{ style.href }}">
     {% endif %}

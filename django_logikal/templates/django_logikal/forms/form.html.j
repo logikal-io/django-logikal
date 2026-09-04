@@ -23,7 +23,7 @@
 {% endif %}
 {% if form.Meta.action_button_text %}
   {% if form.Meta.back_url_name %}<div class="actions">{% endif %}
-  <button id="{{ form.id }}-action">{{ form.Meta.action_button_text }}</button>
+  <button type="submit" id="{{ form.id }}-action">{{ form.Meta.action_button_text }}</button>
   {% if form.Meta.back_url_name %}
     <a href="{{ url(form.Meta.back_url_name, request=request, kwargs=form.back_url_kwargs) }}"
        id="{{ form.id }}-back" class="button neutral">{{ form.Meta.back_url_text }}</a>
