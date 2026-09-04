@@ -30,7 +30,7 @@
             {{ csrf_input }}
             <input type="hidden" name="account" value="{{ account.id }}">
             <div class="left">{{ social_providers[account.provider] }}</div>
-            <button class="inline neutral right">{{ _('Disconnect') }}</button>
+            <button type="submit" class="inline neutral right">{{ _('Disconnect') }}</button>
           </form>
         {% endfor %}
       {% else %}
@@ -40,7 +40,7 @@
       <h2>Actions</h2>
       <form action="{{ url('account_logout') }}" method="post">
         {{ csrf_input }}
-        <p><button id="logout">Log out</button></p>
+        <p><button type="submit" id="logout">Log out</button></p>
       </form>
     </section>
   </div>

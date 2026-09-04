@@ -57,10 +57,9 @@
     </menu>
   {% endfor %}
 
-  <button class="mobile-menu-icon" id="menu-icon"
-          aria-label="{{ _('Menu') }}" aria-haspopup="menu" aria-expanded="false">
-    {{ include_static(menu_icon) }}
-  </button>
+  <button id="menu-icon" class="mobile-menu-icon" type="button"
+          aria-label="{{ _('Menu') }}" aria-haspopup="menu"
+          aria-expanded="false">{{ include_static(menu_icon) }}</button>
 {% endmacro %}
 
 {% macro icon_button(
@@ -83,6 +82,7 @@
 
   #}
   <button
+    type="button"
     {%- if id %} id="{{ id }}"{% endif %} class="icon{% if classes %} {{ classes }}{% endif %}"
     {%- if title %} title="{{ title }}"{% endif -%}
     {%- if aria_label %} aria-label="{{ aria_label }}"{% endif -%}
@@ -91,7 +91,8 @@
     {%- if aria_controls %} aria-controls="{{ aria_controls }}"{% endif -%}
     >
     {{- include_static(icon) -}}
-    <span>{{ text }}</span></button>
+    <span>{{ text }}</span>
+  </button>
 {% endmacro %}
 
 {% macro language_switcher(

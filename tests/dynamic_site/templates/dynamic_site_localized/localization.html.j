@@ -42,10 +42,10 @@
       {# Note: if you change the following line, make sure to update the docstring of the
       django_logikal.templates.functions.format function as well! #}
       {% language 'en-gb' %}
-      {% timezone 'Europe/London' %}
-      <b>Timestamp (</b><i>en_GB, Europe/London</i><b>): </b>
-        {{ format().datetime(timestamp, format='long') }}<br>
-      {% endtimezone %}
+        {% timezone 'Europe/London' %}
+          <b>Timestamp (</b><i>en_GB, Europe/London</i><b>): </b>
+          {{ format().datetime(timestamp, format='long') }}<br>
+        {% endtimezone %}
       {% endlanguage %}
       <b>Number:</b> {{ fmt.decimal(number) }}<br>
       <b>Currency (</b><i>USD</i><b>):</b> {{ fmt.currency(currency, 'USD') }}<br>
