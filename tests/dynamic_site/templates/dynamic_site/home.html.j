@@ -39,7 +39,5 @@
     </div>
   </article>
 
-  <script nonce="{{ csp_nonce }}">
-    let test = 42;
-  </script>
+  <script nonce="{{ csp_nonce }}">let test = 42;</script>
 {% endblock %}

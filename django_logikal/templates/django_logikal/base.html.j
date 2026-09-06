@@ -11,23 +11,23 @@
     <title>{% filter join_lines %}{% block title required %}{% endblock %}{% endfilter %}</title>
 
     {% if htmx|default(false) %}
-      <meta name="htmx-config" content='{{ htmx_config|default({
-          'allowEval': False,
-          'allowScriptTags': False,
-          'inlineScriptNonce': csp_nonce|str,
-          'inlineStyleNonce': csp_nonce|str,
+      <meta name="htmx-config"
+            content='{{ htmx_config|default({
+        'allowEval': False,
+        'allowScriptTags': False,
+        'inlineScriptNonce': csp_nonce|str,
+        'inlineStyleNonce': csp_nonce|str,
       })|tojson }}'>
       {{ htmx_script(nonce=csp_nonce) }}
     {% endif %}
     {% block component_head %}{% endblock %}
     {% block head %}{% endblock %}
   </head>
-  <body
-    {%- filter join_lines(spacer=true) -%}
-      {%- block bodyattributes %}{% endblock -%}
-    {%- endfilter -%}
-    {%- if htmx|default(false) %} data-hx-headers='{"x-csrftoken": "{{ csrf_token }}"}'{% endif -%}
-    >
+  <body {%- filter join_lines(spacer=true) -%}
+          {%- block bodyattributes %}{% endblock -%}
+        {%- endfilter -%}
+        {%- if htmx|default(false) %} data-hx-headers='{"x-csrftoken": "{{ csrf_token }}"}'
+        {%- endif -%}>
     {% block body required %}{% endblock %}
   </body>
 </html>

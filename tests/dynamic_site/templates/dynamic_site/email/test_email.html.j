@@ -7,12 +7,8 @@
 {% block description %}This is a test email.{% endblock %}
 
 {% block head %}
-  <style data-premailer="ignore">
-    {{ include_static('email/style_head.css') }}
-  </style>
-  <style>
-    {{ include_static('email/style.css') }}
-  </style>
+  <style data-premailer="ignore">{{ include_static('email/style_head.css') }}</style>
+  <style>{{ include_static('email/style.css') }}</style>
 {% endblock %}
 
 {% block body %}
@@ -22,7 +18,9 @@
   <h1>Test Email</h1>
   <p>A paragraph with <b>bold</b>, <i>italic</i> and <em>emphasized</em> text.</p>
   <p>A paragraph with <span>styled words</span> in the text.</p>
-  <blockquote><p>A quote.</p></blockquote>
+  <blockquote>
+    <p>A quote.</p>
+  </blockquote>
   <p>A paragraph with <code>code</code> in the text.</p>
   <hr>
   <p>
@@ -50,7 +48,10 @@
   <p>Link: <a href="{{ url('dynamic_site:home') }}">Home</a></p>
   <p>
     Image:
-    <img alt="Logikal icon" width="100" height="100" border="0"
+    <img alt="Logikal icon"
+         width="100"
+         height="100"
+         border="0"
          src="{{ image(static_path('favicon.png')) }}">
   </p>
 {% endblock %}

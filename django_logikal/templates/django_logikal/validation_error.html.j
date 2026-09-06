@@ -48,9 +48,7 @@
 
       <section class="text box">
         <h2>Page Source</h2>
-        <div class="code">
-          {{ source }}
-        </div>
+        <div class="code">{{ source }}</div>
       </section>
     </div>
   </main>

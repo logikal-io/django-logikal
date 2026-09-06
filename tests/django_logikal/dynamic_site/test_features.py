@@ -31,7 +31,7 @@ def test_home_head(live_server: LiveServer, client: Client) -> None:
 
     # Content security policy
     assert "default-src 'self' 'nonce-" in response.headers['Content-Security-Policy']
-    assert re.search('<script nonce="[^"]+">[\\s]+let test = 42;[\\s]+</script>', source)
+    assert re.search('<script nonce="[^"]+">let test = 42;</script>', source)
 
 
 @set_browser(scenarios.desktop)

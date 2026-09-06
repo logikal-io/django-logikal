@@ -31,8 +31,11 @@
       {% set active = (item.view_name == url_name(request)) if request|default(none) else false %}
       <li role="none"{% if active %} class="active"{% endif %}>
         {% if item.submenu %}
-          <button type="button" role="menuitem" id="{{ item.id }}-{{ type }}"
-                  aria-haspopup="menu" aria-expanded="false">
+          <button type="button"
+                  role="menuitem"
+                  id="{{ item.id }}-{{ type }}"
+                  aria-haspopup="menu"
+                  aria-expanded="false">
             {{ item.title }}
             {{ include_static(arrow_icon) }}
           </button>
@@ -41,9 +44,9 @@
           </menu>
         {% else %}
           <a role="menuitem" id="{{ item.id }}-{{ type }}"
-            {%- if active %} aria-current="page"{% else %} href="{{
-              url(viewname=item.view_name, kwargs=item.view_kwargs)
-            }}" {% endif %}>
+             {%- if active %} aria-current="page"
+             {%- else %} href="{{ url(viewname=item.view_name, kwargs=item.view_kwargs) }}"
+             {%- endif %}>
             {{ item.title }}
           </a>
         {% endif %}
@@ -57,8 +60,11 @@
     </menu>
   {% endfor %}
 
-  <button id="menu-icon" class="mobile-menu-icon" type="button"
-          aria-label="{{ _('Menu') }}" aria-haspopup="menu"
+  <button id="menu-icon"
+          class="mobile-menu-icon"
+          type="button"
+          aria-label="{{ _('Menu') }}"
+          aria-haspopup="menu"
           aria-expanded="false">{{ include_static(menu_icon) }}</button>
 {% endmacro %}
 
@@ -81,15 +87,16 @@
     aria_controls (str): The ID of the element which this button controls.
 
   #}
-  <button
-    type="button"
-    {%- if id %} id="{{ id }}"{% endif %} class="icon{% if classes %} {{ classes }}{% endif %}"
-    {%- if title %} title="{{ title }}"{% endif -%}
-    {%- if aria_label %} aria-label="{{ aria_label }}"{% endif -%}
-    {%- if aria_haspopup %} aria-haspopup="{{ aria_haspopup|str|lower }}"{% endif -%}
-    {%- if aria_expanded is not none %} aria-expanded="{{ aria_expanded|str|lower }}"{% endif -%}
-    {%- if aria_controls %} aria-controls="{{ aria_controls }}"{% endif -%}
-    >
+  <button type="button"
+          class="icon{% if classes %} {{ classes }}{% endif %}"
+          {%- if id %} id="{{ id }}"{% endif -%}
+          {%- if title %} title="{{ title }}"{% endif -%}
+          {%- if aria_label %} aria-label="{{ aria_label }}"{% endif -%}
+          {%- if aria_haspopup %} aria-haspopup="{{ aria_haspopup|str|lower }}"{% endif -%}
+          {%- if aria_expanded is not none %} aria-expanded="{{
+            aria_expanded|str|lower
+          }}"{% endif -%}
+          {%- if aria_controls %} aria-controls="{{ aria_controls }}"{% endif %}>
     {{- include_static(icon) -}}
     <span>{{ text }}</span>
   </button>

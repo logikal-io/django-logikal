@@ -19,9 +19,9 @@
 <!-- Component scripts -->
 {% if scripts %}
   {% for script in scripts %}
-    <script
-      {%- if script.module %} type="module"{% endif -%}
-      {%- if script.defer %} defer{% endif %} src="{{ script.src }}"></script>
+    <script src="{{ script.src }}"
+            {%- if script.module %} type="module"{% endif -%}
+            {%- if script.defer %} defer{% endif %}></script>
   {% endfor %}
 {% endif %}
 <!-- End of component scripts -->

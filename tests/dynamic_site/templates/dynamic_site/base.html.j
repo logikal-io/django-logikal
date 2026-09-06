@@ -54,8 +54,8 @@
         menu_item(title='API', view_name='api-root'),
       ], request=request|default(none)) }}
       <aside>
-        {% if request|default(none) and
-              request.resolver_match.view_name == 'dynamic_site_localized:localization' %}
+        {% if request|default(none)
+          and request.resolver_match.view_name == 'dynamic_site_localized:localization' %}
           {{ commons.language_switcher(
             current_language_code=language(),
             languages=languages(),
@@ -79,8 +79,10 @@
             <li>{{ message }}</li>
           {% endfor %}
         </ul>
-        <button id="messages-dismiss" type="button"
-                popovertarget="messages" popovertargetaction="hide">Dismiss</button>
+        <button id="messages-dismiss"
+                type="button"
+                popovertarget="messages"
+                popovertargetaction="hide">Dismiss</button>
         <script nonce="{{ csp_nonce }}">document.getElementById('messages').showPopover();</script>
       </dialog>
     {% endif %}
