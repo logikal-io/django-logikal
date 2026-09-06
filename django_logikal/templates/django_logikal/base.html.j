@@ -25,7 +25,9 @@
   </head>
   {# djlint: off #}
   <body
-    {%- filter join_lines(spacer=true) -%}{% block bodyattributes %}{% endblock %}{%- endfilter -%}
+    {%- filter join_lines(spacer=true) -%}
+      {%- block bodyattributes %}{% endblock -%}
+    {%- endfilter -%}
     {%- if htmx|default(false) %} data-hx-headers='{"x-csrftoken": "{{ csrf_token }}"}'{% endif -%}
     >
     {% block body required %}{% endblock %}
