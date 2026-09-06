@@ -1,9 +1,6 @@
 {% if form.Meta.render_tag %}
-  <form id="{{ form.id }}"
-        action="{{
-          url(form.Meta.action_url_name, request=request, kwargs=form.action_url_kwargs)
-        }}"
-        method="post">
+  {% set action = url(form.Meta.action_url_name, request=request, kwargs=form.action_url_kwargs) %}
+  <form id="{{ form.id }}" action="{{ action }}" method="post">
 {% endif %}
 {% if form.Meta.header %}<h1>{{ form.Meta.header }}</h1>{% endif %}
 {% if form.Meta.help_text %}<div class="helptext">{{ form.Meta.help_text }}</div>{% endif %}

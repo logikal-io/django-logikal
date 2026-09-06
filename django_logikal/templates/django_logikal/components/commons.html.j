@@ -43,10 +43,10 @@
             {{ _render_menu_items(items=item.submenu, request=request, type=type) }}
           </menu>
         {% else %}
-          <a role="menuitem" id="{{ item.id }}-{{ type }}"
-             {%- if active %} aria-current="page"
-             {%- else %} href="{{ url(viewname=item.view_name, kwargs=item.view_kwargs) }}"
-             {%- endif %}>
+          {% set menu_url = url(viewname=item.view_name, kwargs=item.view_kwargs) %}
+          <a role="menuitem"
+             id="{{ item.id }}-{{ type }}"
+             {%- if active %} aria-current="page"{% else %} href="{{ menu_url }}"{% endif %}>
             {{ item.title }}
           </a>
         {% endif %}

@@ -1,7 +1,9 @@
 {% if field.use_fieldset %}
+  {# djlint: off #}
   <fieldset
     {%- if field.aria_describedby %} aria-describedby="{{ field.aria_describedby }}"{% endif %}>
     {% if field.label %}{{ field.legend_tag() }}{% endif %}
+  {# djlint: on #}
 {% else %}
   {% if field.label %}{{ field.label_tag() }}{% endif %}
 {% endif %}
