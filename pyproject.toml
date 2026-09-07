@@ -68,6 +68,7 @@ packages = [
   'django_logikal.static.django_logikal.js',
   'django_logikal.templates',
   'django_logikal.templates.admin',
+  'django_logikal.templates.debug_toolbar',
   'django_logikal.templates.django_logikal',
   'django_logikal.templates.django_logikal.components',
   'django_logikal.templates.django_logikal.email',
