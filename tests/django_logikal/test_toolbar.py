@@ -23,7 +23,7 @@ def test_toolbar(live_app_url_with_toolbar: LiveURL, browser: Browser) -> None:
     browser.replace_text(sql_panel.find_element(By.TAG_NAME, 'small'), '1 query in 0.00ms')
 
     # Check toolbar
-    browser.check('menu')
+    browser.check('menu', wait_milliseconds=1000)
     toolbar.find_element(By.ID, 'djdt-CachePanel').click()
     toolbar.find_element(By.ID, 'CachePanel').find_element(By.TAG_NAME, 'h4')  # waits for loading
     browser.check('page')
