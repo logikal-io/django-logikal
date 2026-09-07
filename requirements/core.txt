@@ -3,7 +3,7 @@ django-stubs~=6.1
 django-stubs-ext~=6.1
 
 # Django utilities
-django-debug-toolbar~=7.1
+django-debug-toolbar~=8.0
 django-debug-toolbar-template-profiler~=2.1
 django-mail-panel~=6.0
 django-robots~=6.1
@@ -12,7 +12,7 @@ django-simple-history~=3.13
 # Databases
 psycopg~=3.3
 factory-boy~=3.3
-Faker~=40.36
+Faker~=40.38
 
 # Other utilities
 babel~=2.18

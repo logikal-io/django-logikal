@@ -13,12 +13,12 @@
     {% if htmx|default(false) %}
       <meta name="htmx-config"
             content='{{ htmx_config|default({
-        'allowEval': False,
-        'allowScriptTags': False,
+        'allowEval': false,
+        'allowScriptTags': false,
         'inlineScriptNonce': csp_nonce|str,
         'inlineStyleNonce': csp_nonce|str,
       })|tojson }}'>
-      {{ htmx_script(nonce=csp_nonce) }}
+      {{ htmx_script(nonce=csp_nonce, version=2) }}
     {% endif %}
     {% block component_head %}{% endblock %}
     {% block head %}{% endblock %}
