@@ -74,7 +74,11 @@ class BaseSettings(CommonBaseSettings):
     @staticmethod
     def _patch_allauth_ratelimit() -> None:
         """
-        Patch allauth rate limiting to use a separate limit for HTMX validation requests.
+        Patch allauth rate limiting to use a separate limit for htmx validation requests.
+
+        Note that we must patch allauth internals because allauth currently does not provide an
+        extension point for assigning a separate rate limit to partial form validation requests.
+        See https://codeberg.org/allauth/django-allauth/issues/4735.
         """
         from allauth.core import ratelimit  # pylint: disable=import-outside-toplevel
 
