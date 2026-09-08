@@ -10,6 +10,8 @@ from django.shortcuts import render
 from django.template.backends.utils import csrf_input
 from django.views import View, defaults, generic
 
+VALIDATION_REQUEST_ATTRIBUTE = 'htmx_validation'
+
 ViewFunction = Callable[..., HttpResponseBase]
 
 
@@ -74,6 +76,12 @@ class HTMXFormView[Form: BaseForm](HTMXTemplateView, FormView[Form]):
     """
     Display a htmx-enabled improved form and render a template response.
     """
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponseBase:
+        # We're marking HTMX requests as a validation request when coming from this view
+        validation = request.htmx and request.method == 'POST'  # type: ignore[attr-defined]
+        setattr(request, VALIDATION_REQUEST_ATTRIBUTE, validation)
+        return super().dispatch(request, *args, **kwargs)
+
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         """
         Process the form or validate the given form field.

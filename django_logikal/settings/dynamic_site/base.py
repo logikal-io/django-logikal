@@ -10,8 +10,9 @@ from stormware.google.secrets import SecretManager
 
 from django_logikal.settings import Settings
 from django_logikal.settings.common.base import CommonBaseSettings
+from django_logikal.views.generic import VALIDATION_REQUEST_ATTRIBUTE
 
-VALIDATE_FIELD_RATE_LIMIT_KEY = 'validate_field'
+VALIDATION_RATE_LIMIT_KEY = 'validation'
 
 
 class BaseSettings(CommonBaseSettings):
@@ -77,14 +78,19 @@ class BaseSettings(CommonBaseSettings):
         """
         from allauth.core import ratelimit  # pylint: disable=import-outside-toplevel
 
+        patch_attribute = '_django_logikal_patched'
+        if getattr(ratelimit.consume, patch_attribute, False):  # ensure we're only patching once
+            return
+
         consume = ratelimit.consume
 
         def consume_with_validation(request: HttpRequest, *, action: str, **kwargs: Any) -> bool:
-            if request.htmx:  # type: ignore[attr-defined]
-                action = VALIDATE_FIELD_RATE_LIMIT_KEY
+            if getattr(request, VALIDATION_REQUEST_ATTRIBUTE, False):
+                action = VALIDATION_RATE_LIMIT_KEY
 
             return consume(request, action=action, **kwargs)  # type: ignore[no-any-return]
 
+        setattr(consume_with_validation, patch_attribute, True)
         ratelimit.consume = consume_with_validation
 
     @classmethod
@@ -118,7 +124,7 @@ class BaseSettings(CommonBaseSettings):
         cls.append(settings['MIDDLEWARE'], 'allauth.account.middleware.AccountMiddleware')
 
         # Allauth: overall
-        settings['ACCOUNT_RATE_LIMITS'] = {VALIDATE_FIELD_RATE_LIMIT_KEY: '10/s/ip'}
+        settings['ACCOUNT_RATE_LIMITS'] = {VALIDATION_RATE_LIMIT_KEY: '10/s/ip'}
         settings['ACCOUNT_SESSION_REMEMBER'] = True
 
         # Allauth: signup
