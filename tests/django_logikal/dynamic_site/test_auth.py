@@ -26,6 +26,7 @@ def login(live_url: LiveURL, browser: Browser, user: User, password: str) -> Non
     email_input = browser.find_element(By.ID, 'form-auth-email')
     email_input.send_keys(user.email)
     browser.find_element(By.ID, 'form-auth-action').click()
+    browser.wait_for_element(By.ID, 'form-login-password')
     password_input = browser.find_element(By.ID, 'form-login-password')
     password_input.send_keys(password)
     browser.find_element(By.ID, 'form-login-action').click()
