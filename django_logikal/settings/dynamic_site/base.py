@@ -10,9 +10,9 @@ from stormware.google.secrets import SecretManager
 
 from django_logikal.settings import Settings
 from django_logikal.settings.common.base import CommonBaseSettings
-from django_logikal.views.generic import VALIDATION_REQUEST_ATTRIBUTE
-
-VALIDATION_RATE_LIMIT_KEY = 'validation'
+from django_logikal.views.generic import (
+    AUTH_RATE_LIMIT_KEY, VALIDATION_RATE_LIMIT_KEY, VALIDATION_REQUEST_ATTRIBUTE,
+)
 
 
 class BaseSettings(CommonBaseSettings):
@@ -124,7 +124,9 @@ class BaseSettings(CommonBaseSettings):
         cls.append(settings['MIDDLEWARE'], 'allauth.account.middleware.AccountMiddleware')
 
         # Allauth: overall
-        settings['ACCOUNT_RATE_LIMITS'] = {VALIDATION_RATE_LIMIT_KEY: '10/s/ip'}
+        settings.setdefault('ACCOUNT_RATE_LIMITS', {})
+        settings['ACCOUNT_RATE_LIMITS'].setdefault(AUTH_RATE_LIMIT_KEY, '30/m/ip')
+        settings['ACCOUNT_RATE_LIMITS'].setdefault(VALIDATION_RATE_LIMIT_KEY, '10/s/ip')
         settings['ACCOUNT_SESSION_REMEMBER'] = True
 
         # Allauth: signup

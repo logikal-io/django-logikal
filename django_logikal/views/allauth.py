@@ -1,14 +1,15 @@
 from typing import Any
 
 from allauth.account import views
-from django.http import HttpResponse
+from allauth.core import ratelimit
+from django.http import HttpRequest, HttpResponse
 from django.urls import reverse_lazy
 
 from django_logikal.forms.allauth import (
     ChangePasswordForm, LoginForm, ResetPasswordForm,
     ResetPasswordKeyForm, SetPasswordForm, SignupForm,
 )
-from django_logikal.views.generic import HTMXFormView, PublicViewMixin
+from django_logikal.views.generic import VALIDATION_RATE_LIMIT_KEY, HTMXFormView, PublicViewMixin
 
 
 class SignupView(PublicViewMixin, HTMXFormView[SignupForm], views.SignupView):
@@ -51,6 +52,12 @@ class PasswordResetView(PublicViewMixin, HTMXFormView[ResetPasswordForm], views.
     """
     Show the password reset form.
     """
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if request.htmx:  # type: ignore[attr-defined]
+            if response := ratelimit.consume_or_429(request, action=VALIDATION_RATE_LIMIT_KEY):
+                return response  # type: ignore[no-any-return]
+        return super().post(request, *args, **kwargs)
+
     def get_initial(self) -> dict[str, Any]:  # noqa: D400, D415
         """
         :meta private:
