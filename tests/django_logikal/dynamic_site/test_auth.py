@@ -4,6 +4,9 @@ from time import sleep, time
 import jwt
 from anymail.message import AnymailMessage
 from django.conf import settings
+from django.http import HttpResponse
+from django.test import Client
+from django.urls import reverse
 from pytest import mark
 from pytest_logikal import Browser, LiveURL, set_browser
 from pytest_mock import MockerFixture
@@ -108,6 +111,31 @@ def test_field_validation(live_url: LiveURL, browser: Browser) -> None:
     # Login error message
     browser.find_element(By.ID, 'form-login-action').click()
     browser.check('login_error')
+
+
+@mark.django_db
+@mark.parametrize('data', [{}, {'unknown': 'value'}])
+def test_invalid_field_validation(client: Client, data: dict[str, str]) -> None:
+    response = client.post(reverse('account_auth'), data=data, headers={'HX-Request': 'true'})
+    assert response.status_code == 204
+
+
+@mark.django_db
+@mark.parametrize(
+    ['view_name', 'headers'],
+    [('account_auth', {}), ('account_reset_password', {'HX-Request': 'true'})],
+)
+def test_rate_limited(
+    client: Client,
+    mocker: MockerFixture,
+    view_name: str,
+    headers: dict[str, str],
+) -> None:
+    consume = mocker.patch('allauth.core.ratelimit.consume_or_429')
+    consume.return_value = HttpResponse(status=429)
+    response = client.post(reverse(view_name), headers=headers)
+    assert response.status_code == 429
+    consume.assert_called_once()
 
 
 @set_browser(scenarios.desktop)

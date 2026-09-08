@@ -90,7 +90,7 @@ class HTMXFormView[Form: BaseForm](HTMXTemplateView, FormView[Form]):
         """
         if request.htmx:  # type: ignore[attr-defined]
             fields = list(request.POST)
-            if len(fields) != 1:  # pragma: no cover, defensive line
+            if len(fields) != 1:
                 return HttpResponse(status=204)  # incorrect request, do nothing
             form = self.get_form()
             if fields[0] not in form.fields:
