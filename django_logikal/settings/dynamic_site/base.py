@@ -124,9 +124,10 @@ class BaseSettings(CommonBaseSettings):
         cls.append(settings['MIDDLEWARE'], 'allauth.account.middleware.AccountMiddleware')
 
         # Allauth: overall
-        settings.setdefault('ACCOUNT_RATE_LIMITS', {})
-        settings['ACCOUNT_RATE_LIMITS'].setdefault(AUTH_RATE_LIMIT_KEY, '30/m/ip')
-        settings['ACCOUNT_RATE_LIMITS'].setdefault(VALIDATION_RATE_LIMIT_KEY, '10/s/ip')
+        # Note that ACCOUNT_RATE_LIMITS can be the boolean `False` (in addition to a dictionary)
+        if (rate_limits := settings.setdefault('ACCOUNT_RATE_LIMITS', {})) is not False:
+            rate_limits.setdefault(AUTH_RATE_LIMIT_KEY, '30/m/ip')
+            rate_limits.setdefault(VALIDATION_RATE_LIMIT_KEY, '10/s/ip')
         settings['ACCOUNT_SESSION_REMEMBER'] = True
 
         # Allauth: signup
