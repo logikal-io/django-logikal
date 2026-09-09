@@ -26,12 +26,13 @@
     </nav>
 
   #}
-  {% macro _render_menu_items(items, request, type) %}
+  {% macro _render_menu_items(items, request, type, nested=false) %}
     {% for item in items %}
       {% set active = (item.view_name == url_name(request)) if request|default(none) else false %}
       <li role="none"{% if active %} class="active"{% endif %}>
         {% if item.submenu %}
           <button type="button"
+                  class="arrow-toggle{% if nested %} horizontal{% endif %}"
                   role="menuitem"
                   id="{{ item.id }}-{{ type }}"
                   aria-haspopup="menu"
@@ -40,7 +41,9 @@
             {{ include_static(arrow_icon) }}
           </button>
           <menu role="menu" class="group">
-            {{ _render_menu_items(items=item.submenu, request=request, type=type) }}
+            {{ _render_menu_items(
+              items=item.submenu, request=request, type=type, nested=true
+            ) }}
           </menu>
         {% else %}
           {% set menu_url = url(viewname=item.view_name, kwargs=item.view_kwargs) %}
@@ -108,7 +111,7 @@
   action_url,
   csrf_input,
   text=none,
-  icon='django_logikal/icons/globe.svg'
+  icon='django_logikal/icons/arrow.svg'
 ) %}
   {#
   Render a language switcher.
@@ -132,12 +135,17 @@
 
   #}
   <div id="language-switcher" class="dropdown-form-menu">
-    {{ icon_button(
-      text=text or dict(languages)[current_language_code], icon=icon,
-      id='language-switcher-toggle', classes='neutral light',
-      title=_('Change language'), aria_label=_('Change language'),
-      aria_haspopup='menu', aria_expanded=false, aria_controls='form-language-menu',
-    ) }}
+    <button type="button"
+            id="language-switcher-toggle"
+            class="arrow-toggle neutral light"
+            title="{{ _('Change language') }}"
+            aria-label="{{ _('Change language') }}"
+            aria-haspopup="menu"
+            aria-expanded="false"
+            aria-controls="form-language-menu">
+      {{ text or dict(languages)[current_language_code] }}
+      {{ include_static(icon) }}
+    </button>
     <form id="form-language-menu" class="subgroup" action="{{ action_url }}" method="post">
       {{ csrf_input }}
       <menu role="menu">
