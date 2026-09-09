@@ -107,33 +107,34 @@
 
 {% macro language_switcher(
   current_language_code,
-  languages,
   action_url,
   csrf_input,
   text=none,
-  icon='django_logikal/icons/arrow.svg'
+  available_languages=none,
+  arrow_icon='django_logikal/icons/arrow.svg'
 ) %}
   {#
   Render a language switcher.
 
   Args:
     current_language_code (str): The current language code.
-    languages (list): A list of a tuple of available language code, language name pairs.
     action_url (str): The action URL to use.
     csrf_input (str): The CSRF input element to use.
     text (str): The button text to use. Defaults to the current language name.
-    icon (str): The path for the icon to include.
+    available_languages (list): A list of a tuple of available language code, language name pairs.
+      Defaults to the configured languages.
+    arrow_icon (str): The path for the arrow icon to use.
 
   .. jinja:example::
 
     {{ commons.language_switcher(
       current_language_code=language(),
-      languages=languages(),
       action_url=url('set_language'),
       csrf_input=csrf_input
     ) }}
 
   #}
+  {% set available_languages = dict(available_languages or languages()) %}
   <div id="language-switcher" class="dropdown-form-menu">
     <button type="button"
             id="language-switcher-toggle"
@@ -143,13 +144,13 @@
             aria-haspopup="menu"
             aria-expanded="false"
             aria-controls="form-language-menu">
-      {{ text or dict(languages)[current_language_code] }}
-      {{ include_static(icon) }}
+      {{ text or available_languages[current_language_code] }}
+      {{ include_static(arrow_icon) }}
     </button>
     <form id="form-language-menu" class="subgroup" action="{{ action_url }}" method="post">
       {{ csrf_input }}
       <menu role="menu">
-        {% for language_code, language_name in languages %}
+        {% for language_code, language_name in available_languages.items() %}
           {% if language_code != current_language_code %}
             <li role="none">
               <button name="language" value="{{ language_code }}" type="submit" role="menuitem">
