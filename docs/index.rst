@@ -64,19 +64,9 @@ You may install the library with support for dynamic sites via the ``dynamic`` e
 
     pip install django-logikal[dynamic]
 
-auth
-~~~~
-You can also install the library with authentication suport via the ``auth`` extra:
-
-.. code-block:: shell
-
-    pip install django-logikal[dynamic,auth]
-
-This will install and configure `allauth <https://docs.allauth.org/en/latest/>`_.
-
 htmx
 ~~~~
-If you are using `htmx <https://htmx.org/>`_ you should also install the ``htmx`` extra:
+If you are using `htmx <https://htmx.org/>`_, you should also install the ``htmx`` extra:
 
 .. code-block:: shell
 
@@ -84,14 +74,16 @@ If you are using `htmx <https://htmx.org/>`_ you should also install the ``htmx`
 
 This will install and configure `django-htmx <https://django-htmx.readthedocs.io/en/latest/>`_.
 
-.. tip::
+auth
+~~~~
+You can also install the library with authentication support via the ``auth`` extra:
 
-    For the best user experience we recommend installing both the ``auth`` extra and the ``htmx``
-    extra for dynamic sites:
+.. code-block:: shell
 
-    .. code-block:: shell
+    pip install django-logikal[dynamic,auth]
 
-        pip install django-logikal[dynamic,auth,htmx]
+This will install and configure `allauth <https://docs.allauth.org/en/latest/>`_ and :ref:`htmx
+<index:htmx>`.
 
 REST API
 ~~~~~~~~

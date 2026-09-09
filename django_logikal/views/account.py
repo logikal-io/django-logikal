@@ -1,14 +1,17 @@
 from typing import Any
 
+from allauth.core import ratelimit
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
 from django_logikal.forms.account import AuthForm
 from django_logikal.templates.functions import url
-from django_logikal.views.generic import HTMXFormView, PublicViewMixin
+from django_logikal.views.generic import (
+    AUTH_RATE_LIMIT_KEY, VALIDATION_RATE_LIMIT_KEY, HTMXFormView, PublicViewMixin,
+)
 
 
 class AuthView(PublicViewMixin, HTMXFormView[AuthForm]):  # pylint: disable=too-many-ancestors
@@ -17,6 +20,13 @@ class AuthView(PublicViewMixin, HTMXFormView[AuthForm]):  # pylint: disable=too-
     """
     template_name = 'account/auth.html.j'  #: The template to use.
     form_class = AuthForm
+
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        htmx = request.htmx  # type: ignore[attr-defined]
+        action = VALIDATION_RATE_LIMIT_KEY if htmx else AUTH_RATE_LIMIT_KEY
+        if response := ratelimit.consume_or_429(request, action=action):
+            return response  # type: ignore[no-any-return]
+        return super().post(request, *args, **kwargs)
 
     def get_context_data(self, *args: Any, **kwargs: Any) -> dict[str, Any]:
         return {

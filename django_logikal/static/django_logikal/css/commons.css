@@ -193,6 +193,27 @@ button, .button {
     }
   }
 
+  &.arrow-toggle {
+    display: flex;
+    gap: var(--length-gap-element);
+    align-items: baseline;
+    margin-inline-end: calc(-1 * var(--length-gap-subelement));
+    font: var(--theme-font-body-normal-emphasis);
+
+    svg {
+      font: inherit;
+      flex-shrink: 0;
+      width: 1.25ex;
+      height: 1.25ex;
+      transform: rotate(90deg);
+      padding: 0;
+      fill: currentcolor;
+    }
+
+    :where(.open) > & svg { transform: rotate(-90deg); }
+    &:where(.horizontal) svg { transform: none; }
+  }
+
   &.icon-toggle {
     .active { display: none; }
     .inactive { display: block; }
@@ -256,9 +277,6 @@ nav {
       }
 
       button, .button {
-        display: flex;
-        gap: var(--length-gap-element);
-        align-items: baseline;
         background: none;
         border: none;
         box-shadow: none;
@@ -271,16 +289,6 @@ nav {
           border: none;
           box-shadow: none;
         }
-
-        svg { /* stylelint-disable-line no-descending-specificity */
-          font: inherit;
-          flex-shrink: 0;
-          width: 1.25ex;
-          height: 1.25ex;
-          transform: rotate(90deg);
-          padding: 0;
-          fill: currentcolor;
-        }
       }
 
       /* Submenus */
@@ -292,10 +300,6 @@ nav {
         border-radius: var(--length-radius-element);
         padding: var(--length-gap-element);
         margin-block-start: var(--length-gap-element);
-
-        li :is(button, .button) svg { /* stylelint-disable-line no-descending-specificity */
-          transform: none;
-        }
 
         /* Sub-submenus */
         menu {
@@ -315,16 +319,6 @@ nav {
       &.open {
         color: var(--theme-color-text-hit);
         & > menu { display: block; }
-      }
-    }
-
-    & > li {
-      &:has(> :is(button, .button) svg) { /* visual correction for items following an arrow icon */
-        margin-inline-end: calc(-1 * var(--length-gap-subelement));
-      }
-
-      &.open > :is(button, .button) svg { /* stylelint-disable-line no-descending-specificity */
-        transform: rotate(-90deg);
       }
     }
 
@@ -383,6 +377,8 @@ dialog[popover] {
 
   form {
     display: none;
+    .open > & { display: block; }
+
     position: absolute;
     z-index: 1000;
     top: 100%;
@@ -390,7 +386,6 @@ dialog[popover] {
     border-radius: var(--length-radius-element);
     padding: var(--length-gap-element);
     margin-block-start: var(--length-gap-element);
-    &.open { display: block; }
 
     menu { /* stylelint-disable-line no-descending-specificity */
       flex-direction: column;
@@ -399,6 +394,7 @@ dialog[popover] {
       button {
         width: max-content;
         text-align: right;
+        font: var(--theme-font-body-normal-emphasis);
         background: none;
         border: none;
         box-shadow: none;

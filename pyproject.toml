@@ -40,7 +40,7 @@ dependencies = {file = 'requirements/core.txt'}
 [tool.setuptools.dynamic.optional-dependencies]
 static = {file = 'requirements/extras/static.txt'}
 dynamic = {file = 'requirements/extras/dynamic.txt'}
-auth = {file = 'requirements/extras/auth.txt'}
+auth = {file = ['requirements/extras/auth.txt', 'requirements/extras/htmx.txt']}
 htmx = {file = 'requirements/extras/htmx.txt'}
 rest = {file = 'requirements/extras/rest.txt'}
 bibliography = {file = 'requirements/extras/bibliography.txt'}

@@ -59,16 +59,15 @@ document.addEventListener('click', (event) => {
 const languageSwitcher = document.getElementById('language-switcher');
 if (languageSwitcher) {
   const toggle = document.getElementById('language-switcher-toggle');
-  const menu = document.getElementById('form-language-menu');
 
   toggle.addEventListener('click', () => {
-    menu.classList.toggle('open');
-    toggle.setAttribute('aria-expanded', menu.classList.contains('open'));
+    languageSwitcher.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', languageSwitcher.classList.contains('open'));
   });
 
   document.addEventListener('click', (event) => {
     if (!languageSwitcher.contains(event.target)) {
-      menu.classList.remove('open');
+      languageSwitcher.classList.remove('open');
       toggle.setAttribute('aria-expanded', false);
     }
   });

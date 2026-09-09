@@ -10,6 +10,10 @@ from django.shortcuts import render
 from django.template.backends.utils import csrf_input
 from django.views import View, defaults, generic
 
+AUTH_RATE_LIMIT_KEY = 'auth'
+VALIDATION_RATE_LIMIT_KEY = 'validation'
+VALIDATION_REQUEST_ATTRIBUTE = 'htmx_validation'
+
 ViewFunction = Callable[..., HttpResponseBase]
 
 
@@ -74,15 +78,23 @@ class HTMXFormView[Form: BaseForm](HTMXTemplateView, FormView[Form]):
     """
     Display a htmx-enabled improved form and render a template response.
     """
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponseBase:
+        # We're marking htmx requests as a validation request when coming from this view
+        validation = request.htmx and request.method == 'POST'  # type: ignore[attr-defined]
+        setattr(request, VALIDATION_REQUEST_ATTRIBUTE, validation)
+        return super().dispatch(request, *args, **kwargs)
+
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         """
         Process the form or validate the given form field.
         """
         if request.htmx:  # type: ignore[attr-defined]
             fields = list(request.POST)
-            if len(fields) != 1:  # pragma: no cover, defensive line
+            if len(fields) != 1:
                 return HttpResponse(status=204)  # incorrect request, do nothing
             form = self.get_form()
+            if fields[0] not in form.fields:
+                return HttpResponse(status=204)  # incorrect request, do nothing
             return HttpResponse(form[fields[0]].errors.render())
         return super().post(request, *args, **kwargs)
 

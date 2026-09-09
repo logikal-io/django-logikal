@@ -10,8 +10,9 @@ from stormware.google.secrets import SecretManager
 
 from django_logikal.settings import Settings
 from django_logikal.settings.common.base import CommonBaseSettings
-
-VALIDATE_FIELD_RATE_LIMIT_KEY = 'validate_field'
+from django_logikal.views.generic import (
+    AUTH_RATE_LIMIT_KEY, VALIDATION_RATE_LIMIT_KEY, VALIDATION_REQUEST_ATTRIBUTE,
+)
 
 
 class BaseSettings(CommonBaseSettings):
@@ -73,18 +74,27 @@ class BaseSettings(CommonBaseSettings):
     @staticmethod
     def _patch_allauth_ratelimit() -> None:
         """
-        Patch allauth rate limiting to use a separate limit for HTMX validation requests.
+        Patch allauth rate limiting to use a separate limit for htmx validation requests.
+
+        Note that we must patch allauth internals because allauth currently does not provide an
+        extension point for assigning a separate rate limit to partial form validation requests.
+        See https://codeberg.org/allauth/django-allauth/issues/4735.
         """
         from allauth.core import ratelimit  # pylint: disable=import-outside-toplevel
+
+        patch_attribute = '_django_logikal_patched'
+        if getattr(ratelimit.consume, patch_attribute, False):  # ensure we're only patching once
+            return
 
         consume = ratelimit.consume
 
         def consume_with_validation(request: HttpRequest, *, action: str, **kwargs: Any) -> bool:
-            if request.htmx:  # type: ignore[attr-defined]
-                action = VALIDATE_FIELD_RATE_LIMIT_KEY
+            if getattr(request, VALIDATION_REQUEST_ATTRIBUTE, False):
+                action = VALIDATION_RATE_LIMIT_KEY
 
             return consume(request, action=action, **kwargs)  # type: ignore[no-any-return]
 
+        setattr(consume_with_validation, patch_attribute, True)
         ratelimit.consume = consume_with_validation
 
     @classmethod
@@ -118,7 +128,10 @@ class BaseSettings(CommonBaseSettings):
         cls.append(settings['MIDDLEWARE'], 'allauth.account.middleware.AccountMiddleware')
 
         # Allauth: overall
-        settings['ACCOUNT_RATE_LIMITS'] = {VALIDATE_FIELD_RATE_LIMIT_KEY: '10/s/ip'}
+        # Note that ACCOUNT_RATE_LIMITS can be the boolean `False` (in addition to a dictionary)
+        if (rate_limits := settings.setdefault('ACCOUNT_RATE_LIMITS', {})) is not False:
+            rate_limits.setdefault(AUTH_RATE_LIMIT_KEY, '30/m/ip')
+            rate_limits.setdefault(VALIDATION_RATE_LIMIT_KEY, '10/s/ip')
         settings['ACCOUNT_SESSION_REMEMBER'] = True
 
         # Allauth: signup

@@ -58,7 +58,6 @@
           and request.resolver_match.view_name == 'dynamic_site_localized:localization' %}
           {{ commons.language_switcher(
             current_language_code=language(),
-            languages=languages(),
             action_url=url('set_language'),
             csrf_input=csrf_input,
           ) }}
