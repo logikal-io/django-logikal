@@ -3,9 +3,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: dynamic-site v5.0.2.dev5+gb40e24e32.d20260609\n"
+"Project-Id-Version: dynamic-site v7.0.3.dev9+g4b45b595b.d20260909\n"
 "Report-Msgid-Bugs-To: Gergely Kalmár <contact@logikal.io>\n"
-"POT-Creation-Date: 2026-06-17 20:35+0200\n"
+"POT-Creation-Date: 2026-09-21 12:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,69 +14,70 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: tests/dynamic_site/settings/app.py:14
+#: tests/dynamic_site/settings/app.py
 msgid "English (US)"
 msgstr ""
 
-#: tests/dynamic_site/settings/app.py:15
+#: tests/dynamic_site/settings/app.py
 msgid "English (GB)"
 msgstr ""
 
-#: tests/dynamic_site/templates/account/account.html.j:34
+#: tests/dynamic_site/templates/account/account.html.j
 msgid "Disconnect"
 msgstr ""
 
-#: tests/dynamic_site/templates/account/auth.html.j:10
+#: tests/dynamic_site/templates/account/auth.html.j
 msgid "or"
 msgstr ""
 
-#: tests/dynamic_site/templates/account/auth.html.j:10
+#: tests/dynamic_site/templates/account/auth.html.j
 #, python-format
 msgid "Continue with %(provider)s"
 msgstr ""
 
-#: tests/dynamic_site/templates/account/auth.html.j:13
+#: tests/dynamic_site/templates/account/auth.html.j
 msgid "Continue to access all content"
 msgstr ""
 
-#: tests/dynamic_site/templates/account/login.html.j:10
+#: tests/dynamic_site/templates/account/login.html.j
 msgid "Sign in to access all content"
 msgstr ""
 
-#: tests/dynamic_site/templates/account/signup.html.j:10
+#: tests/dynamic_site/templates/account/signup.html.j
 msgid "Sign up to access all content"
 msgstr ""
 
-#: tests/dynamic_site/templates/dynamic_site/base.html.j:59
+#: tests/dynamic_site/templates/dynamic_site/base.html.j
+msgid "Menu"
+msgstr ""
+
+#: tests/dynamic_site/templates/dynamic_site/base.html.j
 msgid "Change language"
 msgstr ""
 
-#: tests/dynamic_site/templates/dynamic_site/macros.html.j:1
+#: tests/dynamic_site/templates/dynamic_site/macros.html.j
 msgid "local flavor"
 msgstr ""
 
-#: tests/dynamic_site/templates/dynamic_site/macros.html.j:2
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:57
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:58
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:59
+#: tests/dynamic_site/templates/dynamic_site/macros.html.j
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j
 msgid "Content:"
 msgstr ""
 
-#: tests/dynamic_site/templates/dynamic_site/macros.html.j:3
+#: tests/dynamic_site/templates/dynamic_site/macros.html.j
 msgid "local realize inside"
 msgstr ""
 
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:7
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:10
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j
 msgid "Localization"
 msgstr ""
 
 #. This is a template test comment for translators
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:13
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j
 msgid "Translations"
 msgstr ""
 
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:16
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j
 #, python-format
 msgctxt "course"
 msgid "There is %(count)s cake with amazing flavors."
@@ -85,14 +86,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. This is an ngettext template test comment for translators
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:22
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j
 #, python-format
 msgid "%(num)d color"
 msgid_plural "%(num)d colors"
 msgstr[0] ""
 msgstr[1] ""
 
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:27
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j
 msgid ""
 "This is a long localized text containing multiple sentences that spans more than one line in "
 "the source file and also in the message file."
@@ -100,54 +101,51 @@ msgstr ""
 
 #. This is a long gettext template test comment for translators that spans more     than one line
 #. in the source file and also in the message file
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:34
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j
 #, python-format
 msgid "The word &ldquo;%(word)s&rdquo; has been localized."
 msgstr ""
 
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:57
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j
 msgid "external namespaced flavor"
 msgstr ""
 
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:57
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j
 msgid "external namespaced realize inside"
 msgstr ""
 
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:57
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:58
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:59
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:60
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j
 msgid "localized"
 msgstr ""
 
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:58
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j
 msgid "external imported flavor"
 msgstr ""
 
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:58
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j
 msgid "external imported realize inside"
 msgstr ""
 
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:59
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j
 msgid "external aliased flavor"
 msgstr ""
 
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:59
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j
 msgid "external aliased realize inside"
 msgstr ""
 
-#: tests/dynamic_site/urls.py:60
+#: tests/dynamic_site/urls.py
 msgid "localization/"
 msgstr ""
 
 #. Translators: This is a view test comment for translators
-#: tests/dynamic_site/urls.py:68
+#: tests/dynamic_site/urls.py
 #, python-format
 msgid "localized %(word)s"
 msgstr ""
 
-#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j:34
-#: tests/dynamic_site/urls.py:69
+#: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j
+#: tests/dynamic_site/urls.py
 msgid "marvelous"
 msgstr ""
 

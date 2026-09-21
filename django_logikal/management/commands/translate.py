@@ -101,6 +101,7 @@ class Command(BaseCommand):
                 '--mapping-file', str(mapping_file),
                 '--width', DEFAULT_WIDTH,
                 '--sort-by-file',
+                '--add-location', 'file',
                 '--add-comments', 'Translators:',
                 # Metadata
                 '--project', app.name.replace('_', '-'),
