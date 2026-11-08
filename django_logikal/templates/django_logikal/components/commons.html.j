@@ -172,7 +172,7 @@
               aria-label="{{ _('Change language') }}"
               aria-haspopup="menu"
               aria-expanded="false"
-              aria-controls="form-language-menu">
+              aria-controls="{{ id }}-form">
         {{ text or available_languages[current_language_code] }}
         {{ include_static(dropdown_icon) }}
       </button>
