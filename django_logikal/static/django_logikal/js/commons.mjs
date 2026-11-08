@@ -77,7 +77,7 @@ window.document.addEventListener('click', (event) => {
 
 document.querySelectorAll('nav .menu-mobile-container button.icon.toggle').forEach((button) => {
   button.addEventListener('click', () => {
-    const menu = document.querySelector('nav menu.mobile');
+    const menu = button.closest('.menu-mobile-container').querySelector('menu.mobile');
     menu.classList.toggle('open');
     button.setAttribute('aria-expanded', menu.classList.contains('open'));
   });
