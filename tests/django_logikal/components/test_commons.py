@@ -53,20 +53,20 @@ def test_menu(browser: Browser, theme: str, variant: str) -> None:
         ready_state = theme_variant
 
     # Open "blog" menu item
-    root.find_element(By.ID, f'menu-blog-{variant}').click()
+    root.find_element(By.ID, f'menu-{variant}-blog').click()
     browser.check(f'blog_menu_open_{theme_variant}', element=example)
 
     # Close "blog" menu item
-    root.find_element(By.ID, f'menu-blog-{variant}').click()
+    root.find_element(By.ID, f'menu-{variant}-blog').click()
     browser.check(ready_state, element=example)
 
     # Open "blog" and then "info" menu item
-    root.find_element(By.ID, f'menu-blog-{variant}').click()
-    root.find_element(By.ID, f'menu-info-{variant}').click()
+    root.find_element(By.ID, f'menu-{variant}-blog').click()
+    root.find_element(By.ID, f'menu-{variant}-info').click()
     browser.check(f'info_menu_open_{theme_variant}', element=example)
 
     # Open "info" menu "components" submenu item
-    root.find_element(By.ID, f'menu-components-{variant}').click()
+    root.find_element(By.ID, f'menu-{variant}-components').click()
     browser.check(f'info_submenu_open_{theme_variant}', element=example)
 
     # Close all items

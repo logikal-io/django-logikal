@@ -32,15 +32,15 @@
       {% set menu_items = [
         menu_item(title='Home', view_name='dynamic_site:home'),
         menu_item(title='Errors', submenu=[
-          menu_item(title='404', view_name='error:404'),
-          menu_item(title='500', view_name='error:500'),
+          menu_item(title='404', view_name='error:404', id='submenu-404'),
+          menu_item(title='500', view_name='error:500', id='submenu-500'),
           menu_item(title='Server Errors', submenu=[
-            menu_item(title='400', view_name='error:400', id='menu-server-400'),
-            menu_item(title='500', view_name='error:500', id='menu-server-500'),
+            menu_item(title='400', view_name='error:400', id='subsubmenu-400'),
+            menu_item(title='500', view_name='error:500', id='subsubmenu-500'),
           ]),
           menu_item(title='Page Not Found Errors', submenu=[
-            menu_item(title='403', view_name='error:403', id='menu-page-403'),
-            menu_item(title='404', view_name='error:404', id='menu-page-404'),
+            menu_item(title='403', view_name='error:403', id='subsubmenu-403'),
+            menu_item(title='404', view_name='error:404', id='subsubmenu-404'),
           ]),
         ]),
         menu_item(title='Components', submenu=[

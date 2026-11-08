@@ -46,12 +46,12 @@ def test_menu(live_server: LiveServer, browser: Browser) -> None:
     if browser.settings.mobile:
         browser.find_element(By.ID, 'menu-mobile-toggle').click()
 
-    menu = browser.find_element(By.ID, f'menu-errors-{variant}')
+    menu = browser.find_element(By.ID, f'menu-{variant}-errors')
     browser.hover(menu)
     browser.check('menu_hover')
 
     menu.click()
-    menu_item = browser.find_element(By.ID, f'menu-404-{variant}')
+    menu_item = browser.find_element(By.ID, f'menu-{variant}-submenu-404')
     browser.hover(menu_item)
     browser.check('menu_item_hover')
 
@@ -60,18 +60,18 @@ def test_menu(live_server: LiveServer, browser: Browser) -> None:
     browser.check('page_404')
     if browser.settings.mobile:
         browser.find_element(By.ID, 'menu-mobile-toggle').click()
-    browser.find_element(By.ID, f'menu-home-{variant}').click()  # navigate back
+    browser.find_element(By.ID, f'menu-{variant}-home').click()  # navigate back
 
     # Check submenu hover
     if browser.settings.mobile:
         browser.find_element(By.ID, 'menu-mobile-toggle').click()
-    browser.find_element(By.ID, f'menu-errors-{variant}').click()
-    submenu = browser.find_element(By.ID, f'menu-page-not-found-errors-{variant}')
+    browser.find_element(By.ID, f'menu-{variant}-errors').click()
+    submenu = browser.find_element(By.ID, f'menu-{variant}-page-not-found-errors')
     browser.hover(submenu)
     browser.check('submenu_hover')
 
     submenu.click()
-    submenu_item = browser.find_element(By.ID, f'menu-page-404-{variant}')
+    submenu_item = browser.find_element(By.ID, f'menu-{variant}-subsubmenu-404')
     browser.hover(submenu_item)
     browser.check('submenu_item_hover')
 
@@ -124,7 +124,7 @@ def test_language_switcher(live_url: LiveURL, browser: Browser) -> None:
     browser.check('switcher_open')
 
     # Check interactions with menu
-    browser.find_element(By.ID, 'menu-errors-desktop').click()
+    browser.find_element(By.ID, 'menu-desktop-errors').click()
     browser.check('menu_open')
     language_switcher.click()
     browser.check('switcher_open')

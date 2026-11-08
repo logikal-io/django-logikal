@@ -1,5 +1,5 @@
 {% macro _render_menu_items(
-  items, request, dropdown_icon, id_postfix, horizontal=none, nested=false
+  items, request, dropdown_icon, id_prefix, horizontal=none, nested=false
 ) %}
   {% for item in items %}
     {% set current = (item.view_name == url_name(request)) if request|default(none) else false %}
@@ -9,7 +9,7 @@
         <button type="button"
                 class="icon dropdown{% if render_horizontal %} horizontal{% endif %}"
                 role="menuitem"
-                id="{{ item.id }}-{{ id_postfix }}"
+                id="{{ id_prefix }}-{{ item.id }}"
                 aria-haspopup="menu"
                 aria-expanded="false">
           {{ item.title }}
@@ -18,13 +18,13 @@
         <menu role="menu" class="popover">
           {{ _render_menu_items(
             items=item.submenu, request=request, dropdown_icon=dropdown_icon,
-            id_postfix=id_postfix, horizontal=horizontal, nested=true
+            id_prefix=id_prefix, horizontal=horizontal, nested=true
           ) }}
         </menu>
       {% else %}
         {% set menu_url = url(viewname=item.view_name, kwargs=item.view_kwargs) %}
         <a role="menuitem"
-           id="{{ item.id }}-{{ id_postfix }}"
+           id="{{ id_prefix }}-{{ item.id }}"
            class="button{% if current %} disabled{% endif %}"
            {% if current %}aria-current="page"{% else %}href="{{ menu_url }}"{% endif %}>
           {{ item.title }}
@@ -68,9 +68,7 @@
 
   #}
   <menu role="menubar" id="{{ id }}" class="desktop">
-    {{ _render_menu_items(
-      items, request=request, dropdown_icon=dropdown_icon, id_postfix='desktop'
-    ) }}
+    {{ _render_menu_items(items, request=request, dropdown_icon=dropdown_icon, id_prefix=id) }}
   </menu>
 {% endmacro %}
 
@@ -122,14 +120,14 @@
             data-active-title="{{ _('Hide menu') }}"
             data-active-aria-label="{{ _('Hide menu') }}"
             aria-haspopup="true"
-            aria-controls="menu-mobile"
+            aria-controls="{{ id }}"
             aria-expanded="false">
       <span class="inactive" aria-hidden="false">{{ include_static(menu_icon) }}</span>
       <span class="active" aria-hidden="true">{{ include_static(menu_close_icon) }}</span>
     </button>
     <menu id="{{ id }}" role="menubar" class="mobile popover">
       {{ _render_menu_items(
-        items, request=request, dropdown_icon=dropdown_icon, id_postfix='mobile', horizontal=false
+        items, request=request, dropdown_icon=dropdown_icon, id_prefix=id, horizontal=false
       ) }}
     </menu>
   </div>
@@ -178,7 +176,7 @@
         {{ text or available_languages[current_language_code] }}
         {{ include_static(dropdown_icon) }}
       </button>
-      <form id="form-language-menu" action="{{ action_url }}" method="post">
+      <form id="{{ id }}-form" action="{{ action_url }}" method="post">
         {{ csrf_input }}
         <menu role="menu" class="popover">
           {% for language_code, language_name in available_languages.items() %}
