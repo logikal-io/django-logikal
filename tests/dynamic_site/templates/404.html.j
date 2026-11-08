@@ -5,7 +5,7 @@
   <div class="spotlight">
     <section class="stack">
       <h1>Page Not Found</h1>
-      <p>
+      <p class="text">
         Page &ldquo;{{ request.path }}&rdquo; does not exist, or you may not have permission to
         access it.
       </p>
