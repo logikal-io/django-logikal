@@ -3,8 +3,8 @@
 {% block subtitle %}Models{% endblock %}
 {% block main %}
   <div class="spotlight">
-    <article class="text box">
-      <h1>Models</h1>
+    <article class="text">
+      <h1>Model Rendering</h1>
 
       <h2>Projects</h2>
       <table>

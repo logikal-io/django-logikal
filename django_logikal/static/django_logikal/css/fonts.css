@@ -1,60 +1,145 @@
-/* Sans-serif font */
+/* Display font */
+
+/* License: url('../fonts/CooperHewitt-LICENSE.txt') */
+@font-face {
+  font-family: 'django-logikal-cooper-hewitt';
+  src: url('../fonts/CooperHewitt-Book.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+  /* Metric corrections */
+  ascent-override: 85%;
+  descent-override: 15%;
+}
+
+@font-face {
+  font-family: 'django-logikal-cooper-hewitt';
+  src: url('../fonts/CooperHewitt-BookItalic.woff') format('woff');
+  font-weight: normal;
+  font-style: italic;
+
+  /* Metric corrections */
+  ascent-override: 85%;
+  descent-override: 15%;
+}
+
+@font-face {
+  font-family: 'django-logikal-cooper-hewitt';
+  src: url('../fonts/CooperHewitt-Semibold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+
+  /* Metric corrections */
+  ascent-override: 85%;
+  descent-override: 15%;
+}
+
+@font-face {
+  font-family: 'django-logikal-cooper-hewitt';
+  src: url('../fonts/CooperHewitt-SemiboldItalic.woff') format('woff');
+  font-weight: 600;
+  font-style: italic;
+
+  /* Metric corrections */
+  ascent-override: 85%;
+  descent-override: 15%;
+}
+
+@font-face {
+  font-family: 'django-logikal-cooper-hewitt';
+  src: url('../fonts/CooperHewitt-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+
+  /* Metric corrections */
+  ascent-override: 85%;
+  descent-override: 15%;
+}
+
+@font-face {
+  font-family: 'django-logikal-cooper-hewitt';
+  src: url('../fonts/CooperHewitt-BoldItalic.woff') format('woff');
+  font-weight: bold;
+  font-style: italic;
+
+  /* Metric corrections */
+  ascent-override: 85%;
+  descent-override: 15%;
+}
+
+/* Body font */
 
 /* License: url('../fonts/Lato-LICENSE.txt') */
 @font-face {
-  font-family: 'lato';
+  font-family: 'django-logikal-lato';
   src: url('../fonts/Lato-Regular.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
+
+  /* Metric corrections */
+  ascent-override: 85.5%;
+  descent-override: 14.5%;
 }
 
 @font-face {
-  font-family: 'lato';
+  font-family: 'django-logikal-lato';
   src: url('../fonts/Lato-Italic.woff2') format('woff2');
   font-weight: normal;
   font-style: italic;
+
+  /* Metric corrections */
+  ascent-override: 85.5%;
+  descent-override: 14.5%;
 }
 
 @font-face {
-  font-family: 'lato';
+  font-family: 'django-logikal-lato';
   src: url('../fonts/Lato-Bold.woff2') format('woff2');
   font-weight: bold;
   font-style: normal;
+
+  /* Metric corrections */
+  ascent-override: 85.5%;
+  descent-override: 14.5%;
 }
 
 @font-face {
-  font-family: 'lato';
+  font-family: 'django-logikal-lato';
   src: url('../fonts/Lato-BoldItalic.woff2') format('woff2');
   font-weight: bold;
   font-style: italic;
+
+  /* Metric corrections */
+  ascent-override: 85.5%;
+  descent-override: 14.5%;
 }
 
 /* Monospace font */
 
 /* License: url('../fonts/RobotoMono-LICENSE.txt') */
 @font-face {
-  font-family: 'roboto-mono';
+  font-family: 'django-logikal-roboto-mono';
   src: url('../fonts/RobotoMono-Regular.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'roboto-mono';
+  font-family: 'django-logikal-roboto-mono';
   src: url('../fonts/RobotoMono-Italic.woff2') format('woff2');
   font-weight: normal;
   font-style: italic;
 }
 
 @font-face {
-  font-family: 'roboto-mono';
+  font-family: 'django-logikal-roboto-mono';
   src: url('../fonts/RobotoMono-Bold.woff2') format('woff2');
   font-weight: bold;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'roboto-mono';
+  font-family: 'django-logikal-roboto-mono';
   src: url('../fonts/RobotoMono-BoldItalic.woff2') format('woff2');
   font-weight: bold;
   font-style: italic;

@@ -5,7 +5,7 @@ form, .form-group {
   flex-direction: column;
   align-items: stretch;
   gap: var(--length-gap-group);
-  max-width: var(--length-form);
+  max-width: var(--length-form-width);
 
   h1 { margin-block-end: var(--length-gap-group); }
   p { text-align: center; }
@@ -17,38 +17,37 @@ form, .form-group {
 
   input {
     display: block;
-    min-width: var(--length-element-normal);
+    min-width: var(--length-element-width);
     padding: var(--length-gap-element);
     outline: none;
     background-color: var(--theme-color-neutral);
     color: var(--theme-color-neutral-content);
     border-radius: var(--length-radius-element);
-    border: var(--theme-outline-neutral);
-    box-shadow: var(--theme-shadow-element);
+    border: var(--length-edge-element) solid var(--theme-color-neutral-outline);
 
     &::placeholder { color: var(--theme-color-neutral-content-hint); }
-    &:focus { border: var(--theme-outline-neutral-highlight); }
+    &:focus { border-color: var(--theme-color-neutral-highlight-outline); }
 
     &:user-invalid, .input-field:has(.errors li) & {
       background-color: var(--theme-color-neutral-error);
       color: var(--theme-color-neutral-error-content);
-      border: var(--theme-outline-neutral-error);
+      border-color: var(--theme-color-neutral-error-outline);
 
       &:focus {
         background-color: var(--theme-color-neutral-error-highlight);
         color: var(--theme-color-neutral-error-highlight-content);
-        border: var(--theme-outline-neutral-error-highlight);
+        border-color: var(--theme-color-neutral-error-highlight-outline);
       }
     }
 
     &[disabled], &[readonly] {
       background-color: var(--theme-color-neutral-disabled);
       color: var(--theme-color-neutral-disabled-content);
-      border: var(--theme-outline-neutral-disabled);
+      border-color: var(--theme-color-neutral-disabled-outline);
     }
   }
 
-  input, button { width: 100%; }
+  input, button, .button { width: 100%; }
 
   ::file-selector-button { margin-inline-end: var(--length-gap-subelement); }
 
@@ -57,20 +56,24 @@ form, .form-group {
   }
 
   .errors {
-    text-wrap: pretty;
+    display: block;
     text-align: start;
     margin-block-start: var(--length-gap-subelement);
-    color: var(--theme-color-text-error);
+    color: var(--theme-color-danger);
     &:not(:has(li)) { display: none; }
-    &:has(li)) { display: block; }
+
+    &.nonfield {
+      margin-block-end: var(--length-gap-group);
+      text-align: center;
+    }
   }
 
   .password-input {
     position: relative;
+
     input { padding-inline-end: calc(var(--length-button-icon) + 2 * var(--length-gap-group)); }
 
-    .icon-toggle {
-      width: auto;
+    .icon {
       position: absolute;
       top: 50%;
       right: var(--length-gap-element);

@@ -1,0 +1,9 @@
+/* Match the scale of the components to the documentation font size */
+.jinja-example-content { zoom: 0.75; }
+
+/* Show mobile menu correctly even on desktop */
+nav:has(.menu-mobile-container):not(:has(menu.desktop)) {
+  display: block;
+
+  & > .menu-mobile-container { display: block; }
+}

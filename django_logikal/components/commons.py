@@ -5,7 +5,7 @@ from typing import Any
 @dataclass
 class MenuItem:
     """
-    An item in a menu bar.
+    An item in a menu.
     """
     title: str
     view_name: str | None = None

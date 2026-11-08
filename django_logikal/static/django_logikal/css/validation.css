@@ -1,14 +1,30 @@
 @import url('fonts.css');
-@import url('layout.css');
+@import url('composition.css');
 @import url('text.css');
 
-.validation-errors .code {
+body {
+  background-color: var(--theme-color-section);
+  color: var(--theme-color-section-content);
+}
+
+header hgroup {
+  margin-block: var(--length-gap-group);
+
+  p { margin: var(--margin-subtitle); }
+}
+
+main .text {
+  background-color: var(--theme-color-body);
+  color: var(--theme-color-body-content);
+}
+
+.validation-errors .code .source {
   overflow: auto;
 
   td.linenos { /* force line number styling font for consistency */
     color: var(--theme-color-neutral-content-hint);
     padding-inline-end: var(--length-gap-group);
-    pre { font: var(--theme-font-monospace-normal); }
+    pre { font: var(--theme-font-body-code); }
     .normal { background-color: transparent; padding: 0; }
   }
 }

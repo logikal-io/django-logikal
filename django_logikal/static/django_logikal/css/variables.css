@@ -1,126 +1,158 @@
 :root, :host {
   color-scheme: light dark;
 
-  /* Units */
+  /* Typography */
 
-  /** Typography **/
+  /** Font families **/
+  --font-family-display: 'django-logikal-cooper-hewitt', sans-serif;
+  --font-family-text: 'django-logikal-lato', sans-serif;
+  --font-family-text-monospace: 'django-logikal-roboto-mono', monospace;
 
-  /*** Font families ***/
-  --font-family-body: 'lato', sans-serif;
-  --font-family-display: 'lato', sans-serif;
-  --font-family-monospace: 'roboto-mono', monospace;
+  /** Font sizing **/
 
-  /*** Font sizing ***/
-  --font-size-body-normal: 1rem/1.5rem; /* 16px/24px at medium font size (16px) */
-  --font-size-display-small: 1rem/1.5rem; /* 16px/24px at medium font size (16px) */
-  --font-size-display-normal: 1.5rem/1.5rem; /* 24px/24px at medium font size (16px) */
-  --font-size-display-large: 2.25rem/2.25rem; /* 36px/36px at medium font size (16px) */
-  --font-size-monospace-normal: 0.875rem/1.5rem; /* 14px/24px at medium font size (16px) */
+  /*** Heading sizes ***/
+  --font-size-title: 2.75rem; /* 44px */
+  --font-leading-title: 3rem; /* 48px */
 
-  /** Lengths **/
+  --font-size-subtitle: 1.75rem; /* 28px */
+  --font-leading-subtitle: 2.25rem; /* 36px */
 
-  /*** Gaps ***/
-  --length-gap-subelement: 0.25rem; /* 4px */
-  --length-gap-element: 0.5rem; /* 8px */
-  --length-gap-group: 1rem; /* 16px */
-  --length-gap-group-large: 3rem; /* 48px */
+  --font-size-heading: 1.75rem; /* 28px */
+  --font-leading-heading: 2.25rem; /* 36px */
 
-  /*** Radii ***/
-  --length-radius-element: 0.375rem; /* 6px */
-  --length-radius-group: 0.75rem; /* 12px */
+  --font-size-subheading: 1.25rem; /* 20px */
+  --font-leading-subheading: 1.75rem; /* 28px */
 
-  /*** Edges ***/
-  --length-edge: 0.0625rem; /* 1px */
+  /*** Body sizes ***/
+  --font-size-body: 1.25rem; /* 20px */
+  --font-leading-body: 1.75rem; /* 28px */
 
-  /*** Shadows ***/
-  --length-shadow-element-small: 0.025rem 0.0375rem 0.05rem; /* 0.4px 0.6px 0.8px */
-  --length-shadow-element-normal: 0.025rem 0.05rem 0.0625rem -0.075rem; /* 0.4px 0.8px 1 -1.2px */
-  --length-shadow-element-large: 0.0625rem 0.125rem 0.15rem -0.15rem; /* 1px 2px 2.4px -2.4px */
-  --length-shadow-group-small: 0.025rem 0.0375rem 0.05rem; /* 0.4px 0.6px 0.8px */
-  --length-shadow-group-normal: 0.05rem 0.1rem 0.125rem -0.05rem; /* 0.8px 1.6px 2px -0.8px */
-  --length-shadow-group-large: 0.125rem 0.25rem 0.325rem -0.1rem; /* 2px 4px 5.2px -1.6px */
-  --length-shadow-group-xlarge: 0.25rem 0.625rem 0.75rem -0.15rem; /* 4px 10px 12px -2.4px */
+  --font-size-body-caption: 1.125rem; /* 18px */
+  --font-leading-body-caption: 1.75rem; /* 28px */
 
-  /*** Text ***/
+  --font-size-body-code: 1.125rem; /* 18px */
+  --font-leading-body-code: 1.75rem; /* 28px */
 
-  /* _Notes:
-   *  - Margins + display leading should be multiples of body normal leading (24px)
-   *  - Spacing is according to golden ratio (including article paddings) */
-  --length-text-indent: 2em; /* 32px with 16px font size */
-  --length-margin-header:
-    calc(4.172rem - var(--length-gap-group-large)/2.618) 0
-    calc(var(--length-gap-group-large)/2.618 + 2.578rem); /* 6 * 24px */
-  --length-margin-header-tagline: 1.5rem 0 0; /* (24px) + 24px = 2 * 24px) */
-  --length-margin-subheader: 2.75rem 0 1.75rem; /* (44px + 28px = 72px) + 24px = 4 * 24px */
-  --length-margin-paragraph: 1.5rem 0; /* (24px + 24px = 48px) + 24px = 72px = 3 * 24px */
-  --length-margin-paragraph-small: 0.5rem 0 1rem; /* (8px + 16px) + 24px = 48px = 2 * 24px */
+  /** Font metric corrections **/
+  --font-button-icon-text-vertical-shift: 0.0625rem;
 
-  /*** Elements ***/
+  /** Font theme **/
 
-  /* _Note: ideal text width is ~66 characters per line, however, due to typical computer screen
-   *        aspect ratios and the crude typesetting algorithms in browsers we have to push text
-   *        width wider and closer to the readability limit (~80). */
-  --length-logo-height: 1em; /* 16px with 16px font size */
-  --length-button-icon: 1.25em; /* 20px with 16px font size */
-  --length-element: 15rem; /* 240px */
-  --length-form: 18.75rem; /* 300px */
-  --length-card-normal: 22rem; /* 352px */
-  --length-text: 40em; /* 640px with 16px font size */
+  /*** Heading fonts ***/
+  --theme-font-title: var(--font-size-title)/var(--font-leading-title)
+    var(--font-family-display);
+  --theme-font-subtitle: italic var(--font-size-subtitle)/var(--font-leading-subtitle)
+    var(--font-family-display);
+  --theme-font-heading: 600 var(--font-size-heading)/var(--font-leading-heading)
+    var(--font-family-display);
+  --theme-font-subheading: bold var(--font-size-subheading)/var(--font-leading-subheading)
+    var(--font-family-display);
 
-  /*** Splits ***/
+  /*** Body fonts ***/
+  --theme-font-body: var(--font-size-body)/var(--font-leading-body)
+    var(--font-family-text);
+  --theme-font-body-emphasis: bold var(--font-size-body)/var(--font-leading-body)
+    var(--font-family-text);
+  --theme-font-body-caption: var(--font-size-body-caption)/var(--font-leading-body-caption)
+    var(--font-family-text);
+  --theme-font-body-code: var(--font-size-body-code)/var(--font-leading-body-code)
+    var(--font-family-text-monospace);
+
+  /* Layout */
+
+  /** Spacing **/
+  --length-gap-subelement: 0.3125rem; /* 5px */
+  --length-gap-element: 0.625rem; /* 10px */
+  --length-gap-group: 1.25rem; /* 20px */
+  --length-gap-subsection: 1.875rem; /* 30px */
+  --length-gap-section: 2.5rem; /* 40px */
+  --length-gap-region: 3.75rem; /* 60px */
+
+  /** Splits **/
   --split-equal: 1fr 1fr;
   --split-golden-ratio: 1.618fr 1fr;
   --split-golden-ratio-reverse: 1fr 1.618fr;
 
-  /* Theme */
+  /** Text margins **/
 
-  /** Typography **/
-  --theme-font-display-small: bold var(--font-size-display-small) var(--font-family-display);
-  --theme-font-display-normal: bold var(--font-size-display-normal) var(--font-family-display);
-  --theme-font-display-normal-subtitle:
-    italic var(--font-size-display-normal)
-    var(--font-family-display);
-  --theme-font-display-large: bold var(--font-size-display-large) var(--font-family-display);
-  --theme-font-body-normal: var(--font-size-body-normal) var(--font-family-body);
-  --theme-font-body-normal-emphasis: bold var(--font-size-body-normal) var(--font-family-body);
-  --theme-font-monospace-normal: var(--font-size-monospace-normal) var(--font-family-monospace);
+  /*** Heading heights ***/
+  --length-title-height: calc(7 * var(--font-leading-body));
+  --length-subtitle-height: calc(2 * var(--font-leading-body));
+  --length-heading-height: calc(5 * var(--font-leading-body));
+  --length-subheading-height: calc(3 * var(--font-leading-body));
 
-  /** Outlines **/
-  --theme-outline-group: var(--length-edge) solid var(--theme-color-group-outline);
-  --theme-outline-subgroup: var(--length-edge) solid var(--theme-color-subgroup-outline);
+  /*** Margin components ***/
+  --golden-ratio-major: 0.618;
+  --golden-ratio-minor: 0.382;
+  --equal-ratio: 0.5;
 
-  --theme-outline-active: var(--length-edge) solid var(--theme-color-active-outline);
-  --theme-outline-active-highlight:
-    var(--length-edge) solid
-    var(--theme-color-active-highlight-outline);
-  --theme-outline-active-hit: var(--length-edge) solid var(--theme-color-active-hit-outline);
+  --length-margin-start-title: calc(
+    (var(--length-title-height) - var(--font-leading-title)) * var(--golden-ratio-major)
+  );
+  --length-margin-end-title: calc(
+    (var(--length-title-height) - var(--font-leading-title)) * var(--golden-ratio-minor)
+  );
+  --length-margin-start-subtitle: calc(
+    (var(--length-subtitle-height) - var(--font-leading-subtitle)) * var(--golden-ratio-major)
+  );
+  --length-margin-end-subtitle: calc(
+    (var(--length-subtitle-height) - var(--font-leading-subtitle)) * var(--golden-ratio-minor)
+  );
+  --length-margin-start-heading: calc(
+    (var(--length-heading-height) - var(--font-leading-heading)) * var(--golden-ratio-major)
+  );
+  --length-margin-end-heading: calc(
+    (var(--length-heading-height) - var(--font-leading-heading)) * var(--golden-ratio-minor)
+  );
+  --length-margin-start-subheading: calc(
+    (var(--length-subheading-height) - var(--font-leading-subheading)) * var(--equal-ratio)
+  );
+  --length-margin-end-subheading: calc(
+    (var(--length-subheading-height) - var(--font-leading-subheading)) * var(--equal-ratio)
+  );
 
-  --theme-outline-neutral: var(--length-edge) solid var(--theme-color-neutral-outline);
-  --theme-outline-neutral-highlight:
-    var(--length-edge) solid
-    var(--theme-color-neutral-highlight-outline);
-  --theme-outline-neutral-hit: var(--length-edge) solid var(--theme-color-neutral-hit-outline);
-  --theme-outline-neutral-disabled:
-    var(--length-edge) solid
-    var(--theme-color-neutral-disabled-outline);
-  --theme-outline-neutral-error: var(--length-edge) solid var(--theme-color-neutral-error-outline);
-  --theme-outline-neutral-error-highlight:
-    var(--length-edge) solid
-    var(--theme-color-neutral-error-highlight-outline);
+  --length-margin-start-paragraph: var(--font-leading-body);
+  --length-margin-end-paragraph: var(--font-leading-body);
+  --length-margin-start-subparagraph: calc(var(--font-leading-body) * 0.5);
+  --length-margin-end-subparagraph: calc(var(--font-leading-body) * 0.5);
 
-  /** Shadows **/
-  --theme-shadow-element:
-    var(--length-shadow-element-small) var(--theme-color-subgroup-shadow),
-    var(--length-shadow-element-normal) var(--theme-color-subgroup-shadow),
-    var(--length-shadow-element-large) var(--theme-color-subgroup-shadow);
-  --theme-shadow-group:
-    var(--length-shadow-group-small) var(--theme-color-group-shadow),
-    var(--length-shadow-group-normal) var(--theme-color-group-shadow),
-    var(--length-shadow-group-large) var(--theme-color-group-shadow),
-    var(--length-shadow-group-xlarge) var(--theme-color-group-shadow);
-  --theme-shadow-subgroup:
-    var(--length-shadow-group-small) var(--theme-color-subgroup-shadow),
-    var(--length-shadow-group-normal) var(--theme-color-subgroup-shadow),
-    var(--length-shadow-group-large) var(--theme-color-subgroup-shadow),
-    var(--length-shadow-group-xlarge) var(--theme-color-subgroup-shadow);
+  /*** Margins ***/
+
+  /**** Heading ****/
+  --margin-title: var(--length-margin-start-title) 0 var(--length-margin-end-title);
+  --margin-subtitle: var(--length-margin-start-subtitle) 0 var(--length-margin-end-subtitle);
+  --margin-heading: var(--length-margin-start-heading) 0 var(--length-margin-end-heading);
+  --margin-subheading: var(--length-margin-start-subheading) 0 var(--length-margin-end-subheading);
+
+  /**** Paragraph ****/
+  --margin-paragraph: var(--length-margin-start-paragraph) 0 var(--length-margin-end-paragraph);
+  --margin-subparagraph: var(--length-margin-start-subparagraph) 0
+    var(--length-margin-end-subparagraph);
+
+  /** Elements **/
+
+  /*** Radii ***/
+  --length-radius-element: 0.5rem; /* 8px */
+  --length-radius-group: 1rem; /* 16px */
+
+  /*** Edges ***/
+  --length-edge-element: 0.0625rem; /* 1px */
+  --length-edge-group: 0.125rem; /* 2px */
+
+  /*** Areas ***/
+  --length-element-width: 18.75rem; /* 300px */
+  --length-form-width: 24rem; /* 384px */
+  --length-card-width: 27rem; /* 432px */
+
+  --length-button-icon: 1.5rem; /* 24px */
+  --length-nav-logo-height: 1.25rem; /* 20px */
+
+  /*** Text ***/
+
+  /* _Note: ideal text width is ~66 characters per line, however, due to typical computer screen
+   *        aspect ratios and the crude typesetting algorithms in browsers we have to push text
+   *        width wider and closer to the readability limit (~80). */
+  --length-text-width: 50rem; /* 700px */
+  --length-text-width-code: 75rem; /* 1200px */
+  --length-text-indent: 2em; /* 40px with 20px font size */
 }

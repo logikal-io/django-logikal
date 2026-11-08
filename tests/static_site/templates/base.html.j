@@ -3,8 +3,15 @@
 
 {% block title %}{% block subtitle required %}{% endblock %} | Logikal{% endblock %}
 {% block description %}Static Test Site{% endblock %}
-{% block component_head %}{{ component_head('layout', 'text', static_site=true) }}{% endblock %}
-{% block head %}<link rel="icon" href="{{ static('favicon.png') }}">{% endblock %}
+
+{% block component_head %}
+  {{ component_head('composition', 'text', static_site=true) }}
+{% endblock %}
+
+{% block head %}
+  <link rel="icon" href="{{ static('favicon.png') }}">
+  <link rel="stylesheet" href="{{ static('django_logikal/css/fonts.css') }}">
+{% endblock %}
 
 {% block body %}
   <main>

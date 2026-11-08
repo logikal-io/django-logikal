@@ -3,7 +3,7 @@
 {% block subtitle %}Internal Page{% endblock %}
 {% block main %}
   <div class="spotlight">
-    <section class="text center">
+    <section class="stack centered">
       <h1>Internal Page</h1>
       <p>Hello {{ request.user.get_full_name() }}.</p>
     </section>

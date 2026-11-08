@@ -11,11 +11,15 @@ simply add the style sheets and JavaScript logic of the relevant component modul
       {{ component_head('commons', 'auth') }}
     {% endblock %}
 
+Note that dependent components are automatically included, therefore it is enough to specify only
+the components you actually use.
+
 Many of the components are implemented via Jinja macros, which can be imported via their respective
 module as follows:
 
 .. code-block:: jinja
 
+    ...
     {% import 'django_logikal/components/commons.html.j' as commons %}
     {% import 'django_logikal/components/auth.html.j' as auth %}
     ...

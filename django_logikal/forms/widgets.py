@@ -11,8 +11,8 @@ class EmailInput(widgets.Input):
 class PasswordInput(widgets.Input):
     template_name = 'django_logikal/forms/widgets/password.html.j'
     input_type = 'password'
-    icon_show = 'django_logikal/icons/password_show.svg'
-    icon_hide = 'django_logikal/icons/password_hide.svg'
+    icon_show = 'django_logikal/icons/eye-off.svg'
+    icon_hide = 'django_logikal/icons/eye.svg'
 
     def get_context(self, *args: Any, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context(*args, **kwargs)

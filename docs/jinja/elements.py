@@ -1,10 +1,22 @@
 import re
+from typing import Any
 
 from docutils import nodes
 from docutils.statemachine import StringList
 from sphinx import addnodes
 from sphinx.directives import ObjectDescription
-from sphinx.util.docfields import TypedField
+from sphinx.domains.python._object import PyTypedField
+
+
+class PythonTypedField(PyTypedField):
+    def make_xrefs(
+        self,
+        rolename: str,
+        domain: str,
+        *args: Any,
+        **kwargs: Any,
+    ) -> list[nodes.Node]:
+        return super().make_xrefs(rolename, 'py', *args, **kwargs)
 
 
 class JinjaComponentModule(ObjectDescription[str]):
@@ -32,11 +44,12 @@ class JinjaComponentModule(ObjectDescription[str]):
 class JinjaMacro(ObjectDescription[str]):
     has_content = True
     doc_field_types = [
-        TypedField(
+        PythonTypedField(
             'parameter',
             label='Parameters',
             names=('param',),
             typenames=('type',),
+            typerolename='class',
             can_collapse=True,
         ),
     ]

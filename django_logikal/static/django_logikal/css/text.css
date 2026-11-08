@@ -2,55 +2,98 @@
 
 .text {
   font-variant-numeric: oldstyle-nums;
-  max-width: var(--length-text);
-  &.fixed { width: var(--length-text); }
-  &.box { max-width: 100%; }
+  max-width: var(--length-text-width);
 
-  &.center {
-    text-align: center;
-    h1, h2, h3, h4, h5, h6 { text-align: center; }
+  &.code { max-width: var(--length-text-width-code); }
+  &.wide { max-width: none; }
 
-    & > * {
-      margin-inline: auto;
-      width: fit-content;
-    }
+  /* Headings */
+  & > :is(h1, hgroup) { margin: var(--margin-title); }
+  & > h2 { margin: var(--margin-heading); }
+  & > :is(h3, h4, h5, h6) { margin: var(--margin-subheading); }
+
+  & > .title { margin: var(--margin-title); }
+  & > .heading { margin: var(--margin-heading); }
+  & > .subheading { margin: var(--margin-subheading); }
+
+  & > :is(hgroup, .subtitle) {
+    h1, .title { margin: 0; }
+    p { margin: var(--margin-subtitle); }
   }
 
-  .error { color: var(--theme-color-text-error); }
-  pre { margin: var(--length-margin-paragraph); }
+  &:is(article, section) > :is(h1, hgroup, .title):first-child {
+    /* Padding correction for article and section */
+    margin-block-start: calc(var(--length-margin-start-title) - var(--length-gap-section));
+  }
 
-  ul, ol, p:not(hgroup p) {
+  &:is(article, section) > :is(h2, .heading):first-child {
+    /* Padding correction for article and section */
+    margin-block-start: calc(var(--length-margin-start-heading) - var(--length-gap-section));
+  }
+
+  /* Paragraphs */
+  & > pre { margin: var(--margin-paragraph); }
+
+  & > :is(ul, ol, p) {
     text-wrap: pretty;
-    margin: var(--length-margin-paragraph);
-    pre { margin: var(--length-margin-paragraph-small); }
+    margin: var(--margin-paragraph);
+
+    pre { margin: var(--margin-subparagraph); }
+    .error { color: var(--theme-color-danger); }
   }
 
-  & > *:last-child :is(ul, ol, p:not(hgroup p)) { margin-block-end: 0; }
+  &.long-form > p {
+    margin: 0;
+    text-align: justify;
+    hyphens: auto;
+    hyphenate-limit-chars: 7;
 
-  ul, ol { padding-inline-start: calc(1.5 * var(--length-text-indent)); }
-  ul { list-style: disc outside; }
-  ol { list-style: decimal outside; }
+    & + p { text-indent: var(--length-text-indent); }
+  }
 
-  &.long-form {
-    p {
-      margin: 0;
-      text-align: justify;
-      hyphens: auto;
-      hyphenate-limit-chars: 7;
+  & > :not(h1, h2, h3, h4, h5, h6, hgroup, .title, .subtitle, .heading, .subheading):last-child {
+    margin-block-end: 0;
+  }
 
-      & + p { text-indent: var(--length-text-indent); }
+  /* Quotations */
+  & > blockquote, & > figure > blockquote {
+    margin: var(--margin-paragraph);
+    padding-inline: var(--length-text-indent);
+    font-style: italic;
+
+    p { /* stylelint-disable-line no-descending-specificity */
+      width: fit-content;
+      margin-inline: auto;
+
+      &:last-child { margin-block-end: 0; }
+    }
+
+    &:has(+ figcaption) { margin-block-end: var(--length-margin-start-subparagraph); }
+
+    & + figcaption {
+      text-align: end;
+      margin: var(--margin-paragraph);
+      margin-block-start: var(--length-margin-start-subparagraph);
+
+      cite { font-style: normal; }
     }
   }
+
+  /* Lists */
+  & > :is(ul, ol) { padding-inline-start: calc(1.5 * var(--length-text-indent)); }
+  & > ul { list-style: disc outside; }
+  & > ol { list-style: decimal outside; }
 
   /* Tables */
-  table:not(.code table) {
-    margin: 0 auto;
+  & > table:not(.code table) {
+    margin: var(--margin-paragraph);
+    margin-inline: auto;
     text-align: start;
-    border-block-end: var(--theme-outline-neutral);
+    border-block-end: var(--length-edge-element) solid var(--theme-color-neutral-outline);
 
     thead {
-      font: var(--theme-font-body-normal-emphasis);
-      border-block-end: var(--theme-outline-neutral);
+      font: var(--theme-font-body-emphasis);
+      border-block-end: var(--length-edge-element) solid var(--theme-color-neutral-outline);
     }
 
     th, td {
@@ -58,17 +101,21 @@
       vertical-align: top;
       text-align: start;
     }
+
+    .text > &:last-child { margin-block-end: 0; }
   }
 
   /* References */
   .cite {
-    span { color: var(--theme-color-body-content); }
-    &:is(:hover, :active) span { color: inherit; }
+    font-variant-numeric: lining-nums;
+
+    & > span { color: var(--theme-color-body-content); }
+    &:is(:hover, :active) > span { color: inherit; }
   }
 
-  .references li {
+  & > .references li {
     padding: var(--length-gap-element);
-    border: var(--theme-outline-neutral);
+    border: var(--length-edge-element) solid var(--theme-color-neutral-outline);
     border-color: transparent;
     border-radius: var(--length-radius-element);
     &:first-child { margin-block-start: calc(-1 * var(--length-gap-element)); }
@@ -76,8 +123,7 @@
     &:target {
       background-color: var(--theme-color-neutral-highlight);
       color: var(--theme-color-neutral-highlight-content);
-      border: var(--theme-outline-neutral-highlight);
-      box-shadow: var(--theme-shadow-element);
+      border-color: var(--theme-color-neutral-highlight-outline);
     }
 
     .up { margin-inline-end: var(--length-gap-subelement); }

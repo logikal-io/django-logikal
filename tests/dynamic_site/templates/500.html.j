@@ -3,7 +3,7 @@
 {% block subtitle %}Server Error{% endblock %}
 {% block main %}
   <div class="spotlight">
-    <section class="text">
+    <section class="stack">
       <h1>Server Error</h1>
       <p>The server encountered an error.</p>
     </section>

@@ -38,11 +38,11 @@ def test_json_api(live_url: LiveURL, client: Client, user: User) -> None:
     local_data.ProjectData.insert()
     response = client.get(root_response['projects'])
     assert response.json()[0] == {
-        'created_at': '2025-01-25T14:30:55+01:00',
-        'end_date': '2023-02-10',
-        'name': 'Enhance Global Platforms',
-        'start_date': '2023-02-01',
-        'status': 'planning',
         'url': 'http://testserver/api/projects/1/',
+        'created_at': '2025-01-25T14:30:55+01:00',
         'updated_at': '2025-01-25T14:30:55+01:00',
+        'name': 'Development Say',
+        'start_date': '2023-02-01',
+        'end_date': '2023-02-10',
+        'status': 'planning',
     }

@@ -10,14 +10,14 @@ COMPONENTS_JS_PATH = Path('django_logikal/js')
 
 
 @cache
-def _style_dependencies(file: Path) -> set[str]:
-    dependencies = set()
+def _style_dependencies(file: Path) -> list[str]:
+    dependencies = []
     for rule in tinycss2.parse_stylesheet(file.read_text(encoding='utf-8')):
         if rule.type == 'at-rule' and rule.lower_at_keyword == 'import':
             for token in rule.prelude:
                 if token.type == 'function':
                     name = token.arguments[0].value  # type: ignore[attr-defined]
-                    dependencies.add(Path(name).stem)
+                    dependencies.append(Path(name).stem)
     return dependencies
 
 
