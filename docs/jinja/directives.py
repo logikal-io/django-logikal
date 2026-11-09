@@ -1,5 +1,6 @@
 import re
-from abc import ABC, abstractmethod
+from abc import ABC
+from collections.abc import Iterator, Sequence
 from dataclasses import dataclass
 from functools import cache, partial
 from pathlib import Path
@@ -8,6 +9,7 @@ from typing import Any, cast
 
 import tinycss2
 from docutils import nodes
+from docutils.parsers.rst import directives
 from docutils.statemachine import StringList
 from jinja2 import ChoiceLoader, DictLoader, Environment, FileSystemLoader, nodes as jinja_nodes
 from pytest_logikal.validator import Validator
@@ -30,42 +32,143 @@ THEME_MODES = ['light', 'dark']
 
 
 @dataclass
-class CSSElement(ABC):
-    @abstractmethod
-    def as_rst(self) -> str:
-        ...
-
-
-@dataclass
-class CSSSectionComment(CSSElement):
-    level: int
-    value: str
-
-    def as_rst(self) -> str:
-        return f'.. dropdown:: {self.value}'
-
-
-@dataclass
-class CSSVariable(CSSElement):
+class CSSVariable:
     name: str
     value: str
     description: str | None = None
 
-    def as_rst(self) -> str:
+    @property
+    def formatted_value(self) -> str:
+        return re.sub(r'\s+', ' ', self.value).replace('( ', '(').replace(' )', ')')
+
+    def as_rst(self, with_description: bool = True) -> str:
+        description = self.description if with_description else None
         rst = f':css:`{self.name}`'
-        if self.description or self.value:
+        if description or self.value:
             rst += ' --'
-        if self.description:
-            rst += f' {self.description.capitalize()}.'
+        if description:
+            rst += f' {description.capitalize()}.'
         if self.value:
-            rst += f' Defaults to ``{re.sub(' +', ' ', self.value)}``.'
+            rst += f' Defaults to ``{self.formatted_value}``.'
         return rst
+
+
+@dataclass
+class CSSSeparator:
+    """A blank-line boundary between variable groups."""
+
+
+@dataclass
+class CSSSection:
+    title: str
+    level: int
+    elements: list['CSSVariable | CSSSection | CSSSeparator']
+
+    @property
+    def variables(self) -> Iterator[CSSVariable]:
+        for element in self.elements:
+            if isinstance(element, CSSVariable):
+                yield element
+            elif isinstance(element, CSSSection):
+                yield from element.variables
+
+
+@dataclass
+class CSSRule:
+    selector: str
+    elements: list[CSSVariable | CSSSection | CSSSeparator]
+
+
+def _next_comment(declarations: list[Any]) -> str | None:
+    for declaration in declarations:
+        if (
+            isinstance(declaration, tinycss2.ast.WhitespaceToken)
+            and '\n' not in declaration.value
+        ):
+            continue
+        if isinstance(declaration, tinycss2.ast.Comment):
+            value = declaration.value.strip()
+            if not value.startswith('_'):
+                return value
+        return None
+    return None
 
 
 @cache
 def parsed_stylesheet(path: Path) -> Any:
     contents = (Path(__file__).parents[2] / path).read_text(encoding='utf-8')
     return tinycss2.parse_stylesheet(contents, skip_comments=False, skip_whitespace=True)
+
+
+def _parse_css_elements(
+    content: list[Any],
+) -> list[CSSVariable | CSSSection | CSSSeparator]:
+    elements: list[CSSVariable | CSSSection | CSSSeparator] = []
+    headings: list[CSSSection] = []
+    attached_depth = 0
+    inline = False
+    separator_pending = False
+    declarations = tinycss2.parse_declaration_list(content)
+
+    for index, declaration in enumerate(declarations):
+        # Parse whitespace
+        if isinstance(declaration, tinycss2.ast.WhitespaceToken):
+            inline = '\n' not in declaration.value
+            if declaration.value.count('\n') >= 2:
+                separator_pending = True
+            continue
+
+        # Parse section headings
+        if isinstance(declaration, tinycss2.ast.Comment):
+            value = declaration.value.strip()
+            if inline or value.startswith('_'):
+                continue
+
+            separator_pending = False
+            level = len(value) - len(value.lstrip('*'))
+            headings = [heading for heading in headings if heading.level < level]
+            attached_depth = min(attached_depth, len(headings))
+            headings.append(CSSSection(title=value.strip('*').strip(), level=level, elements=[]))
+            continue
+
+        # Parse variable declarations
+        if not isinstance(declaration, tinycss2.ast.Declaration):
+            continue
+        if not declaration.name.strip().startswith('--'):
+            continue
+
+        target = headings[attached_depth - 1].elements if attached_depth else elements
+        for section in headings[attached_depth:]:
+            target.append(section)
+            target = section.elements
+        attached_depth = len(headings)
+
+        # Separate variable groups
+        if separator_pending and target and isinstance(target[-1], CSSVariable):
+            target.append(CSSSeparator())
+        separator_pending = False
+
+        target.append(CSSVariable(
+            name=declaration.name,
+            value=tinycss2.serialize(declaration.value).strip(),
+            description=_next_comment(declarations[index + 1:]),
+        ))
+
+    return elements
+
+
+@cache
+def parsed_css_rules(path: Path) -> list[CSSRule]:
+    rules = []
+    for rule in parsed_stylesheet(path):
+        if not hasattr(rule, 'prelude') or rule.content is None:
+            continue
+        if elements := _parse_css_elements(rule.content):
+            rules.append(CSSRule(
+                selector=tinycss2.serialize(rule.prelude).strip(),
+                elements=elements,
+            ))
+    return rules
 
 
 class JinjaSphinxDirective(ABC, SphinxDirective):
@@ -82,21 +185,6 @@ class JinjaSphinxDirective(ABC, SphinxDirective):
         node = node or nodes.container()
         self.state.nested_parse(block=parsed_blocks, input_offset=0, node=node)
         return node
-
-    @staticmethod
-    def _next_comment(declarations: list[Any]) -> str | None:
-        for declaration in declarations:
-            if (
-                isinstance(declaration, tinycss2.ast.WhitespaceToken)
-                and '\n' not in declaration.value
-            ):
-                continue
-            if isinstance(declaration, tinycss2.ast.Comment):
-                value = declaration.value.strip()
-                if not value.startswith('_'):
-                    return value
-            return None
-        return None
 
     @staticmethod
     def _static(path: str) -> Path:
@@ -118,9 +206,13 @@ class JinjaSphinxDirective(ABC, SphinxDirective):
             account, allauth,
         )
 
-        request = SimpleNamespace(resolver_match=SimpleNamespace(view_name='main:components'))
+        request = SimpleNamespace(resolver_match=SimpleNamespace(view_name='main:home'))
         request.GET = {}
-        render_context = {'request': request, 'csrf_input': ''}
+        render_context = {
+            'request': request,
+            'csrf_input': '',
+            'messages': ['Notification message.'],
+        }
         env = jinja.environment(**kwargs, **jinja.DEFAULT_OPTIONS)
         env.globals.update({
             **render_context,
@@ -143,75 +235,113 @@ class JinjaSphinxDirective(ABC, SphinxDirective):
         )
         return env
 
-    def get_css_variables(
+    def get_css_variable_sections(
         self,
-        rules: list[Any],
-        selector: str,
-        with_sections: bool = False,
-    ) -> list[CSSElement]:
-        variables: list[CSSElement] = []
-        for rule in rules:
-            if (
-                not hasattr(rule, 'prelude')
-                or selector not in tinycss2.serialize(rule.prelude).strip()
-            ):
-                continue
+        path: Path,
+        css_selector: str | None = None,
+        section_selector: list[str] | None = None,
+    ) -> Sequence[CSSVariable | CSSSection | CSSSeparator]:
+        css_path = (Path(__file__).parents[2] / path).resolve()
+        self.env.note_dependency(str(css_path))
 
-            inline = False
-            declarations = tinycss2.parse_declaration_list(rule.content)
-            for index, declaration in enumerate(declarations):
-                if isinstance(declaration, tinycss2.ast.WhitespaceToken):
-                    inline = '\n' not in declaration.value
-                    continue
-                if with_sections and isinstance(declaration, tinycss2.ast.Comment) and not inline:
-                    value = declaration.value.strip()
-                    if not value.startswith('_'):
-                        variables.append(CSSSectionComment(
-                            level=len(value) - len(value.lstrip('*')),
-                            value=value.strip('*').strip(),
-                        ))
-                        continue
-                if not isinstance(declaration, tinycss2.ast.Declaration):
-                    continue
-                name = declaration.name.strip()
-                if not name.startswith('--'):
-                    continue
+        # Select rules
+        rules = [
+            rule for rule in parsed_css_rules(path)
+            if css_selector is None or css_selector in rule.selector
+        ]
+        elements = [element for rule in rules for element in rule.elements]
+        if section_selector is None:
+            return elements
 
-                variables.append(CSSVariable(
-                    name=declaration.name,
-                    value=tinycss2.serialize(declaration.value).strip(),
-                    description=(
-                        self._next_comment(declarations[index + 1:])
-                        if not with_sections else None
-                    ),
-                ))
+        # Select sections
+        sections: list[CSSSection] = []
+        for index, title in enumerate(section_selector):
+            sections = [
+                element for element in elements
+                if isinstance(element, CSSSection) and element.title == title
+            ]
+            if index < len(section_selector) - 1:
+                elements = [element for section in sections for element in section.elements]
 
+        # Check matches
+        if not sections:
+            raise self.error(f'CSS section not found: {section_selector}')
+        if len(sections) > 1:
+            raise self.error(f'Ambiguous CSS section: {section_selector}')
+        return sections
+
+    def get_css_variables(self, path: Path, selector: str) -> list[CSSVariable]:
+        variables: list[CSSVariable] = []
+        for element in self.get_css_variable_sections(path=path, css_selector=selector):
+            if isinstance(element, CSSVariable):
+                variables.append(element)
+            elif isinstance(element, CSSSection):
+                variables.extend(element.variables)
         return variables
 
 
 class JinjaAutoCSSVariablesDirective(JinjaSphinxDirective):
     has_content = True
-    required_arguments = 2
+    required_arguments = 1
+    option_spec = {
+        'selector': directives.unchanged_required,
+        'section': directives.unchanged_required,
+        'open': directives.flag,
+    }
+
+    def _elements_as_rst(
+        self,
+        elements: Sequence[CSSVariable | CSSSection | CSSSeparator],
+        indent: int = 0,
+        open_sections: bool = False,
+    ) -> list[str]:
+        blocks = []
+        for element in elements:
+            if isinstance(element, CSSSection):
+                blocks.extend(['', f'{indent * ' '}.. dropdown:: {element.title}'])
+                if indent > 0 or open_sections:
+                    blocks.append(f'{(indent + 1) * ' '}:open:')
+                blocks.append('')
+                blocks.extend(self._elements_as_rst(element.elements, indent + 2))
+            elif isinstance(element, CSSSeparator):
+                blocks.extend([
+                    '',
+                    f'{(indent + 1) * ' '}.. raw:: html',
+                    '',
+                    f'{(indent + 3) * ' '}<hr>',
+                    '',
+                ])
+            else:
+                variable = f':css-variable-name:`{element.name}`'
+                if element.value:
+                    variable += (
+                        r'\ :css-variable-separator:`:`'
+                        f' :css-variable-value:`{element.formatted_value};`'
+                    )
+                blocks.append(f'{(indent + 1) * ' '}* {variable}')
+        return blocks
 
     def run(self) -> list[nodes.Node]:
-        variables = self.get_css_variables(
-            rules=parsed_stylesheet(Path(self.arguments[0])),
-            selector=self.arguments[1],
-            with_sections=True,
+        section_selector = [
+            part.strip() for part in self.options.get('section', '').split('/') if part
+        ]
+        elements = self.get_css_variable_sections(
+            path=Path(self.arguments[0]),
+            css_selector=self.options.get('selector'),
+            section_selector=section_selector or None,
         )
-        blocks = []
-        indent = 0
-        for variable in variables:
-            if isinstance(variable, CSSSectionComment):
-                indent = variable.level * 2
-                blocks.extend(['', indent * ' ' + variable.as_rst()])
-                if variable.level > 0:
-                    blocks.append((indent + 1) * ' ' + ':open:')
-                blocks.append('')
-            else:
-                blocks.append(f'{(indent + 1) * ' '}* {variable.as_rst()}')
-
-        return [self.parse_rst_blocks(blocks=blocks, source=self.arguments[0])]
+        return [self.parse_rst_blocks(
+            blocks=[
+                '.. role:: css-variable-name(literal)',
+                '',
+                '.. role:: css-variable-separator',
+                '',
+                '.. role:: css-variable-value(literal)',
+                '',
+                *self._elements_as_rst(elements, open_sections='open' in self.options),
+            ],
+            source=self.arguments[0],
+        )]
 
 
 class JinjaAutoModuleDirective(ObjectDescription[str], JinjaSphinxDirective):
@@ -258,7 +388,7 @@ class JinjaAutoModuleDirective(ObjectDescription[str], JinjaSphinxDirective):
             raise RuntimeError(f'Invalid or missing macro documentation for "{macro.name}"')
 
         docstring = GoogleDocstring(docstring=docs, config=self.env.app.config, what='function')
-        return re.sub(r':type (\w+): (\w+)', r':type \1: :py:obj:`\2`', str(docstring))
+        return str(docstring)
 
     def _render_node(self, node: jinja_nodes.Expr | None) -> str:
         rendered = '[complex expression]'
@@ -314,7 +444,7 @@ class JinjaAutoModuleDirective(ObjectDescription[str], JinjaSphinxDirective):
             # Get CSS variables
             docs = self._get_docs(macro=macro, source_lines=source_lines)
             if variables := self.get_css_variables(
-                rules=parsed_stylesheet(stylesheet_path),
+                path=stylesheet_path,
                 selector=f'.{macro.name.replace('_', '-')}',
             ):
                 variables_str = '\n'.join([
@@ -352,9 +482,14 @@ class JinjaAutoModuleDirective(ObjectDescription[str], JinjaSphinxDirective):
 
 class JinjaExampleDirective(JinjaSphinxDirective):
     has_content = True
+    option_spec = {'scheme': partial(directives.choice, values=THEME_MODES)}
 
     @staticmethod
     def _validate(content: str, source_path: str) -> None:
+        body = content
+        if not re.match(r'\s*<body(?=[\s>])', content, flags=re.IGNORECASE):
+            body = f'<body>{content}</body>'
+
         if errors := Validator().errors(content=f"""
             <!DOCTYPE html>
             <html lang="en-us">
@@ -362,7 +497,7 @@ class JinjaExampleDirective(JinjaSphinxDirective):
                 <meta charset="utf-8">
                 <title>Example</title>
               </head>
-              <body>{content}</body>
+              {body}
             </html>
         """):
             error_str = '\n'.join(error.message for error in errors)
@@ -371,13 +506,22 @@ class JinjaExampleDirective(JinjaSphinxDirective):
             )
 
     @staticmethod
-    def _render_html(head: str, rendered: str, container: nodes.Element) -> None:
-        for index, mode in enumerate(THEME_MODES):
+    def _render_html(
+        head: str,
+        rendered: str,
+        container: nodes.Element,
+        scheme: str | None = None,
+    ) -> None:
+        modes = [scheme] if scheme else THEME_MODES
+        for index, mode in enumerate(modes):
             rendered_block = f"""
                 <template shadowrootmode="open">
                     <link rel="stylesheet" href="{DOCS_THEMES_CSS_PATH / f'standard-{mode}.css'}">
                     {head}
-                    {rendered}
+                    <link rel="stylesheet" href="../_static/css/components.css">
+                    <div class="jinja-example-content">
+                        {rendered}
+                    </div>
                 </template>
             """
             rendered_node = nodes.raw('', rendered_block, format='html')
@@ -392,7 +536,8 @@ class JinjaExampleDirective(JinjaSphinxDirective):
 
     @staticmethod
     def _docs_js_path(path: Path) -> Path:
-        return DOCS_COMPONENTS_JS_PATH / path.relative_to(components.COMPONENTS_JS_PATH)
+        relative_path = path.relative_to(components.COMPONENTS_JS_PATH).with_suffix('.js')
+        return DOCS_COMPONENTS_JS_PATH / relative_path
 
     def run(self) -> list[nodes.Element]:
         if not (source_path := self.state.document.current_source):
@@ -429,7 +574,7 @@ class JinjaExampleDirective(JinjaSphinxDirective):
             '  .. tab-item:: Jinja',
             '    :sync: jinja',
             '',
-            '    .. code-block:: jinja',
+            '    .. code-block:: html+jinja',
             '',
             *[f'      {line}' for line in template_content.splitlines()],
             '',
@@ -449,9 +594,15 @@ class JinjaExampleDirective(JinjaSphinxDirective):
             for file in component_files['css']
         )
         if component_files['js']:
+            on_load = 'window.initializeJinjaExample(this.getRootNode())'
             component_head += '\n' + '\n'.join(
-                f'<script defer src="{self._docs_js_path(file)}"></script>'
+                f'<script defer src="{self._docs_js_path(file)}" onload="{on_load}"></script>'
                 for file in component_files['js']
             )
-        self._render_html(head=component_head, rendered=rendered, container=container)
+        self._render_html(
+            head=component_head,
+            rendered=rendered,
+            container=container,
+            scheme=self.options.get('scheme'),
+        )
         return [container]

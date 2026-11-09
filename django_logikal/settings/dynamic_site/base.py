@@ -80,7 +80,7 @@ class BaseSettings(CommonBaseSettings):
         extension point for assigning a separate rate limit to partial form validation requests.
         See https://codeberg.org/allauth/django-allauth/issues/4735.
         """
-        from allauth.core import ratelimit  # pylint: disable=import-outside-toplevel
+        from allauth.core.internal import ratelimit  # pylint: disable=import-outside-toplevel
 
         patch_attribute = '_django_logikal_patched'
         if getattr(ratelimit.consume, patch_attribute, False):  # ensure we're only patching once
@@ -88,11 +88,13 @@ class BaseSettings(CommonBaseSettings):
 
         consume = ratelimit.consume
 
-        def consume_with_validation(request: HttpRequest, *, action: str, **kwargs: Any) -> bool:
-            if getattr(request, VALIDATION_REQUEST_ATTRIBUTE, False):
+        def consume_with_validation(
+            request: HttpRequest, *, app: str, action: str, **kwargs: Any,
+        ) -> ratelimit.RateLimitUsage | None:
+            if app == 'allauth.account' and getattr(request, VALIDATION_REQUEST_ATTRIBUTE, False):
                 action = VALIDATION_RATE_LIMIT_KEY
 
-            return consume(request, action=action, **kwargs)  # type: ignore[no-any-return]
+            return consume(request, app=app, action=action, **kwargs)
 
         setattr(consume_with_validation, patch_attribute, True)
         ratelimit.consume = consume_with_validation

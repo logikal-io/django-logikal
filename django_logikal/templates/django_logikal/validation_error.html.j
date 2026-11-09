@@ -28,7 +28,7 @@
   <main class="validation-errors">
     <div class="split">
       <aside>
-        <section class="text box">
+        <section class="text">
           <h2>Validation Errors</h2>
           <ol>
             {% for error in errors %}
@@ -46,9 +46,9 @@
         </section>
       </aside>
 
-      <section class="text box">
+      <section class="text code">
         <h2>Page Source</h2>
-        <div class="code">{{ source }}</div>
+        <div class="source">{{ source }}</div>
       </section>
     </div>
   </main>

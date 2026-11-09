@@ -3,12 +3,13 @@
 {% block subtitle %}Partials{% endblock %}
 {% block main %}
   <div class="spotlight">
-    <section class="text center">
+    <section class="stack centered">
       <h1>Partial Loading</h1>
       {% block container %}
         <p id="container">{{ content }}</p>
       {% endblock %}
       <button type="button"
+              class="active"
               data-hx-post="{{ url('dynamic_site:partials') }}"
               data-hx-target="#container"
               data-hx-swap="outerHTML">Load New Content</button>

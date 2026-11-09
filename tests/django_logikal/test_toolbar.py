@@ -1,3 +1,5 @@
+from time import sleep
+
 from pytest_logikal import Browser, LiveURL, set_browser
 from selenium.webdriver.common.by import By
 
@@ -23,6 +25,7 @@ def test_toolbar(live_app_url_with_toolbar: LiveURL, browser: Browser) -> None:
     browser.replace_text(sql_panel.find_element(By.TAG_NAME, 'small'), '1 query in 0.00ms')
 
     # Check toolbar
+    sleep(1)  # wait for changes to settle
     browser.check('menu')
     toolbar.find_element(By.ID, 'djdt-CachePanel').click()
     toolbar.find_element(By.ID, 'CachePanel').find_element(By.TAG_NAME, 'h4')  # waits for loading

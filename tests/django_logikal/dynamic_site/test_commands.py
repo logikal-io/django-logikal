@@ -64,20 +64,37 @@ def test_translate(tmp_path: Path) -> None:
     # Init
     command.run_from_argv([*common_args, '--init', '--locale', 'en_GB'])
     pot_file = (locale_path / 'django.pot').read_text()
-    assert 'Project-Id-Version: dynamic-site' in pot_file
+    assert 'Project-Id-Version: django-logikal' in pot_file
     assert 'msgid "Localization"\nmsgstr ""' in pot_file
+    assert not (locale_path / 'djangojs.pot').exists()
+    assert not (tmp_path / 'translations/django_logikal_en_gb_js.po').exists()
 
     # Update
     command.run_from_argv([*common_args, '--update'])
     locale_path_en_gb = locale_path / 'en_GB/LC_MESSAGES'
-    po_file = (locale_path_en_gb / 'django.po').read_text()
-    assert 'Project-Id-Version: dynamic-site' in po_file
+    po_file = (tmp_path / 'translations/django_logikal_en_gb.po').read_text()
+    assert 'Project-Id-Version: django-logikal' in po_file
     assert 'msgid "Localization"\nmsgstr ""' in po_file
     assert re.search('PO-Revision-Date: [0-9]{4}-[0-9]{2}-[0-9]{2}', po_file)
+    assert not (locale_path / 'djangojs.pot').exists()
+    assert not (tmp_path / 'translations/django_logikal_en_gb_js.po').exists()
 
     # Compile
     command.run_from_argv([*common_args, '--compile'])
     assert (locale_path_en_gb / 'django.mo').exists()
+
+
+def test_translate_missing_language(tmp_path: Path, mocker: MockerFixture) -> None:
+    app = translate.App('dynamic_site')
+    app.path = tmp_path
+    mocker.patch('django_logikal.management.commands.translate.App', return_value=app)
+    translations = tmp_path / 'translations'
+    translations.mkdir()
+    po_file = translations / 'django_logikal_en_gb.po'
+    po_file.write_text('msgid ""\nmsgstr ""\n')
+
+    with raises(CommandError, match='Missing "Language" header'):
+        translate.Command().handle(update=True)
 
 
 def test_translate_missing_app(mocker: MockerFixture) -> None:
@@ -94,15 +111,17 @@ def test_translate_missing_action() -> None:
 def test_translate_init_overwrite(tmp_path: Path, mocker: MockerFixture) -> None:
     command = translate.Command()
 
-    locale_path = tmp_path / 'locale/en_GB/LC_MESSAGES'
-    locale_path.mkdir(parents=True)
-    (locale_path / 'django.po').touch()
-    (locale_path / 'djangojs.po').touch()
+    translations = tmp_path / 'translations'
+    translations.mkdir(parents=True)
+    po_file = translations / 'django_logikal_en_gb.po'
+    po_file.touch()
+    js_po_file = translations / 'django_logikal_en_gb_js.po'
+    js_po_file.touch()
 
     input_obj = mocker.patch('django_logikal.management.commands.translate.input')
     input_obj.return_value = 'yes'
     command.handle(init=True, locale='en_GB', output=tmp_path, app=['admin', 'dynamic_site'])
-    assert 'Project-Id-Version: dynamic-site' in (locale_path / 'django.po').read_text()
+    assert 'Project-Id-Version: django-logikal' in po_file.read_text()
 
     input_obj.return_value = 'no'
     with raises(CommandError, match='Cancelled'):

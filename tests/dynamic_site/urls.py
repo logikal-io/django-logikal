@@ -41,14 +41,19 @@ urlpatterns = [
     # Non-localized URLs
     path('', template.include([
         template.path('', name='home', public=True, priority='1'),
-        path('models/', views.ListProjects.as_view(), name='models'),
-        template.path(
-            'templates/<arg>/', name='templates', public=True,
-            extra_context={'template_path_extra_context': 'template.path'},
-        ),
-        path('partials/', views.PartialsView.as_view(), name='partials'),
+        path('rendering/', include([  # type: ignore[list-item]
+            template.path(
+                'templates/<url_path_arg>/', name='templates', public=True,
+                extra_context={'template_path_extra_context': 'template_path'},
+            ),
+            path('models/', views.ListProjects.as_view(), name='models'),
+            path('partials/', views.PartialsView.as_view(), name='partials'),
+            template.path('invalid-html/', name='invalid_html', public=True),
+        ])),
+        path('components/', include([  # type: ignore[list-item]
+            template.path('text/', name='components/text', public=True),
+        ])),
         template.path('internal/', name='internal'),
-        template.path('invalid-html/', name='invalid-html', public=True),
         path('redirect/', public(redirect_to('dynamic_site:home')), name='redirect'),
         path('email/', views.EmailView.as_view(), name='email'),
     ])),

@@ -3,7 +3,7 @@
 {% block subtitle %}{% trans %}Localized Page{% endtrans %}{% endblock %}
 {% block main %}
   <div class="spotlight">
-    <section class="text">
+    <section class="stack">
       <h1>{% trans %}Localized{% endtrans %}</h1>
       <p>{{ _('This sentence is localized.') }}</p>
     </section>

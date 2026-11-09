@@ -3,7 +3,7 @@
 {% block subtitle %}Index Page{% endblock %}
 {% block main %}
   <div class="spotlight">
-    <section class="text">
+    <section class="stack">
       <h1>Static Site Index Page</h1>
       <p>Hello.</p>
     </section>

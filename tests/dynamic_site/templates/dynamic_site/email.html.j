@@ -3,7 +3,7 @@
 {% block subtitle %}Email Sending{% endblock %}
 {% block main %}
   <div class="spotlight">
-    <section class="text center">
+    <section class="stack centered">
       <h1>Email Sending</h1>
       <p>Email successfully sent.</p>
     </section>

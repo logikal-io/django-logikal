@@ -1,0 +1,47 @@
+@import url('commons.css');
+
+.spotlight {
+  display: flex;
+  flex-flow: column nowrap;
+  place-content: center center; /* in case flex-wrap is applied by another class */
+  flex: 1;
+  width: 100%;
+  & > * { margin: 0 auto; }
+  *:has(> &) { display: flex; } /* the parent needs to flex */
+}
+
+.split {
+  display: grid;
+  grid-template-columns: var(--split-equal);
+  gap: var(--length-gap-group);
+  &:has(> aside:not(:first-child)) { grid-template-columns: var(--split-golden-ratio); }
+  &:has(> aside:first-child) { grid-template-columns: var(--split-golden-ratio-reverse); }
+
+  & > * {
+    min-width: 0; /* fixes children overflow */
+    border-radius: var(--length-radius-group);
+  }
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, var(--length-card-width));
+  gap: var(--length-gap-group);
+  margin: 0 auto;
+  justify-content: center;
+  & > * { border-radius: var(--length-radius-group); }
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--length-gap-group);
+
+  & > :is(h1, .title) { margin-block-end: var(--length-gap-group); }
+  & > :is(h2, .heading):not(:first-child) { margin-block-start: var(--length-gap-group); }
+
+  &.centered {
+    text-align: center;
+    & > * { margin-inline: auto; }
+  }
+}

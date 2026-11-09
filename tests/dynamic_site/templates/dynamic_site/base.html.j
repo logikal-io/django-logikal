@@ -7,52 +7,50 @@
   used for demonstration and testing purposes.
 {% endblock %}
 
-{% block component_head %}{{ component_head('layout', 'text') }}{% endblock %}
+{% block component_head %}{{ component_head('composition', 'text') }}{% endblock %}
 {% block head %}
   <link rel="icon" href="{{ static('favicon.png') }}">
+
+  <!-- Preload mobile menu font to avoid FOUT -->
+  <link rel="preload"
+        href="{{ static('django_logikal/fonts/Lato-Bold.woff2') }}"
+        as="font"
+        type="font/woff2"
+        crossorigin>
+
+  <link rel="stylesheet" href="{{ static('django_logikal/css/fonts.css') }}">
+  <link rel="stylesheet" href="{{ static('style.css') }}">
 {% endblock %}
 
 {% block body %}
   <header>
     <nav>
-      <a href="{{ url('dynamic_site:home') }}" class="logo" aria-label="Go to home page">
+      <a href="{{ url('dynamic_site:home') }}" class="button logo" aria-label="Go to home page">
         {{ include_static('logikal_logo.svg') }}
       </a>
-      {{ commons.menu([
+      {% set view_kwargs = {'url_path_arg': 'path'} %}
+      {% set menu_items = [
         menu_item(title='Home', view_name='dynamic_site:home'),
-        menu_item(
-          title='Errors',
-          submenu=[
-            menu_item(title='No Error', view_name='dynamic_site:home'),
-            menu_item(
-              title='Server Errors',
-              submenu=[
-                menu_item(title='400', view_name='error:400'),
-                menu_item(title='500', view_name='error:500'),
-              ],
-            ),
-            menu_item(
-              title='Page Not Found Errors',
-              submenu=[
-                menu_item(title='403', view_name='error:403'),
-                menu_item(title='404', view_name='error:404'),
-              ],
-            ),
-          ],
-        ),
-        menu_item(
-          title='Templates',
-          submenu=[
-            menu_item(
-              title='Features',
-              view_name='dynamic_site:templates', view_kwargs={'arg': 'extensions'},
-            ),
-            menu_item(title='Partials', view_name='dynamic_site:partials'),
-          ],
-        ),
-        menu_item(title='Admin', view_name='admin:index'),
-        menu_item(title='API', view_name='api-root'),
-      ], request=request|default(none)) }}
+        menu_item(title='Errors', submenu=[
+          menu_item(title='404', view_name='error:404', id='submenu-404'),
+          menu_item(title='500', view_name='error:500', id='submenu-500'),
+          menu_item(title='Server Errors', submenu=[
+            menu_item(title='400', view_name='error:400', id='subsubmenu-400'),
+            menu_item(title='500', view_name='error:500', id='subsubmenu-500'),
+          ]),
+          menu_item(title='Page Not Found Errors', submenu=[
+            menu_item(title='403', view_name='error:403', id='subsubmenu-403'),
+            menu_item(title='404', view_name='error:404', id='subsubmenu-404'),
+          ]),
+        ]),
+        menu_item(title='Components', submenu=[
+          menu_item(title='Text', view_name='dynamic_site:components/text'),
+        ]),
+        menu_item(title='Templates', view_name='dynamic_site:templates', view_kwargs=view_kwargs),
+      ] %}
+
+      {{ commons.desktop_menu(menu_items, request=request|default(none)) }}
+
       <aside>
         {% if request|default(none)
           and request.resolver_match.view_name == 'dynamic_site_localized:localization' %}
@@ -63,28 +61,17 @@
           ) }}
         {% endif %}
         {% if request|default(none) and request.user.is_authenticated %}
-          <a href="{{ url('account') }}" class="button">Account</a>
+          <a href="{{ url('account') }}" class="button active">Account</a>
         {% else %}
-          <a href="{{ url('account_auth') }}" class="button">Log in</a>
+          <a href="{{ url('account_auth') }}" class="button active">Log in</a>
         {% endif %}
       </aside>
+
+      {{ commons.mobile_menu(menu_items, request=request|default(none)) }}
     </nav>
   </header>
   <main>
-    {% if messages|default(none) %}
-      <dialog id="messages" popover>
-        <ul>
-          {% for message in messages %}
-            <li>{{ message }}</li>
-          {% endfor %}
-        </ul>
-        <button id="messages-dismiss"
-                type="button"
-                popovertarget="messages"
-                popovertargetaction="hide">Dismiss</button>
-        <script nonce="{{ csp_nonce }}">document.getElementById('messages').showPopover();</script>
-      </dialog>
-    {% endif %}
+    {{ commons.messages(messages|default(none)) }}
     {% block main %}{% endblock %}
   </main>
 {% endblock %}

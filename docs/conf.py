@@ -1,5 +1,6 @@
 import importlib
 import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -9,7 +10,9 @@ from logikal_utils import node
 from logikal_utils.project import tool_config
 from sphinx import addnodes
 from sphinx.application import Sphinx
+from sphinx.util.display import progress_message
 
+from django_logikal.templates import components
 from docs.jinja.domain import JinjaDomain
 
 sys.path.insert(0, '.')
@@ -99,9 +102,33 @@ def strip_modules(
             del signature[0]  # remove module text
 
 
+def bundle_component_scripts(app: Sphinx, exception: Exception | None) -> None:
+    if exception is not None or app.builder.format != 'html':
+        return
+
+    with progress_message('bundling component JavaScript modules'):
+        source_path = components.STATIC_PATH / components.COMPONENTS_JS_PATH
+        output_path = Path(app.outdir) / '_static' / components.COMPONENTS_JS_PATH
+        command = [
+            str(Path(__file__).parent / 'node_modules/.bin/esbuild'),
+            *[str(path) for path in sorted(source_path.glob('*.mjs'))],
+            '--bundle',
+            '--format=iife',
+            '--platform=browser',
+            '--banner:js=window.initializeDocsComponent = function (document) {',
+            '--footer:js=};',
+            '--log-level=warning',
+            f'--outdir={output_path}',
+        ]
+        subprocess.run(command, check=True)  # nosec: does not use untrusted input
+
+
 def setup(app: Sphinx) -> None:
     app.connect('doctree-read', strip_modules)
+    app.connect('build-finished', bundle_component_scripts)
     app.add_domain(JinjaDomain)
     app.add_css_file('css/jinja.css')
     app.add_css_file('css/copybutton.css')
+    app.add_css_file('django_logikal/css/fonts.css', priority=900)  # used for examples
+    app.add_js_file('js/jinja.js', defer='defer')
     node.install_packages(prefix=Path(__file__).parent)

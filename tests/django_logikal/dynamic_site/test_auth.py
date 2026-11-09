@@ -4,8 +4,9 @@ from time import sleep, time
 import jwt
 from anymail.message import AnymailMessage
 from django.conf import settings
+from django.core.cache import cache
 from django.http import HttpResponse
-from django.test import Client
+from django.test import Client, override_settings
 from django.urls import reverse
 from pytest import mark
 from pytest_logikal import Browser, LiveURL, set_browser
@@ -13,6 +14,7 @@ from pytest_mock import MockerFixture
 from requests_mock import Mocker as RequestsMocker
 from selenium.webdriver.common.by import By
 
+from django_logikal.views.generic import VALIDATION_RATE_LIMIT_KEY
 from tests.django_logikal import factories, scenarios
 from tests.django_logikal.factories import USER_PASSWORD, UserFactory
 from tests.dynamic_site.models import User
@@ -97,12 +99,9 @@ def test_field_validation(live_url: LiveURL, browser: Browser) -> None:
     sleep(1)
     browser.check('login_invalid_password')
 
-    show_password_toggle = browser.find_element(By.ID, 'form-login-password-toggle')
-    show_password_toggle.click()
-    browser.check('login_invalid_password_show')
-
-    show_password_toggle.click()
-    browser.check('login_invalid_password_hide')
+    # Check toggle hover
+    browser.hover(browser.find_element(By.ID, 'form-login-password-toggle'))
+    browser.check('toggle_hover')
 
     # Finish typing the password
     password.send_keys(USER_PASSWORD[5:] + '-invalid')
@@ -137,6 +136,35 @@ def test_rate_limited(
     response = client.post(reverse(view_name), headers=headers)
     assert response.status_code == 429
     consume.assert_called_once()
+
+
+@mark.django_db
+@override_settings(
+    ACCOUNT_RATE_LIMITS={
+        'login': '1/m/ip',
+        VALIDATION_RATE_LIMIT_KEY: '2/m/ip',
+    },
+    CACHES={'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'test-validation-rate-limit',
+    }},
+)
+def test_validation_rate_limit(client: Client) -> None:
+    url = reverse('account_login')
+    data = {'login': 'invalid-email'}
+
+    cache.clear()
+    try:
+        # Validation can be used twice before exhausting its quota in this test
+        headers = {'HX-Request': 'true'}
+        for expected_status_code in [200, 200, 429]:
+            assert client.post(url, data=data, headers=headers).status_code == expected_status_code
+
+        # Validation has not consumed the login quota, so login can be called once
+        for expected_status_code in [200, 429]:
+            assert client.post(url, data=data).status_code == expected_status_code
+    finally:
+        cache.clear()
 
 
 @set_browser(scenarios.desktop)

@@ -1,8 +1,5 @@
 import re
-from pathlib import Path
 
-from anymail.message import AnymailMessage
-from django.template.loader import get_template
 from django.test import Client
 from django.urls import reverse
 from pytest import mark
@@ -10,7 +7,7 @@ from pytest_django.live_server_helper import LiveServer
 from pytest_logikal import Browser, LiveURL, set_browser
 from selenium.webdriver.common.by import By
 
-from tests.django_logikal import factories, scenarios
+from tests.django_logikal import scenarios
 from tests.django_logikal.conftest import app_url
 from tests.dynamic_site import local_data
 from tests.dynamic_site.models import User
@@ -40,24 +37,72 @@ def test_home(live_server: LiveServer, browser: Browser) -> None:
     browser.check()
 
 
-@set_browser(scenarios.desktop)
+@set_browser([scenarios.desktop, scenarios.mobile])
 def test_menu(live_server: LiveServer, browser: Browser) -> None:
+    variant = 'mobile' if browser.settings.mobile else 'desktop'
+
+    # Check menu hover
     browser.get(live_server.url)
-    menu_errors = browser.find_element(By.ID, 'menu-errors-desktop')
-    browser.hover(menu_errors)
+    if browser.settings.mobile:
+        browser.find_element(By.ID, 'menu-mobile-toggle').click()
+
+    menu = browser.find_element(By.ID, f'menu-{variant}-errors')
+    browser.hover(menu)
     browser.check('menu_hover')
-    menu_errors.click()
-    browser.check('menu_open')
 
-    menu_server_errors = browser.find_element(By.ID, 'menu-server-errors-desktop')
-    browser.hover(menu_server_errors)
+    menu.click()
+    menu_item = browser.find_element(By.ID, f'menu-{variant}-submenu-404')
+    browser.hover(menu_item)
+    browser.check('menu_item_hover')
+
+    # Check menu navigation
+    menu_item.click()  # navigate forward
+    browser.check('page_404')
+    if browser.settings.mobile:
+        browser.find_element(By.ID, 'menu-mobile-toggle').click()
+    browser.find_element(By.ID, f'menu-{variant}-home').click()  # navigate back
+
+    # Check submenu hover
+    if browser.settings.mobile:
+        browser.find_element(By.ID, 'menu-mobile-toggle').click()
+    browser.find_element(By.ID, f'menu-{variant}-errors').click()
+    submenu = browser.find_element(By.ID, f'menu-{variant}-page-not-found-errors')
+    browser.hover(submenu)
     browser.check('submenu_hover')
-    menu_server_errors.click()
-    browser.check('submenu_open')
 
-    menu_error_400 = browser.find_element(By.ID, 'menu-400-desktop')
-    browser.hover(menu_error_400)
+    submenu.click()
+    submenu_item = browser.find_element(By.ID, f'menu-{variant}-subsubmenu-404')
+    browser.hover(submenu_item)
     browser.check('submenu_item_hover')
+
+    # Check submenu navigation
+    submenu_item.click()
+    browser.check('page_404')
+
+
+@set_browser(scenarios.desktop)
+def test_templates(live_app_url: LiveURL, browser: Browser) -> None:
+    browser.get(live_app_url('templates', kwargs={'url_path_arg': 'path'}) + '?next=/internal/')
+    browser.check()
+
+
+@set_browser(scenarios.desktop)
+def test_models(live_app_url: LiveURL, browser: Browser) -> None:
+    local_data.ProjectData.insert()
+    browser.get(live_app_url('models'))
+    browser.check()
+
+
+@set_browser(scenarios.desktop)
+def test_partials(
+    live_app_url: LiveURL,
+    browser: Browser,
+) -> None:
+    browser.get(live_app_url('partials'))
+    browser.check('initial')
+    button = browser.find_element(By.CSS_SELECTOR, 'main section button')
+    button.click()
+    browser.check('updated')
 
 
 @set_browser(scenarios.desktop_all_languages)
@@ -70,20 +115,26 @@ def test_localization(live_url: LiveURL, browser: Browser) -> None:
 def test_language_switcher(live_url: LiveURL, browser: Browser) -> None:
     browser.get(live_url('dynamic_site_localized:localization'))
     browser.check('english_us')
+
+    # Check hover and open state
     language_switcher = browser.find_element(By.ID, 'language-switcher')
-    language_switcher.find_element(By.ID, 'language-switcher-toggle').click()
-    browser.check('switcher_open')
-    language_en_gb = language_switcher.find_element(By.CSS_SELECTOR, 'menu button[value="en-gb"]')
-    browser.hover(language_en_gb)
+    browser.hover(language_switcher)
     browser.check('switcher_hover')
+    language_switcher.click()
+    browser.check('switcher_open')
+
+    # Check interactions with menu
+    browser.find_element(By.ID, 'menu-desktop-errors').click()
+    browser.check('menu_open')
+    language_switcher.click()
+    browser.check('switcher_open')
+
+    # Check language switching
+    language_en_gb = language_switcher.find_element(By.CSS_SELECTOR, 'button[value="en-gb"]')
+    browser.hover(language_en_gb)
+    browser.check('switcher_item_hover')
     language_en_gb.click()
-    browser.check('english_uk')
-
-
-@set_browser(scenarios.desktop)
-def test_templates(live_app_url: LiveURL, browser: Browser) -> None:
-    browser.get(live_app_url('templates', kwargs={'arg': 'test-arg'}) + '?next=/internal/')
-    browser.check()
+    browser.check('english_gb')
 
 
 @set_browser(scenarios.desktop)
@@ -102,69 +153,11 @@ def test_internal(live_app_url: LiveURL, browser: Browser, client: Client, user:
 
 @set_browser(scenarios.desktop)
 def test_invalid_html(live_app_url: LiveURL, browser: Browser, client: Client) -> None:
-    response = client.get(live_app_url('invalid-html'))
+    response = client.get(live_app_url('invalid_html'))
     source = response.content.decode()
     assert response.status_code == 500
     assert 'HTML Validation Error' in source
     assert '<b class="error">Error:</b> Element “h” not allowed' in source
     assert '<b class="error">Error:</b> Unclosed element “h”' in source
-    browser.get(live_app_url('invalid-html'))
+    browser.get(live_app_url('invalid_html'))
     browser.check()
-
-
-@set_browser(scenarios.desktop)
-def test_models(live_app_url: LiveURL, browser: Browser) -> None:
-    local_data.ProjectData.insert()
-    browser.get(live_app_url('models'))
-    browser.check()
-
-
-def test_redirect(live_app_url: LiveURL, client: Client) -> None:
-    args = '?key=value'
-    response = client.get(live_app_url('redirect') + args)
-    assert response.status_code == 302
-    assert response.url == app_url('home') + args  # type: ignore[attr-defined]
-
-
-def test_email(
-    live_app_url: LiveURL,
-    client: Client,
-    mailoutbox: list[AnymailMessage],
-) -> None:
-    factories.site_factory()
-    response = client.get(live_app_url('email'))
-    source = response.content.decode()
-    assert 'Email successfully sent' in source
-    assert len(mailoutbox) == 1
-    email = mailoutbox[0]
-    html = email.alternatives[0][0]
-
-    # Check metadata
-    assert email.subject == '[Dynamic Site] Test Email Subject'
-
-    # Check plain text version
-    expected_file = 'dynamic_site/email/test_email.md'
-    expected_path = Path(get_template(expected_file).origin.name)  # type: ignore[attr-defined]
-    assert re.sub('cid:[0-9.]+', 'cid:1.', email.body) == expected_path.read_text(encoding='utf-8')
-
-    # Check html version
-    assert '<title>Test Email Subject</title>' in html
-    assert '<body leftmargin="0" topmargin="0"' in html
-    assert '<p style=\'font-family:"Roboto",' in html
-    assert re.search(r'<img .* src="cid:.*\.img@inline"', html)
-
-    # Check attachments
-    assert email.attachments[1] == ('inline_attachment.txt', 'Inline Attachment', 'text/plain')
-    assert email.attachments[2] == ('attachment.txt', 'Attachment\n', 'text/plain')
-
-
-@set_browser(scenarios.desktop)
-def test_partials(
-    live_app_url: LiveURL,
-    browser: Browser,
-) -> None:
-    browser.get(live_app_url('partials'))
-    browser.check('initial')
-    button = browser.find_element(By.CSS_SELECTOR, 'main section button')
-    button.click()
-    browser.check('updated')

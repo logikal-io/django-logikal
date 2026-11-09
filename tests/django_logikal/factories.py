@@ -74,7 +74,7 @@ class RobotsRuleFactory(DjangoModelFactory[robots.models.Rule]):
 
 
 class ProjectFactory(DjangoModelFactory[Project]):
-    name = LazyFunction(lambda: faker.bs().title())
+    name = LazyFunction(lambda: ' '.join(faker.words(nb=2)).title())
 
     class Meta:
         model = Project
