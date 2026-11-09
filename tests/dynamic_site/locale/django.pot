@@ -1,11 +1,11 @@
-# Translation template for project "dynamic-site"
+# Translation template for project "django-logikal"
 # Copyright 2026 Logikal GmbH
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: dynamic-site v7.0.3.dev9+g4b45b595b.d20260909\n"
+"Project-Id-Version: django-logikal v8.0.3.dev4+g2cb99eeab.d20261108\n"
 "Report-Msgid-Bugs-To: Gergely Kalmár <contact@logikal.io>\n"
-"POT-Creation-Date: 2026-09-21 12:18+0200\n"
+"POT-Creation-Date: 2026-11-09 12:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,11 +48,19 @@ msgid "Sign up to access all content"
 msgstr ""
 
 #: tests/dynamic_site/templates/dynamic_site/base.html.j
-msgid "Menu"
+msgid "Change language"
 msgstr ""
 
 #: tests/dynamic_site/templates/dynamic_site/base.html.j
-msgid "Change language"
+msgid "Show menu"
+msgstr ""
+
+#: tests/dynamic_site/templates/dynamic_site/base.html.j
+msgid "Hide menu"
+msgstr ""
+
+#: tests/dynamic_site/templates/dynamic_site/base.html.j
+msgid "Dismiss"
 msgstr ""
 
 #: tests/dynamic_site/templates/dynamic_site/macros.html.j
@@ -99,7 +107,7 @@ msgid ""
 "the source file and also in the message file."
 msgstr ""
 
-#. This is a long gettext template test comment for translators that spans more     than one line
+#. This is a long gettext template test comment for translators that spans more       than one line
 #. in the source file and also in the message file
 #: tests/dynamic_site/templates/dynamic_site_localized/localization.html.j
 #, python-format

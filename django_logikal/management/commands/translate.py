@@ -4,7 +4,7 @@ Manage translation message catalogs.
 import logging
 import os
 import sys
-from collections.abc import Sequence
+from collections.abc import Iterator, Sequence
 from datetime import datetime
 from importlib import metadata
 from pathlib import Path
@@ -12,6 +12,7 @@ from typing import Any, cast
 
 import django
 from babel.messages.frontend import CommandLineInterface
+from babel.messages.pofile import read_po
 from django.core.management.base import BaseCommand, CommandError, CommandParser
 from logikal_utils.project import project_name, tool_config
 
@@ -85,7 +86,38 @@ class Command(BaseCommand):
 
         raise CommandError('An action must be provided')
 
-    def _extract(self, app: App, output: Path | None) -> None:
+    @staticmethod
+    def _project_name() -> str:
+        return str(
+            tool_config('django_logikal').get('translate', {}).get('project')
+            or project_name(raise_error_on_missing=True)
+        )
+
+    def _remove_empty_template(self, app: App, domain: str, output: Path | None) -> None:
+        template = (output or app.path) / f'locale/{domain}.pot'
+        with template.open('rb') as template_file:
+            empty = not read_po(template_file)
+        if empty:
+            self.stdout.write(f'removing empty PO template file {template}')
+            template.unlink()
+
+    def _po_filename(self, domain: str, locale: str) -> str:
+        suffix = {'django': '', 'djangojs': 'js'}[domain]
+        suffix = f'_{suffix}' if suffix else ''
+        return f'{self._project_name().replace('-', '_')}_{locale.lower()}{suffix}.po'
+
+    def _po_files(self, app: App, domain: str, output: Path | None) -> Iterator[tuple[Path, str]]:
+        translations_path = (output or app.path) / 'translations'
+        for path in translations_path.glob(self._po_filename(domain=domain, locale='*')):
+            with path.open('rb') as file:
+                catalog = read_po(file)
+            if catalog.locale is None:
+                raise CommandError(f'Missing "Language" header in "{path}"')
+            locale = str(catalog.locale)
+            if path.name == self._po_filename(domain=domain, locale=locale):
+                yield path, locale
+
+    def _extract(self, app: App, output: Path | None, update: bool = False) -> None:
         locale_path = (output or app.path) / 'locale'
         locale_path.mkdir(parents=True, exist_ok=True)
         for domain in DOMAINS:
@@ -104,7 +136,7 @@ class Command(BaseCommand):
                 '--add-location', 'file',
                 '--add-comments', 'Translators:',
                 # Metadata
-                '--project', app.name.replace('_', '-'),
+                '--project', self._project_name(),
                 '--msgid-bugs-address', tool_config('django_logikal')['translate']['contact'],
                 '--copyright-holder', tool_config('django_logikal')['translate']['copyright'],
                 '--header-comment', TEMPLATE_HEADER,
@@ -115,13 +147,14 @@ class Command(BaseCommand):
             for keyword in KEYWORDS.get(domain, []):
                 args.extend(['--keyword', keyword])
             try:
-                version = metadata.version(
-                    project_name(raise_error_on_missing=True)  # type: ignore[arg-type]
-                )
+                package = project_name(raise_error_on_missing=True)
+                version = metadata.version(package)  # type: ignore[arg-type]
                 args.extend(['--version', f'v{version}'])
             except (metadata.PackageNotFoundError, RuntimeError):  # pragma: no cover
                 pass  # pragma: no cover, ignore missing version data
             CommandLineInterface().run(args)  # type: ignore[no-untyped-call]
+            if not update or not any(self._po_files(app=app, domain=domain, output=output)):
+                self._remove_empty_template(app=app, domain=domain, output=output)
         self.stdout.write()
 
     def action_init(self, apps: Sequence[App], locale: str, output: Path | None) -> None:
@@ -131,7 +164,10 @@ class Command(BaseCommand):
         # Checking for overwrites
         output_files = {
             app.name: {
-                domain: (output or app.path) / 'locale' / locale / f'LC_MESSAGES/{domain}.po'
+                domain: (
+                    (output or app.path) / 'translations'
+                    / self._po_filename(domain=domain, locale=locale)
+                )
                 for domain in DOMAINS
             }
             for app in apps
@@ -161,11 +197,15 @@ class Command(BaseCommand):
                 self.stdout.write(f'Creating message catalogs for {self.style.ERROR(app.name)}\n')
             self._extract(app=app, output=output)
             for domain in DOMAINS:
+                if not ((output or app.path) / f'locale/{domain}.pot').exists():
+                    continue
+                output_file = output_files[app.name][domain]
+                output_file.parent.mkdir(parents=True, exist_ok=True)
                 CommandLineInterface().run([  # type: ignore[no-untyped-call]
                     sys.argv[0], 'init',
                     '--domain', domain,
                     '--input-file', str((output or app.path) / f'locale/{domain}.pot'),
-                    '--output-file', str(output_files[app.name][domain]),
+                    '--output-file', str(output_file),
                     '--locale', locale,
                     '--width', DEFAULT_WIDTH,
                 ])
@@ -176,28 +216,40 @@ class Command(BaseCommand):
         for index, app in enumerate(apps):
             prefix = '\n' if index > 0 else ''
             self.stdout.write(f'{prefix}Updating catalogs for {self.style.ERROR(app.name)}')
-            self._extract(app=app, output=output)
+            self._extract(app=app, output=output, update=True)
             self.stdout.write(self.style.MIGRATE_HEADING(f'{prefix}Updating catalog files:'))
             for domain in DOMAINS:
-                CommandLineInterface().run([  # type: ignore[no-untyped-call]
-                    sys.argv[0], 'update',
-                    '--domain', domain,
-                    '--input-file', str((output or app.path) / f'locale/{domain}.pot'),
-                    '--output-dir', str((output or app.path) / 'locale'),
-                    '--width', DEFAULT_WIDTH,
-                    '--update-header-comment',
-                ])
+                template = (output or app.path) / f'locale/{domain}.pot'
+                for catalog, locale in self._po_files(app=app, domain=domain, output=output):
+                    CommandLineInterface().run([  # type: ignore[no-untyped-call]
+                        sys.argv[0], 'update',
+                        '--domain', domain,
+                        '--locale', locale,
+                        '--input-file', str(template),
+                        '--output-file', str(catalog),
+                        '--width', DEFAULT_WIDTH,
+                        '--update-header-comment',
+                    ])
+                if template.exists():
+                    self._remove_empty_template(app=app, domain=domain, output=output)
             self.stdout.write()
         self.stdout.write(self.style.SUCCESS('Message catalogs successfully updated'))
 
     def action_compile(self, apps: Sequence[App], output: Path | None) -> None:
         for app in apps:
             self.stdout.write(f'Compiling message catalogs for {self.style.ERROR(app.name)}\n\n')
-            CommandLineInterface().run([  # type: ignore[no-untyped-call]
-                sys.argv[0], 'compile',
-                '--domain', ' '.join(DOMAINS),
-                '--directory', str((output or app.path) / 'locale'),
-                '--statistics',
-            ])
+            locale_path = (output or app.path) / 'locale'
+            for domain in DOMAINS:
+                for catalog, locale in self._po_files(app=app, domain=domain, output=output):
+                    messages_path = locale_path / locale / 'LC_MESSAGES'
+                    messages_path.mkdir(parents=True, exist_ok=True)
+                    CommandLineInterface().run([  # type: ignore[no-untyped-call]
+                        sys.argv[0], 'compile',
+                        '--domain', domain,
+                        '--locale', locale,
+                        '--input-file', str(catalog),
+                        '--output-file', str(messages_path / f'{domain}.mo'),
+                        '--statistics',
+                    ])
             self.stdout.write()
         self.stdout.write(self.style.SUCCESS('Message catalogs successfully compiled'))
