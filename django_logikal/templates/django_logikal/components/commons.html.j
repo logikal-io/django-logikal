@@ -216,6 +216,7 @@
           <li>{{ message }}</li>
         {% endfor %}
       </ul>
+      {# Translators: This is inside a popover which shows info or error messages #}
       <button id="{{ id }}-dismiss" type="button" class="active">{{ _('Dismiss') }}</button>
     </div>
   {% endif %}
