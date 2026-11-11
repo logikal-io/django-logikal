@@ -58,6 +58,7 @@
             current_language_code=language(),
             action_url=url('set_language'),
             csrf_input=csrf_input,
+            compact_button=true,
           ) }}
         {% endif %}
         {% if request|default(none) and request.user.is_authenticated %}

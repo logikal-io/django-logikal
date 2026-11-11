@@ -3,6 +3,7 @@ import re
 from collections.abc import Callable
 from datetime import datetime, tzinfo as tzinfo_class
 from functools import cache
+from operator import itemgetter
 from pathlib import Path
 from typing import Any
 
@@ -14,9 +15,8 @@ from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.templatetags.static import static as django_static
 from django.urls import reverse
-from django.utils import timezone
+from django.utils import timezone, translation
 from django.utils.safestring import SafeString, mark_safe
-from django.utils.translation import get_language
 from faker import Faker
 from jinja2.runtime import Context
 from jinja2.utils import pass_context
@@ -113,14 +113,18 @@ def language() -> str:
     """
     Return the current language code.
     """
-    return get_language()
+    return translation.get_language()
 
 
 def languages() -> list[tuple[str, str]]:
     """
-    Return the configured languages.
+    Return the configured language code, translated language name pairs (ordered by language name).
     """
-    return settings.LANGUAGES
+    translated_languages = []
+    for language_code, language_name in settings.LANGUAGES:
+        with translation.override(language_code):
+            translated_languages.append((language_code, str(language_name)))
+    return sorted(translated_languages, key=itemgetter(1))
 
 
 def format(  # pylint: disable=redefined-builtin
@@ -159,7 +163,7 @@ def format(  # pylint: disable=redefined-builtin
 
     """
     return Format(
-        locale=locale or Locale.parse(language_code or get_language(), sep='-'),
+        locale=locale or Locale.parse(language_code or translation.get_language(), sep='-'),
         tzinfo=tzinfo or timezone.get_current_timezone(),
     )
 

@@ -82,7 +82,7 @@ a {
 /* Text elements */
 code, kbd, samp, pre { font: var(--theme-font-body-code); }
 
-/* Headers */
+/* Headings */
 h1, .title {
   text-align: center;
   font: var(--theme-font-title);
@@ -353,6 +353,13 @@ nav {
       & > button { color: var(--theme-color-body-content-active-hit); }
       & > button:hover { color: var(--theme-color-body-content-active-highlight); }
     }
+  }
+
+  /* Language switcher */
+  .language-switcher {
+    button.dropdown { display: block; }
+    button.compact { display: none; }
+    menu li:has(.button.disabled) { display: none; }
   }
 }
 

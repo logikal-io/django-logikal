@@ -43,10 +43,21 @@ article { padding: 0; }
 
 @media (width <= 68.75rem) { /* 1100px */
   nav {
-    grid-template: 'logo menu-icon' / 1fr auto;
+    grid-template: 'logo aside menu-icon' / 1fr auto;
     & > menu.desktop { display: none; }
-    & > aside { display: none; }
+    & > aside .button.active { display: none; }
     & > .menu-mobile-container { display: block; }
+
+    .language-switcher {
+      button.icon.dropdown { display: none; }
+      button.icon.compact { display: block; }
+
+      menu.popover {
+        right: 0;
+
+        li:has(.button.disabled) { display: block; }
+      }
+    }
   }
 }
 
