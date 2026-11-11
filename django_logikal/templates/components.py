@@ -1,35 +1,30 @@
 from functools import cache
 from pathlib import Path
 
-import tinycss2
 from logikal_utils.operators import unique
 
 STATIC_PATH = Path(__file__).parents[1] / 'static'
 COMPONENTS_CSS_PATH = Path('django_logikal/css')
 COMPONENTS_JS_PATH = Path('django_logikal/js')
 
-
-@cache
-def _style_dependencies(file: Path) -> list[str]:
-    dependencies = []
-    for rule in tinycss2.parse_stylesheet(file.read_text(encoding='utf-8')):
-        if rule.type == 'at-rule' and rule.lower_at_keyword == 'import':
-            for token in rule.prelude:
-                if token.type == 'function':
-                    name = token.arguments[0].value  # type: ignore[attr-defined]
-                    dependencies.append(Path(name).stem)
-    return dependencies
+COMPONENT_DEPENDENCIES: dict[str, list[str]] = {
+    'variables': [],
+    'baseline': [],
+    'fonts': [],
+    'commons': ['variables', 'baseline'],
+    'composition': ['commons'],
+    'text': ['commons'],
+    'forms': ['commons'],
+    'auth': ['forms'],
+    'validation': ['fonts', 'composition', 'text'],
+}
 
 
 @cache
 def _component_style_dependencies() -> dict[str, list[str]]:
     module_files = {
-        file.stem: COMPONENTS_CSS_PATH / file.name
-        for file in (STATIC_PATH / COMPONENTS_CSS_PATH).glob('*.css')
-    }
-    dependencies = {
-        module: _style_dependencies(STATIC_PATH / file)
-        for module, file in module_files.items()
+        module: COMPONENTS_CSS_PATH / f'{module}.css'
+        for module in COMPONENT_DEPENDENCIES
     }
 
     def get_dependencies(module: str) -> list[str]:
@@ -47,7 +42,7 @@ def _component_style_dependencies() -> dict[str, list[str]]:
                 return  # pragma: no cover, also defensive line
 
             visiting.add(target_module)
-            for dependency in dependencies[target_module]:
+            for dependency in COMPONENT_DEPENDENCIES[target_module]:
                 walk_dependencies(dependency)
 
             visiting.remove(target_module)

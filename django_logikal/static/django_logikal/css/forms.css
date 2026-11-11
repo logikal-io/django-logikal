@@ -1,5 +1,3 @@
-@import url('commons.css');
-
 form, .form-group {
   display: flex;
   flex-direction: column;

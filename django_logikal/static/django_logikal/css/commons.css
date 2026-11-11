@@ -1,6 +1,3 @@
-@import url('variables.css');
-@import url('baseline.css');
-
 /* Main sections */
 body, :host {
   font: var(--theme-font-body);
@@ -353,6 +350,13 @@ nav {
       & > button { color: var(--theme-color-body-content-active-hit); }
       & > button:hover { color: var(--theme-color-body-content-active-highlight); }
     }
+
+    & > :is(button, .button):is(.active, .neutral, .danger) {
+      margin-block: var(--length-gap-element);
+    }
+
+    &:first-child > :is(button, .button):is(.active, .neutral, .danger) { margin-block-start: 0; }
+    &:last-child > :is(button, .button):is(.active, .neutral, .danger) { margin-block-end: 0; }
   }
 
   /* Language switcher */

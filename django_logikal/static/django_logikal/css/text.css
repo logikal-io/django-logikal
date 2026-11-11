@@ -1,5 +1,3 @@
-@import url('commons.css');
-
 .text {
   font-variant-numeric: oldstyle-nums;
   max-width: var(--length-text-width);
