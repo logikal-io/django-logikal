@@ -47,27 +47,31 @@
   {% set available_languages = dict(available_languages or languages()) %}
   <menu class="language-switcher" id="{{ id }}" role="menu">
     <li role="none">
-      <button type="button"
-              id="{{ id }}-toggle-dropdown"
-              class="icon dropdown"
-              role="menuitem"
-              title="{{ _('Change language') }}"
-              aria-label="{{ _('Change language') }}"
-              aria-haspopup="menu"
-              aria-expanded="false"
-              aria-controls="{{ id }}-form">
-        {{ text or available_languages[current_language_code] }}
-        {{ include_static(dropdown_button_icon) }}
-      </button>
-      <button type="button"
-              id="{{ id }}-toggle-compact"
-              class="icon compact"
-              role="menuitem"
-              title="{{ _('Change language') }}"
-              aria-label="{{ _('Change language') }}"
-              aria-haspopup="menu"
-              aria-expanded="false"
-              aria-controls="{{ id }}-form">{{ include_static(compact_button_icon) }}</button>
+      {% if dropdown_button %}
+        <button type="button"
+                id="{{ id }}-toggle-dropdown"
+                class="icon dropdown"
+                role="menuitem"
+                title="{{ _('Change language') }}"
+                aria-label="{{ _('Change language') }}"
+                aria-haspopup="menu"
+                aria-expanded="false"
+                aria-controls="{{ id }}-form">
+          {{ text or available_languages[current_language_code] }}
+          {{ include_static(dropdown_button_icon) }}
+        </button>
+      {% endif %}
+      {% if compact_button %}
+        <button type="button"
+                id="{{ id }}-toggle-compact"
+                class="icon compact"
+                role="menuitem"
+                title="{{ _('Change language') }}"
+                aria-label="{{ _('Change language') }}"
+                aria-haspopup="menu"
+                aria-expanded="false"
+                aria-controls="{{ id }}-form">{{ include_static(compact_button_icon) }}</button>
+      {% endif %}
       <form id="{{ id }}-form" action="{{ action_url }}" method="post">
         {{ csrf_input }}
         <menu role="menu" class="popover">
