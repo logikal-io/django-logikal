@@ -1,5 +1,3 @@
-@import url('forms.css');
-
 form {
   .apple-login svg { fill: var(--theme-color-neutral-content); }
 }

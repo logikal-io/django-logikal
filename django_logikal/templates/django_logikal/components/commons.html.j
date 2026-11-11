@@ -5,9 +5,12 @@
     {% set current = (item.view_name == url_name(request)) if request|default(none) else false %}
     <li role="none">
       {% if item.submenu %}
-        {% set render_horizontal = horizontal is true or (horizontal is none and nested) %}
+        {% set base_classes = ['icon', 'dropdown'] %}
+        {% if horizontal is true or (horizontal is none and nested) %}
+          {% set base_classes = base_classes + ['horizontal'] %}
+        {% endif %}
         <button type="button"
-                class="icon dropdown{% if render_horizontal %} horizontal{% endif %}"
+                class="{{ (base_classes + item.classes)|join(' ') }}"
                 role="menuitem"
                 id="{{ id_prefix }}-{{ item.id }}"
                 aria-haspopup="menu"
@@ -22,10 +25,14 @@
           ) }}
         </menu>
       {% else %}
+        {% set base_classes = ['button'] %}
+        {% if current %}
+          {% set base_classes = base_classes + ['disabled'] %}
+        {% endif %}
         {% set menu_url = url(viewname=item.view_name, kwargs=item.view_kwargs) %}
         <a role="menuitem"
            id="{{ id_prefix }}-{{ item.id }}"
-           class="button{% if current %} disabled{% endif %}"
+           class="{{ (base_classes + item.classes)|join(' ') }}"
            {% if current %}aria-current="page"{% else %}href="{{ menu_url }}"{% endif %}>
           {{ item.title }}
         </a>
@@ -107,6 +114,8 @@
           menu_item(title='Newest', view_name='main:blog', view_kwargs={'order': 'desc'}),
           menu_item(title='Oldest', view_name='main:blog', view_kwargs={'order': 'asc'}),
         ]),
+        menu_item(title='Settings', view_name='main:settings', classes=['neutral']),
+        menu_item(title='Log in', view_name='main:login', classes=['active']),
       ], request=request) }}
     </nav>
 

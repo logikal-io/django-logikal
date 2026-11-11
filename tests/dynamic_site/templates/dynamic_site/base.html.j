@@ -28,12 +28,13 @@
       <a href="{{ url('dynamic_site:home') }}" class="button logo" aria-label="Go to home page">
         {{ include_static('logikal_logo.svg') }}
       </a>
+      {# Menu items #}
       {% set view_kwargs = {'url_path_arg': 'path'} %}
       {% set menu_items = [
         menu_item(title='Home', view_name='dynamic_site:home'),
         menu_item(title='Errors', submenu=[
-          menu_item(title='404', view_name='error:404', id='submenu-404'),
-          menu_item(title='500', view_name='error:500', id='submenu-500'),
+          menu_item(title='404', view_name='error:404', id='submenu-404', classes=['neutral']),
+          menu_item(title='500', view_name='error:500', id='submenu-500', classes=['neutral']),
           menu_item(title='Server Errors', submenu=[
             menu_item(title='400', view_name='error:400', id='subsubmenu-400'),
             menu_item(title='500', view_name='error:500', id='subsubmenu-500'),
@@ -49,8 +50,14 @@
         menu_item(title='Templates', view_name='dynamic_site:templates', view_kwargs=view_kwargs),
       ] %}
 
+      {% set mobile_menu_items = [
+        menu_item(title='Log in', view_name='account_auth', classes=['active']),
+      ] %}
+
+      {# Desktop menu #}
       {{ commons.desktop_menu(menu_items, request=request|default(none)) }}
 
+      {# Language switcher & log in button #}
       <aside>
         {% if request|default(none)
           and request.resolver_match.view_name == 'dynamic_site_localized:localization' %}
@@ -68,7 +75,8 @@
         {% endif %}
       </aside>
 
-      {{ commons.mobile_menu(menu_items, request=request|default(none)) }}
+      {# Mobile menu #}
+      {{ commons.mobile_menu(menu_items + mobile_menu_items, request=request|default(none)) }}
     </nav>
   </header>
   <main>

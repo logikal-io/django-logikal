@@ -12,6 +12,7 @@ class MenuItem:
     view_kwargs: dict[str, Any] = field(default_factory=dict)
     submenu: list['MenuItem'] = field(default_factory=list)
     id: str | None = None
+    classes: list[str] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         if self.id is None:
