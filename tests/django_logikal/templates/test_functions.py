@@ -1,7 +1,6 @@
 from datetime import UTC, datetime
 from pathlib import Path
 
-from django.conf import settings
 from django.test import RequestFactory
 from django.urls import ResolverMatch
 from django.urls.exceptions import NoReverseMatch
@@ -56,7 +55,10 @@ def test_language() -> None:
 
 
 def test_languages() -> None:
-    assert f.languages() == settings.LANGUAGES
+    assert f.languages() == [
+        ('en-gb', 'English (GB)'),
+        ('en-us', 'English (US)'),
+    ]
 
 
 def test_cwd(mocker: MockerFixture) -> None:

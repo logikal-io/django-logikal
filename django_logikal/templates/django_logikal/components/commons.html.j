@@ -134,8 +134,10 @@
 {% endmacro %}
 
 {% macro language_switcher(
-  current_language_code, action_url, csrf_input, id='language-switcher',
-  text=none, available_languages=none, dropdown_icon='django_logikal/icons/chevron-down.svg'
+  current_language_code, action_url, csrf_input,
+  id='language-switcher', text=none, available_languages=none,
+  dropdown_button=true, dropdown_button_icon='django_logikal/icons/chevron-down.svg',
+  compact_button=false, compact_button_icon='django_logikal/icons/globe.svg'
 ) %}
   {#
   Render a language switcher.
@@ -146,9 +148,25 @@
     csrf_input (str): The CSRF input element to use.
     id (str): The ID to use for the menu element.
     text (str): The button text to use. Defaults to the current language name.
-    available_languages (list[tuple[str, str]]): A list of available language code, language name
-      pairs. Defaults to the configured languages.
-    dropdown_icon (str): The path for the dropdown icon to use.
+    available_languages (list[tuple[str, str]]): A list of available language code, translated
+      language name pairs. Defaults to the configured languages.
+    dropdown_button (bool): Whether to add a dropdown button.
+    dropdown_button_icon (str): The path for the dropdown button icon to use.
+    compact_button (bool): Whether to add a compact button.
+    compact_button_icon (str): The icon to use for the compact button.
+
+  .. note:: The compact version is hidden by default. You can switch to showing the compact version
+      and hiding the dropdown version using an approach similar to the following declarations:
+
+      .. code-block:: text
+
+          @media (width <= 68.75rem) {
+            nav .language-switcher {
+              button.icon.dropdown { display: none; }
+              button.icon.compact { display: block; }
+              menu li:has(.button.disabled) { display: block; }
+            }
+          }
 
   .. jinja:example::
 
@@ -165,7 +183,7 @@
   <menu class="language-switcher" id="{{ id }}" role="menu">
     <li role="none">
       <button type="button"
-              id="{{ id }}-toggle"
+              id="{{ id }}-toggle-dropdown"
               class="icon dropdown"
               role="menuitem"
               title="{{ _('Change language') }}"
@@ -174,19 +192,30 @@
               aria-expanded="false"
               aria-controls="{{ id }}-form">
         {{ text or available_languages[current_language_code] }}
-        {{ include_static(dropdown_icon) }}
+        {{ include_static(dropdown_button_icon) }}
       </button>
+      <button type="button"
+              id="{{ id }}-toggle-compact"
+              class="icon compact"
+              role="menuitem"
+              title="{{ _('Change language') }}"
+              aria-label="{{ _('Change language') }}"
+              aria-haspopup="menu"
+              aria-expanded="false"
+              aria-controls="{{ id }}-form">{{ include_static(compact_button_icon) }}</button>
       <form id="{{ id }}-form" action="{{ action_url }}" method="post">
         {{ csrf_input }}
         <menu role="menu" class="popover">
           {% for language_code, language_name in available_languages.items() %}
-            {% if language_code != current_language_code %}
-              <li role="none">
+            <li role="none">
+              {% if language_code != current_language_code %}
                 <button name="language" value="{{ language_code }}" type="submit" role="menuitem">
-                  {% language language_code %}{{ language_name }}{% endlanguage %}
+                  {{ language_name }}
                 </button>
-              </li>
-            {% endif %}
+              {% else %}
+                <a class="button disabled">{{ language_name }}</a>
+              {% endif %}
+            </li>
           {% endfor %}
         </menu>
       </form>
