@@ -1,147 +1,3 @@
-{% macro _render_menu_items(
-  items, request, dropdown_icon, id_prefix, horizontal=none, nested=false
-) %}
-  {% for item in items %}
-    {% set current = (item.view_name == url_name(request)) if request|default(none) else false %}
-    <li role="none">
-      {% if item.submenu %}
-        {% set base_classes = ['icon', 'dropdown'] %}
-        {% if horizontal is true or (horizontal is none and nested) %}
-          {% set base_classes = base_classes + ['horizontal'] %}
-        {% endif %}
-        <button type="button"
-                class="{{ (base_classes + item.classes)|join(' ') }}"
-                role="menuitem"
-                id="{{ id_prefix }}-{{ item.id }}"
-                aria-haspopup="menu"
-                aria-expanded="false">
-          {{ item.title }}
-          {{ include_static(dropdown_icon) }}
-        </button>
-        <menu role="menu" class="popover">
-          {{ _render_menu_items(
-            items=item.submenu, request=request, dropdown_icon=dropdown_icon,
-            id_prefix=id_prefix, horizontal=horizontal, nested=true
-          ) }}
-        </menu>
-      {% else %}
-        {% set base_classes = ['button'] %}
-        {% if current %}
-          {% set base_classes = base_classes + ['disabled'] %}
-        {% endif %}
-        {% set menu_url = url(viewname=item.view_name, kwargs=item.view_kwargs) %}
-        <a role="menuitem"
-           id="{{ id_prefix }}-{{ item.id }}"
-           class="{{ (base_classes + item.classes)|join(' ') }}"
-           {% if current %}aria-current="page"{% else %}href="{{ menu_url }}"{% endif %}>
-          {{ item.title }}
-        </a>
-      {% endif %}
-    </li>
-  {% endfor %}
-{% endmacro %}
-
-{% macro desktop_menu(
-  items, request, id='menu-desktop', dropdown_icon='django_logikal/icons/chevron-down.svg'
-) %}
-  {#
-  Render a desktop menu bar.
-
-  Args:
-    items (list[~django_logikal.components.commons.MenuItem]): The menu items to use.
-    request (~django.http.HttpRequest | None): The HTTP request to use.
-    id (str): The menu ID to use.
-    dropdown_icon (str): The path for the dropdown icon to use.
-
-  .. jinja:example::
-
-    <nav>
-      {{ commons.desktop_menu([
-        menu_item(title='Home', view_name='main:home'),
-        menu_item(title='Info', submenu=[
-          menu_item(title='Home', id='submenu-home', view_name='main:home'),
-          menu_item(title='About', view_name='main:about'),
-          menu_item(title='Components', submenu=[
-            menu_item(title='Home', id='subsubmenu-home', view_name='main:home'),
-            menu_item(title='Buttons', view_name='main:buttons'),
-          ]),
-        ]),
-        menu_item(title='Blog', submenu=[
-          menu_item(title='Newest', view_name='main:blog', view_kwargs={'order': 'desc'}),
-          menu_item(title='Oldest', view_name='main:blog', view_kwargs={'order': 'asc'}),
-        ]),
-      ], request=request) }}
-    </nav>
-
-  #}
-  <menu role="menubar" id="{{ id }}" class="desktop">
-    {{ _render_menu_items(items, request=request, dropdown_icon=dropdown_icon, id_prefix=id) }}
-  </menu>
-{% endmacro %}
-
-{% macro mobile_menu(
-  items, request,
-  id='menu-mobile',
-  dropdown_icon='django_logikal/icons/chevron-down.svg',
-  menu_icon='django_logikal/icons/menu.svg',
-  menu_close_icon='django_logikal/icons/x.svg'
-) %}
-  {#
-  Render a mobile menu.
-
-  Args:
-    items (list[~django_logikal.components.commons.MenuItem]): The menu items to use.
-    request (~django.http.HttpRequest | None): The HTTP request to use.
-    id (str): The menu ID to use.
-    dropdown_icon (str): The path for the dropdown icon to use.
-    menu_icon (str): The path for the menu icon to use.
-    menu_close_icon (str): The path for the menu close icon to use.
-
-  .. jinja:example::
-
-    <nav>
-      {{ commons.mobile_menu([
-        menu_item(title='Home', view_name='main:home'),
-        menu_item(title='Info', submenu=[
-          menu_item(title='Home', id='submenu-home', view_name='main:home'),
-          menu_item(title='About', view_name='main:about'),
-          menu_item(title='Components', submenu=[
-            menu_item(title='Home', id='subsubmenu-home', view_name='main:home'),
-            menu_item(title='Buttons', view_name='main:buttons'),
-          ]),
-        ]),
-        menu_item(title='Blog', submenu=[
-          menu_item(title='Newest', view_name='main:blog', view_kwargs={'order': 'desc'}),
-          menu_item(title='Oldest', view_name='main:blog', view_kwargs={'order': 'asc'}),
-        ]),
-        menu_item(title='Settings', view_name='main:settings', classes=['neutral']),
-        menu_item(title='Log in', view_name='main:login', classes=['active']),
-      ], request=request) }}
-    </nav>
-
-  #}
-  <div class="menu-mobile-container">
-    <button class="icon toggle"
-            id="{{ id }}-toggle"
-            type="button"
-            title="{{ _('Show menu') }}"
-            aria-label="{{ _('Show menu') }}"
-            data-active-title="{{ _('Hide menu') }}"
-            data-active-aria-label="{{ _('Hide menu') }}"
-            aria-haspopup="true"
-            aria-controls="{{ id }}"
-            aria-expanded="false">
-      <span class="inactive" aria-hidden="false">{{ include_static(menu_icon) }}</span>
-      <span class="active" aria-hidden="true">{{ include_static(menu_close_icon) }}</span>
-    </button>
-    <menu id="{{ id }}" role="menubar" class="mobile popover">
-      {{ _render_menu_items(
-        items, request=request, dropdown_icon=dropdown_icon, id_prefix=id, horizontal=false
-      ) }}
-    </menu>
-  </div>
-{% endmacro %}
-
 {% macro language_switcher(
   current_language_code, action_url, csrf_input,
   id='language-switcher', text=none, available_languages=none,
@@ -232,6 +88,160 @@
   </menu>
 {% endmacro %}
 
+{% macro _render_menu_items(
+  items, request, dropdown_icon, id_prefix, horizontal=none, nested=false
+) %}
+  {% for item in items %}
+    <li role="none">
+      {% if item|isinstance(menu_custom_item) %}
+        {{ item.content }}
+      {% elif item.submenu %}
+        {% set base_classes = ['icon', 'dropdown'] %}
+        {% if horizontal is true or (horizontal is none and nested) %}
+          {% set base_classes = base_classes + ['horizontal'] %}
+        {% endif %}
+        <button type="button"
+                class="{{ (base_classes + item.classes)|join(' ') }}"
+                role="menuitem"
+                id="{{ id_prefix }}-{{ item.id }}"
+                aria-haspopup="menu"
+                aria-expanded="false">
+          {{ item.title }}
+          {{ include_static(dropdown_icon) }}
+        </button>
+        <menu role="menu" class="popover">
+          {{ _render_menu_items(
+            items=item.submenu, request=request, dropdown_icon=dropdown_icon,
+            id_prefix=id_prefix, horizontal=horizontal, nested=true
+          ) }}
+        </menu>
+      {% else %}
+        {% set current = (item.view_name == url_name(request)) if request|default(none) else false %}
+        {% set base_classes = ['button'] %}
+        {% if current %}
+          {% set base_classes = base_classes + ['disabled'] %}
+        {% endif %}
+        {% set menu_url = url(viewname=item.view_name, kwargs=item.view_kwargs) %}
+        <a role="menuitem"
+           id="{{ id_prefix }}-{{ item.id }}"
+           class="{{ (base_classes + item.classes)|join(' ') }}"
+           {% if current %}aria-current="page"{% else %}href="{{ menu_url }}"{% endif %}>
+          {{ item.title }}
+        </a>
+      {% endif %}
+    </li>
+  {% endfor %}
+{% endmacro %}
+
+{% macro desktop_menu(
+  items, request, id='menu-desktop', dropdown_icon='django_logikal/icons/chevron-down.svg'
+) %}
+  {#
+  Render a desktop menu bar.
+
+  Args:
+    items (list): A list of
+      :class:`~django_logikal.components.commons.MenuItem` or
+      :class:`~django_logikal.components.commons.MenuCustomItem` instances.
+    request (~django.http.HttpRequest | None): The HTTP request to use.
+    id (str): The menu ID to use.
+    dropdown_icon (str): The path for the dropdown icon to use.
+
+  .. jinja:example::
+
+    <nav>
+      {{ commons.desktop_menu([
+        menu_item(title='Home', view_name='main:home'),
+        menu_item(title='Info', submenu=[
+          menu_item(title='Home', id='submenu-home', view_name='main:home'),
+          menu_item(title='About', view_name='main:about'),
+          menu_item(title='Components', submenu=[
+            menu_item(title='Home', id='subsubmenu-home', view_name='main:home'),
+            menu_item(title='Buttons', view_name='main:buttons'),
+          ]),
+        ]),
+        menu_item(title='Blog', submenu=[
+          menu_item(title='Newest', view_name='main:blog', view_kwargs={'order': 'desc'}),
+          menu_item(title='Oldest', view_name='main:blog', view_kwargs={'order': 'asc'}),
+        ]),
+      ], request=request) }}
+    </nav>
+
+  #}
+  <menu role="menubar" id="{{ id }}" class="desktop">
+    {{ _render_menu_items(items, request=request, dropdown_icon=dropdown_icon, id_prefix=id) }}
+  </menu>
+{% endmacro %}
+
+{% macro mobile_menu(
+  items, request,
+  id='menu-mobile',
+  dropdown_icon='django_logikal/icons/chevron-down.svg',
+  menu_icon='django_logikal/icons/menu.svg',
+  menu_close_icon='django_logikal/icons/x.svg'
+) %}
+  {#
+  Render a mobile menu.
+
+  Args:
+    items (list): A list of
+      :class:`~django_logikal.components.commons.MenuItem` or
+      :class:`~django_logikal.components.commons.MenuCustomItem` instances.
+    request (~django.http.HttpRequest | None): The HTTP request to use.
+    id (str): The menu ID to use.
+    dropdown_icon (str): The path for the dropdown icon to use.
+    menu_icon (str): The path for the menu icon to use.
+    menu_close_icon (str): The path for the menu close icon to use.
+
+  .. jinja:example::
+
+    <nav>
+      {% set custom_item %}
+        <a class="button" href="{{ url('main:custom') }}">Custom Item</a>
+      {% endset %}
+
+      {{ commons.mobile_menu([
+        menu_item(title='Home', view_name='main:home'),
+        menu_item(title='Info', submenu=[
+          menu_item(title='Home', id='submenu-home', view_name='main:home'),
+          menu_item(title='About', view_name='main:about'),
+          menu_item(title='Components', submenu=[
+            menu_item(title='Home', id='subsubmenu-home', view_name='main:home'),
+            menu_item(title='Buttons', view_name='main:buttons'),
+          ]),
+        ]),
+        menu_item(title='Blog', submenu=[
+          menu_item(title='Newest', view_name='main:blog', view_kwargs={'order': 'desc'}),
+          menu_item(title='Oldest', view_name='main:blog', view_kwargs={'order': 'asc'}),
+        ]),
+        menu_custom_item(content=custom_item),
+        menu_item(title='Settings', view_name='main:settings', classes=['neutral']),
+        menu_item(title='Log in', view_name='main:login', classes=['active']),
+      ], request=request) }}
+    </nav>
+
+  #}
+  <div class="menu-mobile-container">
+    <button class="icon toggle"
+            id="{{ id }}-toggle"
+            type="button"
+            title="{{ _('Show menu') }}"
+            aria-label="{{ _('Show menu') }}"
+            data-active-title="{{ _('Hide menu') }}"
+            data-active-aria-label="{{ _('Hide menu') }}"
+            aria-haspopup="true"
+            aria-controls="{{ id }}"
+            aria-expanded="false">
+      <span class="inactive" aria-hidden="false">{{ include_static(menu_icon) }}</span>
+      <span class="active" aria-hidden="true">{{ include_static(menu_close_icon) }}</span>
+    </button>
+    <menu id="{{ id }}" role="menubar" class="mobile popover">
+      {{ _render_menu_items(
+        items, request=request, dropdown_icon=dropdown_icon, id_prefix=id, horizontal=false
+      ) }}
+    </menu>
+  </div>
+{% endmacro %}
 {% macro messages(messages, id='messages') %}
   {#
   Show messages as a popover notification.

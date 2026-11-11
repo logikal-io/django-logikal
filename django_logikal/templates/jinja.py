@@ -144,6 +144,7 @@ def environment(**options: Any) -> Environment:
         'component_head': functions.component_head,
         # Components
         'menu_item': commons.MenuItem,
+        'menu_custom_item': commons.MenuCustomItem,
     })
     if installed('django_htmx'):
         from django_htmx.jinja import django_htmx_script, htmx_script
