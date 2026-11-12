@@ -43,6 +43,10 @@ document.querySelectorAll(
   'nav menu.desktop, nav menu.mobile, nav .language-switcher',
 ).forEach((menu) => {
   menu.querySelectorAll('li').forEach((item) => {
+    if (item.closest('menu.desktop, menu.mobile, .language-switcher') !== menu) {
+      return;
+    }
+
     const menuButtons = item.querySelectorAll(':scope > button');
     const submenu = item.querySelector('menu');
     if (submenu) {
