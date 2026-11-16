@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dynamic-site v0.1.dev1+g8fb9899.d20230520\n"
 "Report-Msgid-Bugs-To: Gergely Kalmár <contact@logikal.io>\n"
-"POT-Creation-Date: 2026-11-09 12:37+0100\n"
+"POT-Creation-Date: 2026-11-16 22:43+0100\n"
 "PO-Revision-Date: 2026-09-21 12:18+0200\n"
 "Last-Translator: Gergely Kalmár <contact@logikal.io>\n"
 "Language: en_GB\n"
@@ -60,6 +60,7 @@ msgstr "Show menu"
 msgid "Hide menu"
 msgstr "Hidem menu"
 
+#. This is inside a popover which shows info or error messages
 #: tests/dynamic_site/templates/dynamic_site/base.html.j
 msgid "Dismiss"
 msgstr "Dismiss"

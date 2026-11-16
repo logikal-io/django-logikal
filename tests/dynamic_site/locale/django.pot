@@ -3,9 +3,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: django-logikal v8.0.3.dev4+g2cb99eeab.d20261108\n"
+"Project-Id-Version: django-logikal v9.2.3.dev2+ge06d7e938.d20261116\n"
 "Report-Msgid-Bugs-To: Gergely Kalmár <contact@logikal.io>\n"
-"POT-Creation-Date: 2026-11-09 12:37+0100\n"
+"POT-Creation-Date: 2026-11-16 22:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,6 +59,7 @@ msgstr ""
 msgid "Hide menu"
 msgstr ""
 
+#. This is inside a popover which shows info or error messages
 #: tests/dynamic_site/templates/dynamic_site/base.html.j
 msgid "Dismiss"
 msgstr ""

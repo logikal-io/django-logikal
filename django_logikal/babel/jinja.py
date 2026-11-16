@@ -69,12 +69,24 @@ def template_path(file: str) -> Path | None:
     return Path(module.submodule_search_locations[0]) / 'templates' / file
 
 
-def get_macro_lines(macros: set[str]) -> dict[str, list[int]]:
-    macro_lines: dict[str, list[int]] = defaultdict(list)
+def get_macro_caller_lines(macros: set[str]) -> dict[str, list[int]]:
+    macro_caller_lines: dict[str, list[int]] = defaultdict(list)
     for macro in macros:
         macro_name, line_number_str = macro.split(':')
-        macro_lines[macro_name].append(int(line_number_str))
-    return macro_lines
+        macro_caller_lines[macro_name].append(int(line_number_str))
+    return macro_caller_lines
+
+
+def get_macro_to_caller_lines(macro_file_path: Path, macros: set[str]) -> dict[int, set[int]]:
+    macro_template = load_template(macro_file_path)
+    macro_caller_lines = get_macro_caller_lines(macros)
+    macro_to_caller_lines: dict[int, set[int]] = defaultdict(set)
+    for macro in macro_template.find_all(nodes.Macro):
+        if macro.name not in macro_caller_lines:
+            continue
+        for child in macro.find_all(nodes.Call):
+            macro_to_caller_lines[child.lineno].update(macro_caller_lines[macro.name])
+    return macro_to_caller_lines
 
 
 def babel_extract_extended(
@@ -86,7 +98,10 @@ def babel_extract_extended(
     # Load template messages
     fileobj.seek(0)
     yield from babel_extract(
-        fileobj=fileobj, keywords=keywords, comment_tags=comment_tags, options=options,
+        fileobj=fileobj,
+        keywords=keywords,
+        comment_tags=comment_tags,
+        options=options,
     )
 
     # Load imported macros
@@ -96,18 +111,22 @@ def babel_extract_extended(
     macro_file_names = get_macro_file_names(template=template)
 
     # Load messages from imported macros
-    for file, macros in macro_file_names.items():
-        if not (file_path := template_path(file)):
+    for macro_file_name, macros in macro_file_names.items():
+        if not (macro_file_path := template_path(macro_file_name)):
             continue
 
-        print(f'extracting macro messages from {file}')
-        macro_lines = get_macro_lines(macros)
-        template = load_template(file_path)
-        for macro in template.find_all(nodes.Macro):
-            if macro.name not in macro_lines:
-                continue
-            for child in macro.find_all(nodes.Call):
-                if not hasattr(child.node, 'name') or child.node.name not in keywords:
-                    continue
-                for line_number in macro_lines[macro.name]:
-                    yield (line_number, child.node.name, child.args[0].value, [])
+        print(f'extracting macro messages from {macro_file_name}')
+        # Note: `macros` contains the `macro name:caller line number` pairs,
+        # so we need to map the extracted macro line numbers back to the caller line number
+        macro_to_caller_lines = get_macro_to_caller_lines(
+            macro_file_path=macro_file_path, macros=macros,
+        )
+        with macro_file_path.open('rb') as macro_template_file:
+            for message in babel_extract(
+                fileobj=macro_template_file,
+                keywords=keywords,
+                comment_tags=comment_tags,
+                options=options,
+            ):
+                for caller_line_number in sorted(macro_to_caller_lines.get(message[0], ())):
+                    yield (caller_line_number, *message[1:])

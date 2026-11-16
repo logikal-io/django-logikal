@@ -65,7 +65,8 @@ def test_translate(tmp_path: Path) -> None:
     command.run_from_argv([*common_args, '--init', '--locale', 'en_GB'])
     pot_file = (locale_path / 'django.pot').read_text()
     assert 'Project-Id-Version: django-logikal' in pot_file
-    assert 'msgid "Localization"\nmsgstr ""' in pot_file
+    assert 'msgid "Localization"\nmsgstr ""\n' in pot_file
+    assert '#. This is inside a popover which shows info or error messages\n' in pot_file
     assert not (locale_path / 'djangojs.pot').exists()
     assert not (tmp_path / 'translations/django_logikal_en_gb_js.po').exists()
 
