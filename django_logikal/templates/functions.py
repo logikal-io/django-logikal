@@ -251,17 +251,19 @@ def component_head(
     head_files = component_head_files(modules)
     component_styles = [{'href': static(str(file))} for file in head_files['css']]
 
-    scripts: list[dict[str, str | bool]] = []
+    component_scripts = []
     if head_files['js']:
         if not static_site:
-            scripts.append({'src': reverse('js-i18n-catalog'), 'defer': True, 'module': False})
-        scripts.extend(
+            js_i18n_catalog = {'src': reverse('js-i18n-catalog'), 'defer': True, 'module': False}
+            component_scripts.append(js_i18n_catalog)
+        component_scripts.extend(
             {'src': static(str(file)), 'defer': False, 'module': True}
             for file in ['django_logikal/js/gettext.mjs', *head_files['js']]
         )
 
-    rendered = render_to_string(
-        'django_logikal/component_head.html.j',
-        dict(theme_styles=theme_styles, component_styles=component_styles, scripts=scripts),
-    ) + '\n\n'
+    rendered = render_to_string('django_logikal/component_head.html.j', context={
+        'theme_styles': theme_styles,
+        'component_styles': component_styles,
+        'component_scripts': component_scripts,
+    }) + '\n\n'
     return mark_safe(rendered)  # nosec: template contents are already escaped

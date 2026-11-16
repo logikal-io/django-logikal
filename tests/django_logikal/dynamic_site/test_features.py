@@ -40,43 +40,28 @@ def test_home(live_server: LiveServer, browser: Browser) -> None:
 @set_browser([scenarios.desktop, scenarios.mobile])
 def test_menu(live_server: LiveServer, browser: Browser) -> None:
     variant = 'mobile' if browser.settings.mobile else 'desktop'
-
-    # Check menu hover
     browser.get(live_server.url)
-    if browser.settings.mobile:
-        browser.find_element(By.ID, 'menu-mobile-toggle').click()
+    browser.check('page_home')
 
-    menu = browser.find_element(By.ID, f'menu-{variant}-errors')
-    browser.hover(menu)
-    browser.check('menu_hover')
-
-    menu.click()
-    menu_item = browser.find_element(By.ID, f'menu-{variant}-submenu-404')
-    browser.hover(menu_item)
-    browser.check('menu_item_hover')
-
-    # Check menu navigation
-    menu_item.click()  # navigate forward
-    browser.check('page_404')
-    if browser.settings.mobile:
-        browser.find_element(By.ID, 'menu-mobile-toggle').click()
-    browser.find_element(By.ID, f'menu-{variant}-home').click()  # navigate back
-
-    # Check submenu hover
+    # Navigate forward via submenu item
     if browser.settings.mobile:
         browser.find_element(By.ID, 'menu-mobile-toggle').click()
     browser.find_element(By.ID, f'menu-{variant}-errors').click()
-    submenu = browser.find_element(By.ID, f'menu-{variant}-page-not-found-errors')
-    browser.hover(submenu)
-    browser.check('submenu_hover')
+    browser.find_element(By.ID, f'menu-{variant}-submenu-404').click()
+    browser.check('page_404')
 
-    submenu.click()
-    submenu_item = browser.find_element(By.ID, f'menu-{variant}-subsubmenu-404')
-    browser.hover(submenu_item)
-    browser.check('submenu_item_hover')
+    # Navigate back via menu item
+    if browser.settings.mobile:
+        browser.find_element(By.ID, 'menu-mobile-toggle').click()
+    browser.find_element(By.ID, f'menu-{variant}-home').click()
+    browser.check('page_home')
 
-    # Check submenu navigation
-    submenu_item.click()
+    # Navigate forward via subsubmenu item
+    if browser.settings.mobile:
+        browser.find_element(By.ID, 'menu-mobile-toggle').click()
+    browser.find_element(By.ID, f'menu-{variant}-errors').click()
+    browser.find_element(By.ID, f'menu-{variant}-page-not-found-errors').click()
+    browser.find_element(By.ID, f'menu-{variant}-subsubmenu-404').click()
     browser.check('page_404')
 
 
@@ -116,24 +101,18 @@ def test_language_switcher(live_url: LiveURL, browser: Browser) -> None:
     browser.get(live_url('dynamic_site_localized:localization'))
     browser.check('english_us')
 
-    # Check hover and open state
+    # Check interactions with menu
+    menu = browser.find_element(By.ID, 'menu-desktop-errors')
     language_switcher = browser.find_element(By.ID, 'language-switcher')
-    browser.hover(language_switcher)
-    browser.check('switcher_hover')
     language_switcher.click()
     browser.check('switcher_open')
-
-    # Check interactions with menu
-    browser.find_element(By.ID, 'menu-desktop-errors').click()
+    menu.click()
     browser.check('menu_open')
     language_switcher.click()
     browser.check('switcher_open')
 
     # Check language switching
-    language_en_gb = language_switcher.find_element(By.CSS_SELECTOR, 'button[value="en-gb"]')
-    browser.hover(language_en_gb)
-    browser.check('switcher_item_hover')
-    language_en_gb.click()
+    language_switcher.find_element(By.CSS_SELECTOR, 'button[value="en-gb"]').click()
     browser.check('english_gb')
 
 

@@ -349,6 +349,7 @@ nav {
       & > menu, & > form, & > form > menu { display: block; }
       & > button { color: var(--theme-color-body-content-active-hit); }
       & > button:hover { color: var(--theme-color-body-content-active-highlight); }
+      & > button:active { color: var(--theme-color-body-content-active-hit); }
     }
 
     & > :is(button, .button):is(.active, .neutral, .danger) {

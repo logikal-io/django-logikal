@@ -61,12 +61,12 @@
   /* Layout */
 
   /** Spacing **/
-  --length-gap-subelement: 0.3125rem; /* 5px */
-  --length-gap-element: 0.625rem; /* 10px */
-  --length-gap-group: 1.25rem; /* 20px */
-  --length-gap-subsection: 1.875rem; /* 30px */
-  --length-gap-section: 2.5rem; /* 40px */
   --length-gap-region: 3.75rem; /* 60px */
+  --length-gap-section: 2.5rem; /* 40px */
+  --length-gap-subsection: 1.875rem; /* 30px */
+  --length-gap-group: 1.25rem; /* 20px */
+  --length-gap-element: 0.625rem; /* 10px */
+  --length-gap-subelement: 0.3125rem; /* 5px */
 
   /** Splits **/
   --split-equal: 1fr 1fr;
@@ -132,17 +132,17 @@
   /** Elements **/
 
   /*** Radii ***/
-  --length-radius-element: 0.5rem; /* 8px */
   --length-radius-group: 1rem; /* 16px */
+  --length-radius-element: 0.5rem; /* 8px */
 
   /*** Edges ***/
-  --length-edge-element: 0.0625rem; /* 1px */
   --length-edge-group: 0.125rem; /* 2px */
+  --length-edge-element: 0.0625rem; /* 1px */
 
   /*** Areas ***/
-  --length-element-width: 18.75rem; /* 300px */
-  --length-form-width: 24rem; /* 384px */
   --length-card-width: 27rem; /* 432px */
+  --length-form-width: 24rem; /* 384px */
+  --length-element-width: 18.75rem; /* 300px */
 
   --length-button-icon: 1.5rem; /* 24px */
   --length-nav-logo-height: 1.25rem; /* 20px */
@@ -152,7 +152,7 @@
   /* _Note: ideal text width is ~66 characters per line, however, due to typical computer screen
    *        aspect ratios and the crude typesetting algorithms in browsers we have to push text
    *        width wider and closer to the readability limit (~80). */
-  --length-text-width: 50rem; /* 700px */
   --length-text-width-code: 75rem; /* 1200px */
+  --length-text-width: 50rem; /* 800px */
   --length-text-indent: 2em; /* 40px with 20px font size */
 }

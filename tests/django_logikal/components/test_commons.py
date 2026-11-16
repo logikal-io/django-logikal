@@ -52,22 +52,60 @@ def test_menu(browser: Browser, theme: str, variant: str) -> None:
     else:
         ready_state = theme_variant
 
+    # Hover "home" disabled current menu item
+    browser.hover(root.find_element(By.ID, f'menu-{variant}-home'))
+    browser.check(ready_state, element=example)
+
+    # Hover "blog" menu item
+    blog_menu_item = root.find_element(By.ID, f'menu-{variant}-blog')
+    browser.hover(blog_menu_item)
+    browser.check(f'blog_menu_hover_{theme_variant}', element=example, retain_hover=True)
+
     # Open "blog" menu item
-    root.find_element(By.ID, f'menu-{variant}-blog').click()
+    blog_menu_item.click()
     browser.check(f'blog_menu_open_{theme_variant}', element=example)
 
     # Close "blog" menu item
-    root.find_element(By.ID, f'menu-{variant}-blog').click()
+    blog_menu_item.click()
     browser.check(ready_state, element=example)
 
     # Open "blog" and then "info" menu item
-    root.find_element(By.ID, f'menu-{variant}-blog').click()
-    root.find_element(By.ID, f'menu-{variant}-info').click()
+    blog_menu_item.click()
+    info_menu_item = root.find_element(By.ID, f'menu-{variant}-info')
+    info_menu_item.click()
     browser.check(f'info_menu_open_{theme_variant}', element=example)
 
+    # Hover "blog" menu item (after opening)
+    browser.hover(blog_menu_item)
+    browser.check(f'blog_menu_open_hover_{theme_variant}', element=example, retain_hover=True)
+
+    # Hover "info" menu item (after opening)
+    browser.hover(info_menu_item)
+    browser.check(f'info_menu_open_hover_{theme_variant}', element=example, retain_hover=True)
+
+    # Hover "info" menu "about" submenu item
+    browser.hover(root.find_element(By.ID, f'menu-{variant}-about'))
+    browser.check(f'about_submenu_hover_{theme_variant}', element=example, retain_hover=True)
+
+    # Hover "info" menu "components" submenu item
+    components_menu_item = root.find_element(By.ID, f'menu-{variant}-components')
+    browser.hover(components_menu_item)
+    browser.check(f'components_submenu_hover_{theme_variant}', element=example, retain_hover=True)
+
     # Open "info" menu "components" submenu item
-    root.find_element(By.ID, f'menu-{variant}-components').click()
-    browser.check(f'info_submenu_open_{theme_variant}', element=example)
+    components_menu_item.click()
+    browser.check(f'components_submenu_open_{theme_variant}', element=example)
+
+    # Hover "info" menu "components" submenu item (after opening)
+    browser.hover(components_menu_item)
+    browser.check(
+        f'components_submenu_open_hover_{theme_variant}',
+        element=example, retain_hover=True,
+    )
+
+    # Hover "info" menu "components" submenu "buttons" item
+    browser.hover(root.find_element(By.ID, f'menu-{variant}-buttons'))
+    browser.check(f'buttons_subsubmenu_hover_{theme_variant}', element=example, retain_hover=True)
 
     # Close all items
     if variant == 'desktop':
@@ -82,12 +120,21 @@ def test_language_switcher(browser: Browser, theme: str) -> None:
     root = example.shadow_root
     browser.check(theme, element=example)
 
-    # Open switcher
-    root.find_element(By.ID, 'language-switcher').click()
+    # Hover language switcher
+    language_switcher = root.find_element(By.ID, 'language-switcher')
+    browser.hover(language_switcher)
+    browser.check(f'hover_{theme}', element=example, retain_hover=True)
+
+    # Open language switcher
+    language_switcher.click()
     browser.check(f'open_{theme}', element=example)
 
-    # Close switcher
-    root.find_element(By.ID, 'language-switcher').click()
+    # Hover language switcher item
+    browser.hover(language_switcher.find_element(By.CSS_SELECTOR, 'button[value="en-gb"]'))
+    browser.check(f'hover_item_{theme}', element=example, retain_hover=True)
+
+    # Close language switcher
+    language_switcher.click()
     browser.check(theme, element=example)
 
 

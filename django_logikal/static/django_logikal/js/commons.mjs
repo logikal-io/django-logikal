@@ -57,7 +57,7 @@ document.querySelectorAll(
             button.setAttribute('aria-expanded', item.classList.contains('open'));
           });
 
-          // Close all other menus (except on mobile, and except parents)
+          // Close all other menus (except in the mobile menu, and except parents)
           if (!menu.classList.contains('mobile')) {
             menu.querySelectorAll('li.open').forEach((menuItem) => {
               if (!(menuItem === item || menuItem.contains(item))) {
@@ -77,7 +77,8 @@ document.querySelectorAll(
 window.document.addEventListener('click', (event) => {
   document.querySelectorAll('nav menu.desktop li.open, nav .language-switcher li.open').forEach(
     (item) => {
-      if (!event.composedPath().includes(item)) {
+      // Close all open menus (except in the mobile menu, and except parents)
+      if (!item.closest('menu.mobile') && !event.composedPath().includes(item)) {
         item.classList.remove('open');
         item.querySelector('button').setAttribute('aria-expanded', false);
       }

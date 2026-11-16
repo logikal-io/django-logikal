@@ -39,7 +39,7 @@ cssselect==1.6.0
 cssutils==2.15.0
 dill==0.4.1
 Django==6.1.3
-django-allauth==65.21.1
+django-allauth==65.22.1
 django-anymail==15.2
 django-debug-toolbar==8.0.0
 django-debug-toolbar-template-profiler==2.1.0
@@ -91,7 +91,7 @@ json5==0.17.3
 latexcodec==3.0.1
 librt==0.16.0
 license-expression==30.4.4
-logikal-browser==3.3.2
+logikal-browser==3.4.1
 logikal-docs==1.2.6
 logikal-utils==1.10.1
 lxml==6.1.3
@@ -102,7 +102,7 @@ mdurl==0.1.2
 more-itertools==11.2.1
 mypy==2.3.1
 mypy_extensions==1.2.0
-numpy==2.5.4
+numpy==2.5.5
 oauthlib==4.0.1
 opentelemetry-api==1.45.2
 orjson==3.13.0
@@ -119,7 +119,7 @@ premailer==3.10.0
 proto-plus==1.29.0
 protobuf==7.36.2
 psutil==7.2.2
-psycopg==3.3.8
+psycopg==3.3.9
 pyasn1==0.6.5
 pyasn1_modules==0.4.2
 pybtex==0.26.1
@@ -145,7 +145,7 @@ pytest-xdist==3.8.0
 python-dateutil==2.9.0.post0
 pytokens==0.4.1
 PyYAML==6.0.3
-regex==2026.11.9
+regex==2026.11.15
 requests==2.34.2
 requests-oauthlib==2.0.0
 rich==15.0.0
@@ -170,7 +170,7 @@ sphinxcontrib-jsmath==2.0.0
 sphinxcontrib-qthelp==2.0.0
 sphinxcontrib-serializinghtml==2.0.0
 sqlparse==0.6.1
-stevedore==5.9.1
+stevedore==5.10.0
 stormware==5.0.2
 termcolor==3.3.0
 time-machine==3.5.0
@@ -180,7 +180,7 @@ tomlkit==0.15.2
 tqdm==4.70.1
 trio==0.35.0
 trio-websocket==0.12.2
-types-PyYAML==6.0.12.20261111
+types-PyYAML==6.0.12.20261113
 types-s3transfer==0.19.3
 typing_extensions==4.16.0
 uritemplate==4.2.0
