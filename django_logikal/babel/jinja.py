@@ -69,23 +69,23 @@ def template_path(file: str) -> Path | None:
     return Path(module.submodule_search_locations[0]) / 'templates' / file
 
 
-def get_macro_lines(macros: set[str]) -> dict[str, list[int]]:
-    macro_lines: dict[str, list[int]] = defaultdict(list)
+def get_macro_caller_lines(macros: set[str]) -> dict[str, list[int]]:
+    macro_caller_lines: dict[str, list[int]] = defaultdict(list)
     for macro in macros:
         macro_name, line_number_str = macro.split(':')
-        macro_lines[macro_name].append(int(line_number_str))
-    return macro_lines
+        macro_caller_lines[macro_name].append(int(line_number_str))
+    return macro_caller_lines
 
 
 def get_macro_to_caller_lines(macro_file_path: Path, macros: set[str]) -> dict[int, set[int]]:
     macro_template = load_template(macro_file_path)
-    macro_lines = get_macro_lines(macros)
+    macro_caller_lines = get_macro_caller_lines(macros)
     macro_to_caller_lines: dict[int, set[int]] = defaultdict(set)
     for macro in macro_template.find_all(nodes.Macro):
-        if macro.name not in macro_lines:
+        if macro.name not in macro_caller_lines:
             continue
         for child in macro.find_all(nodes.Call):
-            macro_to_caller_lines[child.lineno].update(macro_lines[macro.name])
+            macro_to_caller_lines[child.lineno].update(macro_caller_lines[macro.name])
     return macro_to_caller_lines
 
 
