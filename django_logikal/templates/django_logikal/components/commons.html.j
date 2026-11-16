@@ -76,7 +76,7 @@
         {{ csrf_input }}
         <menu role="menu" class="popover">
           {% for language_code, language_name in available_languages.items() %}
-            <li role="none">
+            <li role="none" lang="{{ language_code }}">
               {% if language_code != current_language_code %}
                 <button name="language" value="{{ language_code }}" type="submit" role="menuitem">
                   {{ language_name }}
