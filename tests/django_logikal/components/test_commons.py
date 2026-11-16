@@ -53,8 +53,7 @@ def test_menu(browser: Browser, theme: str, variant: str) -> None:
         ready_state = theme_variant
 
     # Hover "home" disabled current menu item
-    home_menu_item = root.find_element(By.ID, f'menu-{variant}-home')
-    browser.hover(home_menu_item)
+    browser.hover(root.find_element(By.ID, f'menu-{variant}-home'))
     browser.check(ready_state, element=example)
 
     # Hover "blog" menu item
@@ -85,8 +84,7 @@ def test_menu(browser: Browser, theme: str, variant: str) -> None:
     browser.check(f'info_menu_open_hover_{theme_variant}', element=example, retain_hover=True)
 
     # Hover "info" menu "about" submenu item
-    about_menu_item = root.find_element(By.ID, f'menu-{variant}-about')
-    browser.hover(about_menu_item)
+    browser.hover(root.find_element(By.ID, f'menu-{variant}-about'))
     browser.check(f'about_submenu_hover_{theme_variant}', element=example, retain_hover=True)
 
     # Hover "info" menu "components" submenu item
@@ -106,8 +104,7 @@ def test_menu(browser: Browser, theme: str, variant: str) -> None:
     )
 
     # Hover "info" menu "components" submenu "buttons" item
-    buttons_menu_item = root.find_element(By.ID, f'menu-{variant}-buttons')
-    browser.hover(buttons_menu_item)
+    browser.hover(root.find_element(By.ID, f'menu-{variant}-buttons'))
     browser.check(f'buttons_subsubmenu_hover_{theme_variant}', element=example, retain_hover=True)
 
     # Close all items

@@ -76,12 +76,12 @@ nitpick_ignore = [
     ('py:class', 'faker.Faker'),
     ('py:class', 'faker.proxy.Faker'),
     # Allauth
-    ('py:class', 'allauth.account.views.SignupView'),
-    ('py:class', 'allauth.account.views.LoginView'),
-    ('py:class', 'allauth.account.views.PasswordResetView'),
-    ('py:class', 'allauth.account.views.PasswordResetFromKeyView'),
-    ('py:class', 'allauth.account.views.PasswordSetView'),
-    ('py:class', 'allauth.account.views.PasswordChangeView'),
+    ('py:class', 'allauth.account.views._signup.SignupView'),
+    ('py:class', 'allauth.account.views._login.LoginView'),
+    ('py:class', 'allauth.account.views._password_reset.PasswordResetView'),
+    ('py:class', 'allauth.account.views._password_reset.PasswordResetFromKeyView'),
+    ('py:class', 'allauth.account.views._password_change.PasswordSetView'),
+    ('py:class', 'allauth.account.views._password_change.PasswordChangeView'),
 ]
 
 html_static_path = ['static', '../django_logikal/static']
