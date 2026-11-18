@@ -118,6 +118,9 @@ class Command(BaseCommand):
                 yield path, locale
 
     def _extract(self, app: App, output: Path | None, update: bool = False) -> None:
+        config = tool_config('django_logikal')['translate']
+        extra_sources = config.get('extra_sources', {}).get(app.name, [])
+
         locale_path = (output or app.path) / 'locale'
         locale_path.mkdir(parents=True, exist_ok=True)
         for domain in DOMAINS:
@@ -137,12 +140,14 @@ class Command(BaseCommand):
                 '--add-comments', 'Translators:',
                 # Metadata
                 '--project', self._project_name(),
-                '--msgid-bugs-address', tool_config('django_logikal')['translate']['contact'],
-                '--copyright-holder', tool_config('django_logikal')['translate']['copyright'],
+                '--msgid-bugs-address', config['contact'],
+                '--copyright-holder', config['copyright'],
                 '--header-comment', TEMPLATE_HEADER,
-                # Input and output file
+                # Output file
                 '--output-file', str(locale_path / f'{domain}.pot'),
+                # Inputs
                 str(app.path),
+                *extra_sources,
             ]
             for keyword in KEYWORDS.get(domain, []):
                 args.extend(['--keyword', keyword])
