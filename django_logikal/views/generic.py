@@ -2,6 +2,8 @@ from collections.abc import Callable
 from functools import wraps
 from typing import Any
 
+from django.db import models
+from django.forms import ModelForm
 from django.forms.forms import BaseForm
 from django.http import (
     HttpRequest, HttpResponse, HttpResponseBase, HttpResponseNotFound, HttpResponseServerError,
@@ -96,6 +98,19 @@ class HTMXFormView[Form: BaseForm](HTMXTemplateView, FormView[Form]):
             if fields[0] not in form.fields:
                 return HttpResponse(status=204)  # incorrect request, do nothing
             return HttpResponse(form[fields[0]].errors.render())
+        return super().post(request, *args, **kwargs)
+
+
+class HTMXUpdateView[Model: models.Model, Form: ModelForm[Any]](
+    HTMXFormView[Form], generic.UpdateView[Model, Form],
+):
+    """
+    Update a model instance with htmx-enabled field validation.
+    """
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if request.htmx:  # type: ignore[attr-defined]
+            # We must instantiate the object before htmx validation
+            self.object = self.get_object()  # pylint: disable=attribute-defined-outside-init
         return super().post(request, *args, **kwargs)
 
 

@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 
 from tests.django_logikal import scenarios
 from tests.dynamic_site import local_data
-from tests.dynamic_site.models import User
+from tests.dynamic_site.models import Project, User
 
 
 @set_browser(scenarios.desktop)
@@ -36,9 +36,11 @@ def test_json_api(live_url: LiveURL, client: Client, user: User) -> None:
     assert response.json() == []
 
     local_data.ProjectData.insert()
+    project = Project.objects.first()
+    assert project is not None
     response = client.get(root_response['projects'])
     assert response.json()[0] == {
-        'url': 'http://testserver/api/projects/1/',
+        'url': f'http://testserver/api/projects/{project.pk}/',
         'created_at': '2025-01-25T14:30:55+01:00',
         'updated_at': '2025-01-25T14:30:55+01:00',
         'name': 'Development Say',
