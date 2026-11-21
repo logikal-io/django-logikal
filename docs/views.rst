@@ -30,10 +30,16 @@ HTMX Views
     :show-inheritance:
     :no-inherited-members:
 
+.. autoclass:: django_logikal.views.generic.HTMXUpdateView
+    :show-inheritance:
+    :no-inherited-members:
+
 Utilities
 ~~~~~~~~~
 .. automodule:: django_logikal.views.generic
-    :exclude-members: PublicView, PublicViewMixin, public, FormView, HTMXTemplateView, HTMXFormView
+    :exclude-members:
+        PublicViewMixin, PublicView, public, FormView,
+        HTMXTemplateView, HTMXFormView, HTMXUpdateView,
 
 Authentication
 --------------
