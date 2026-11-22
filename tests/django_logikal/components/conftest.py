@@ -1,11 +1,11 @@
 import subprocess
 from collections.abc import Iterator
 from logging import getLogger
-from pathlib import Path
 
 from filelock import FileLock
 from pytest import FixtureRequest, fixture
 
+from docs import DOCS_BUILD_COMPLETE_PATH
 from docs.jinja.directives import THEME_MODES
 
 logger = getLogger(__name__)
@@ -14,8 +14,7 @@ logger = getLogger(__name__)
 @fixture(scope='session', autouse=True)
 def build_docs() -> None:  # pragma: no cover, does not always run
     with FileLock('docs/.build.lock'):
-        complete = Path('docs/build/.complete')
-        if complete.exists():
+        if DOCS_BUILD_COMPLETE_PATH.exists():
             logger.info('Skipping documentation building (a completed build already exists)')
             return
 
@@ -26,8 +25,6 @@ def build_docs() -> None:  # pragma: no cover, does not always run
         if process.returncode:
             logger.error('Documentation building failed')
             raise RuntimeError(process.stderr or process.stdout)
-
-        complete.touch()
 
 
 @fixture(params=THEME_MODES)
