@@ -1,3 +1,4 @@
+# pylint: disable=too-many-ancestors
 from collections.abc import Callable
 from functools import wraps
 from typing import Any
@@ -11,6 +12,8 @@ from django.http import (
 from django.shortcuts import render
 from django.template.backends.utils import csrf_input
 from django.views import View, defaults, generic
+from django.views.generic.base import ContextMixin, TemplateResponseMixin
+from django.views.generic.edit import BaseFormView
 
 AUTH_RATE_LIMIT_KEY = 'auth'
 VALIDATION_RATE_LIMIT_KEY = 'validation'
@@ -58,9 +61,9 @@ class FormView[Form: BaseForm](generic.FormView[Form]):
         return kwargs
 
 
-class HTMXTemplateView(generic.TemplateView):
+class HTMXTemplateMixin(TemplateResponseMixin, ContextMixin):
     """
-    Render a htmx-enabled template.
+    Provide htmx template context and partial rendering.
     """
     def render_block(self, name: str, context: dict[str, Any] | None = None) -> HttpResponse:
         """
@@ -76,9 +79,15 @@ class HTMXTemplateView(generic.TemplateView):
         return {'htmx': True, **super().get_context_data(*args, **kwargs)}
 
 
-class HTMXFormView[Form: BaseForm](HTMXTemplateView, FormView[Form]):
+class HTMXTemplateView(HTMXTemplateMixin, generic.TemplateView):
     """
-    Display a htmx-enabled improved form and render a template response.
+    Render a htmx-enabled template.
+    """
+
+
+class HTMXFormMixin[Form: BaseForm](BaseFormView[Form]):
+    """
+    Handle field validation before ordinary form processing.
     """
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponseBase:
         # We're marking htmx requests as a validation request when coming from this view
@@ -101,17 +110,21 @@ class HTMXFormView[Form: BaseForm](HTMXTemplateView, FormView[Form]):
         return super().post(request, *args, **kwargs)
 
 
+class HTMXFormView[Form: BaseForm](HTMXFormMixin[Form], HTMXTemplateView, FormView[Form]):
+    """
+    Display a htmx-enabled improved form and render a template response.
+    """
+
+
 class HTMXUpdateView[Model: models.Model, Form: ModelForm[Any]](
-    HTMXFormView[Form], generic.UpdateView[Model, Form],
+    HTMXTemplateMixin,  # enable htmx in the template and support partial rendering
+    FormView[Form],  # context for improved form rendering
+    generic.UpdateView[Model, Form],  # object loading and model updating
+    HTMXFormMixin[Form],  # enable field validation (after object loading, before form processing)
 ):
     """
     Update a model instance with htmx-enabled field validation.
     """
-    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if request.htmx:  # type: ignore[attr-defined]
-            # We must instantiate the object before htmx validation
-            self.object = self.get_object()  # pylint: disable=attribute-defined-outside-init
-        return super().post(request, *args, **kwargs)
 
 
 def redirect_to(viewname: str) -> Callable[..., HttpResponseBase]:

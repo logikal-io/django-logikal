@@ -13,6 +13,7 @@ from sphinx.application import Sphinx
 from sphinx.util.display import progress_message
 
 from django_logikal.templates import components
+from docs import DOCS_BUILD_COMPLETE_PATH
 from docs.jinja.domain import JinjaDomain
 
 sys.path.insert(0, '.')
@@ -102,10 +103,11 @@ def strip_modules(
             del signature[0]  # remove module text
 
 
-def bundle_component_scripts(app: Sphinx, exception: Exception | None) -> None:
+def build_finished(app: Sphinx, exception: Exception | None) -> None:
     if exception is not None or app.builder.format != 'html':
         return
 
+    # Bundle component scripts
     with progress_message('bundling component JavaScript modules'):
         source_path = components.STATIC_PATH / components.COMPONENTS_JS_PATH
         output_path = Path(app.outdir) / '_static' / components.COMPONENTS_JS_PATH
@@ -122,10 +124,15 @@ def bundle_component_scripts(app: Sphinx, exception: Exception | None) -> None:
         ]
         subprocess.run(command, check=True)  # nosec: does not use untrusted input
 
+    # Create documentation build completion marker
+    if not app.statuscode and not app._warncount:  # pylint: disable=protected-access
+        DOCS_BUILD_COMPLETE_PATH.touch()
+
 
 def setup(app: Sphinx) -> None:
+    DOCS_BUILD_COMPLETE_PATH.unlink(missing_ok=True)
     app.connect('doctree-read', strip_modules)
-    app.connect('build-finished', bundle_component_scripts)
+    app.connect('build-finished', build_finished)
     app.add_domain(JinjaDomain)
     app.add_css_file('css/jinja.css')
     app.add_css_file('css/copybutton.css')

@@ -22,6 +22,14 @@ HTMX Views
 ~~~~~~~~~~
 .. note:: The ``htmx`` extra needs to be installed for these views to function correctly.
 
+.. autoclass:: django_logikal.views.generic.HTMXTemplateMixin
+    :show-inheritance:
+    :no-inherited-members:
+
+.. autoclass:: django_logikal.views.generic.HTMXFormMixin
+    :show-inheritance:
+    :no-inherited-members:
+
 .. autoclass:: django_logikal.views.generic.HTMXTemplateView
     :show-inheritance:
     :no-inherited-members:
@@ -39,6 +47,7 @@ Utilities
 .. automodule:: django_logikal.views.generic
     :exclude-members:
         PublicViewMixin, PublicView, public, FormView,
+        HTMXTemplateMixin, HTMXFormMixin,
         HTMXTemplateView, HTMXFormView, HTMXUpdateView,
 
 Authentication
