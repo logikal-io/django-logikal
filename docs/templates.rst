@@ -164,6 +164,8 @@ Tests
 Functions
 ---------
 .. automodule:: django_logikal.templates.functions
+    :no-inherited-members:
+    :show-inheritance:
 
 Bibliography
 ------------
