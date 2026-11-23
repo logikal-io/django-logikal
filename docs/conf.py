@@ -83,6 +83,9 @@ nitpick_ignore = [
     ('py:class', 'allauth.account.views._password_reset.PasswordResetFromKeyView'),
     ('py:class', 'allauth.account.views._password_change.PasswordSetView'),
     ('py:class', 'allauth.account.views._password_change.PasswordChangeView'),
+    # Babel
+    ('py:class', 'Locale'),
+    ('py:class', '_datetime.tzinfo'),
 ]
 
 html_static_path = ['static', '../django_logikal/static']
@@ -99,8 +102,10 @@ def strip_modules(
         'django_logikal.templates.functions',
     ])
     for signature in doctree.findall(addnodes.desc_signature):
-        if signature.get('module') in modules:
-            del signature[0]  # remove module text
+        if (module := signature.get('module')) in modules:
+            for prefix in list(signature.findall(addnodes.desc_addname)):
+                if prefix.astext() == f'{module}.':
+                    prefix.parent.remove(prefix)
 
 
 def build_finished(app: Sphinx, exception: Exception | None) -> None:

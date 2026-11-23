@@ -1,14 +1,17 @@
 import os
 import re
 from collections.abc import Callable
+from copy import copy
 from datetime import datetime, tzinfo as tzinfo_class
+from decimal import Decimal
 from functools import cache
 from operator import itemgetter
 from pathlib import Path
 from typing import Any
 
 from babel import Locale
-from babel.support import Format
+from babel.numbers import format_currency, get_territory_currencies
+from babel.support import Format as BabelFormat
 from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.http import HttpRequest
@@ -127,6 +130,54 @@ def languages() -> list[tuple[str, str]]:
     return sorted(translated_languages, key=itemgetter(1))
 
 
+class Format(BabelFormat):
+    def __init__(self, *args: Any, **kwargs: Any):
+        """
+        Locale-aware formatter with configurable currency precision and suffix.
+        """
+        super().__init__(*args, **kwargs)
+
+    def currency(
+        self,
+        number: float | Decimal | str,
+        currency: str | None = None,
+        *,
+        decimal_places: int | None = None,
+        number_suffix: str | None = None,
+    ) -> str:
+        # Use the territory's default currency
+        if currency is None:
+            currencies = (
+                get_territory_currencies(self.locale.territory)
+                if self.locale.territory else []
+            )
+            if len(currencies) != 1:
+                raise ValueError('You must specify a currency for this locale')
+            currency = currencies[0]
+
+        if decimal_places is None and not number_suffix:
+            return super().currency(number, currency)
+
+        # Define the currency format based on the number suffix and decimal places
+        currency_format = copy(self.locale.currency_formats['standard'])
+        if decimal_places is not None:
+            currency_format.frac_prec = (decimal_places, decimal_places)
+        if number_suffix is not None:
+            currency_format.suffix = (
+                number_suffix + currency_format.suffix[0],
+                number_suffix + currency_format.suffix[1],
+            )
+
+        return format_currency(
+            number,
+            currency,
+            format=currency_format,
+            locale=self.locale,
+            currency_digits=decimal_places is None,
+            numbering_system=self.numbering_system,
+        )
+
+
 def format(  # pylint: disable=redefined-builtin
     locale: Locale | None = None,
     language_code: str | None = None,
@@ -145,6 +196,7 @@ def format(  # pylint: disable=redefined-builtin
 
             ... {{ fmt.decimal(number) }} ...
             ... {{ fmt.datetime(timestamp) }} ...
+            ... {{ fmt.currency(value) }} ...
 
         Note that the current locale can be influenced with the ``language`` tag, while the current
         time zone can be influenced with the ``timezone`` tag:

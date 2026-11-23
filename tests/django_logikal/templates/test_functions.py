@@ -4,6 +4,7 @@ from pathlib import Path
 from django.test import RequestFactory
 from django.urls import ResolverMatch
 from django.urls.exceptions import NoReverseMatch
+from django.utils import translation
 from pytest import mark, raises
 from pytest_mock import MockerFixture
 from time_machine import Traveller
@@ -59,6 +60,18 @@ def test_languages() -> None:
         ('en-gb', 'English (GB)'),
         ('en-us', 'English (US)'),
     ]
+
+
+def test_format_currency_localization() -> None:
+    with translation.override('de-at'):
+        fmt = f.format()
+    assert fmt.currency(5000, decimal_places=0, number_suffix='+') == '€\u00a05.000+'
+
+
+def test_format_currency_errors() -> None:
+    fmt = f.format(language_code='en')
+    with raises(ValueError, match='specify a currency'):
+        fmt.currency(5000)
 
 
 def test_cwd(mocker: MockerFixture) -> None:
