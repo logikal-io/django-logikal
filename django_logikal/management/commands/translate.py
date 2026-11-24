@@ -108,7 +108,7 @@ class Command(BaseCommand):
 
     def _po_files(self, app: App, domain: str, output: Path | None) -> Iterator[tuple[Path, str]]:
         translations_path = (output or app.path) / 'translations'
-        for path in translations_path.glob(self._po_filename(domain=domain, locale='*')):
+        for path in sorted(translations_path.glob(self._po_filename(domain=domain, locale='*'))):
             with path.open('rb') as file:
                 catalog = read_po(file)
             if catalog.locale is None:
