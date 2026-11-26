@@ -10,7 +10,8 @@ A paragraph with `code` in the text.
 
 ---
 
-A paragraph with a line break and an *emphasized *word* inside an emphasis*.
+A paragraph with a line break
+and an *emphasized *word* inside an emphasis*.
 
 A paragraph in a div element.
 
