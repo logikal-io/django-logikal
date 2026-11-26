@@ -95,10 +95,10 @@ class Email:
             text = re.sub('\n +', '\n', text)  # remove indentation
             text = text.replace('<div', '<p')  # fix div start tag
             text = text.replace('</div>', '</p>')  # fix div end tag
-            LINE_BREAK_MARKER = '\uE00A'  # private use marker character
-            text = re.sub(r'<br\b[^>]*>\s*', LINE_BREAK_MARKER, text, flags=re.IGNORECASE)
+            line_break_marker = '\uE00A'  # private use marker character
+            text = re.sub(r'<br\b[^>]*>\s*', line_break_marker, text, flags=re.IGNORECASE)
             text = to_markdown(text) or ''
-            text = text.replace(LINE_BREAK_MARKER, '\n')  # restore line breaks
+            text = text.replace(line_break_marker, '\n')  # restore line breaks
             text = re.sub(r'([=\-#])\n+', r'\1\n', text)  # fix heading
             text = re.sub(r'^\* +', r'- ', text, flags=re.MULTILINE)  # fix unordered list
             text = re.sub(r'^([0-9]+\.) +', r'\1 ', text, flags=re.MULTILINE)  # fix ordered list
